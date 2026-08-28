@@ -5,7 +5,7 @@
     "status": "review"
   },
   "ios": {
-    "testFlightUrl": null,
+    "testFlightUrl": "/sidequests/go/ios",
     "status": "review"
   },
   "guideUrl": "/sidequests/go/guide"

@@ -279,6 +279,66 @@ a:focus-visible {
   background-size: auto, 28px 28px;
 }
 
+/* Sidequests policy and support pages */
+.sidequests-info-page {
+  min-height: 100vh;
+  background:
+    linear-gradient(rgb(255 250 240 / 0.94), rgb(255 250 240 / 0.94)),
+    radial-gradient(circle at 18px 18px, rgb(8 44 47 / 0.12) 1.4px, transparent 1.6px);
+  background-size: auto, 28px 28px;
+}
+
+.sidequests-info {
+  width: min(780px, calc(100% - 40px));
+  margin: 48px auto 96px;
+  padding: clamp(28px, 6vw, 64px);
+  border: var(--line);
+  border-radius: 28px;
+  background: rgb(255 250 240 / 0.96);
+  box-shadow: var(--shadow);
+}
+
+.sidequests-info h1 {
+  margin: 10px 0 22px;
+  font-size: clamp(3rem, 8vw, 5.6rem);
+  line-height: 0.92;
+  letter-spacing: -0.065em;
+}
+
+.sidequests-info h2 {
+  margin: 36px 0 10px;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.1;
+}
+
+.sidequests-info p,
+.sidequests-info li {
+  font-size: 1.05rem;
+}
+
+.sidequests-info li + li {
+  margin-top: 8px;
+}
+
+.sidequests-info .lede {
+  color: var(--muted);
+  font-size: clamp(1.2rem, 2.5vw, 1.45rem);
+}
+
+.sidequests-info .callout {
+  margin: 30px 0;
+  padding: 20px;
+  border: var(--line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--yellow), white 38%);
+  font-weight: 700;
+}
+
+.sidequests-info a {
+  font-weight: 800;
+  text-underline-offset: 3px;
+}
+
 .sq-hero {
   display: grid;
   min-height: calc(100vh - 86px);
