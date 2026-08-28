@@ -375,6 +375,119 @@ a:focus-visible {
   transform: rotate(18deg);
 }
 
+.pack-preview-section {
+  padding-block: 96px 112px;
+}
+
+.pack-preview-heading > p:last-child {
+  max-width: 680px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 1.12rem;
+}
+
+.preview-pack-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.preview-pack-card {
+  overflow: hidden;
+  border: var(--line);
+  border-radius: 24px;
+  background: var(--paper);
+  box-shadow: 7px 7px 0 var(--ink);
+}
+
+.preview-pack-card__art {
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  aspect-ratio: 1.22;
+  border-bottom: var(--line);
+  background: var(--cream);
+}
+
+.preview-pack-card__art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 220ms ease;
+}
+
+.preview-pack-card:hover .preview-pack-card__art img {
+  transform: scale(1.025);
+}
+
+.preview-pack-label {
+  position: absolute;
+  z-index: 1;
+  top: 18px;
+  left: 18px;
+  padding: 7px 10px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--green);
+  box-shadow: 3px 3px 0 var(--ink);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.preview-pack-card--park .preview-pack-label {
+  background: var(--yellow);
+}
+
+.preview-pack-card--feline .preview-pack-label {
+  background: var(--purple);
+  color: white;
+}
+
+.preview-pack-card__body {
+  min-width: 0;
+  padding: 26px;
+}
+
+.preview-pack-card__body h3 {
+  margin: 0 0 10px;
+  font-size: 1.75rem;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.preview-pack-card__body > p:not(.preview-pack-card__eyebrow) {
+  min-height: 72px;
+  margin: 0;
+  color: var(--muted);
+}
+
+.preview-pack-card__eyebrow {
+  margin: 24px 0 10px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.quest-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quest-examples li {
+  padding: 7px 10px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: white;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
 .how-it-works {
   padding-block: 96px;
   border-block: var(--line);
@@ -594,6 +707,10 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .preview-pack-grid {
+    grid-template-columns: 1fr;
+  }
+
   .feature-grid article {
     min-height: 0;
   }
@@ -641,8 +758,24 @@ a:focus-visible {
   }
 
   .how-it-works,
+  .pack-preview-section,
   .access-section {
     padding-block: 72px;
+  }
+
+  .preview-pack-card {
+    display: block;
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+
+  .preview-pack-card__art {
+    height: auto;
+    border-right: 0;
+    border-bottom: var(--line);
+  }
+
+  .preview-pack-card__body {
+    padding: 22px;
   }
 
   .access-card {
@@ -666,6 +799,10 @@ a:focus-visible {
   }
 
   .button {
+    transition: none;
+  }
+
+  .preview-pack-card__art img {
     transition: none;
   }
 }
