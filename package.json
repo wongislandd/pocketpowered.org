@@ -4,15 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "types": "wrangler types",
-    "typecheck": "tsc --noEmit",
-    "check": "npm run types && npm run typecheck",
-    "deploy": "wrangler deploy"
+    "dev": "wrangler pages dev public",
+    "check": "node --check public/sidequests/sidequests.js",
+    "deploy": "wrangler pages deploy public --project-name pocketpowered-site"
   },
   "devDependencies": {
-    "@types/node": "^26.4.0",
-    "typescript": "latest",
     "wrangler": "latest"
   }
 }

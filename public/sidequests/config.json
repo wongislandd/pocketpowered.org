@@ -1,0 +1,12 @@
+{
+  "android": {
+    "groupUrl": "/sidequests/go/android-group",
+    "playUrl": "/sidequests/go/android",
+    "status": "open"
+  },
+  "ios": {
+    "testFlightUrl": null,
+    "status": "review"
+  },
+  "guideUrl": "/sidequests/go/guide"
+}
