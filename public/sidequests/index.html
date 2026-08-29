@@ -11,8 +11,8 @@
     <meta property="og:url" content="https://pocketpowered.org/sidequests/" />
     <meta name="twitter:card" content="summary_large_image" />
     <title>Sidequests NYC Early Access · Pocket Powered</title>
-    <link rel="stylesheet" href="/styles.css?v=sidequests-gallery-4" />
-    <script src="/sidequests/sidequests.js?v=sidequests-gallery-2" defer></script>
+    <link rel="stylesheet" href="/styles.css?v=sidequests-stepper-1" />
+    <script src="/sidequests/sidequests.js?v=sidequests-stepper-1" defer></script>
   </head>
   <body class="sidequests-page">
     <header class="site-header shell">
@@ -112,7 +112,7 @@
             <h2>A sidequest in four steps.</h2>
           </div>
 
-          <div class="product-showcase" aria-label="A Sidequests find from criteria to completion">
+          <div class="product-showcase" data-product-showcase aria-label="A Sidequests find from criteria to completion">
             <figure class="product-showcase__step">
               <div class="product-showcase__shot">
                 <img
@@ -180,7 +180,15 @@
               </figcaption>
             </figure>
           </div>
-          <p class="product-showcase__hint">Swipe sideways to see every step.</p>
+          <div class="product-showcase__stepper" data-product-stepper aria-label="Walkthrough navigation">
+            <button type="button" data-product-step-previous aria-label="Previous walkthrough step">←</button>
+            <span class="product-showcase__step-count" aria-live="polite" aria-atomic="true">
+              <strong data-product-step-current>01</strong>
+              <span aria-hidden="true">/</span>
+              <span data-product-step-total>04</span>
+            </span>
+            <button type="button" data-product-step-next aria-label="Next walkthrough step">→</button>
+          </div>
 
           <div class="product-outcomes" aria-label="What happens after completing a find">
             <figure class="product-outcome">

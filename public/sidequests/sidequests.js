@@ -6,6 +6,12 @@ const androidPlayLink = document.querySelector("[data-android-play-link]");
 const androidStatus = document.querySelector("[data-android-status]");
 const androidMessage = document.querySelector("[data-android-message]");
 const smartCta = document.querySelector("[data-smart-cta]");
+const productShowcase = document.querySelector("[data-product-showcase]");
+const productStepper = document.querySelector("[data-product-stepper]");
+const previousProductStep = document.querySelector("[data-product-step-previous]");
+const nextProductStep = document.querySelector("[data-product-step-next]");
+const currentProductStep = document.querySelector("[data-product-step-current]");
+const totalProductSteps = document.querySelector("[data-product-step-total]");
 
 function isIPhone() {
   return /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -104,4 +110,60 @@ for (const link of [androidGroupLink, androidPlayLink]) {
       }
     });
   }
+}
+
+if (
+  productShowcase instanceof HTMLElement &&
+  productStepper instanceof HTMLElement &&
+  previousProductStep instanceof HTMLButtonElement &&
+  nextProductStep instanceof HTMLButtonElement &&
+  currentProductStep instanceof HTMLElement &&
+  totalProductSteps instanceof HTMLElement
+) {
+  const productSteps = Array.from(productShowcase.querySelectorAll(".product-showcase__step"));
+  let activeProductStep = 0;
+  let productScrollFrame = 0;
+
+  function formatProductStep(value) {
+    return String(value).padStart(2, "0");
+  }
+
+  function updateProductStepper(index) {
+    activeProductStep = Math.max(0, Math.min(index, productSteps.length - 1));
+    currentProductStep.textContent = formatProductStep(activeProductStep + 1);
+    totalProductSteps.textContent = formatProductStep(productSteps.length);
+    previousProductStep.disabled = activeProductStep === 0;
+    nextProductStep.disabled = activeProductStep === productSteps.length - 1;
+  }
+
+  function productStepFromScroll() {
+    const maximumScroll = productShowcase.scrollWidth - productShowcase.clientWidth;
+    if (maximumScroll <= 0 || productSteps.length <= 1) return 0;
+    return Math.round((productShowcase.scrollLeft / maximumScroll) * (productSteps.length - 1));
+  }
+
+  function goToProductStep(index) {
+    const nextIndex = Math.max(0, Math.min(index, productSteps.length - 1));
+    const maximumScroll = productShowcase.scrollWidth - productShowcase.clientWidth;
+    const nextScroll = productSteps.length <= 1 ? 0 : maximumScroll * (nextIndex / (productSteps.length - 1));
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    updateProductStepper(nextIndex);
+    productShowcase.scrollTo({ left: nextScroll, behavior: reduceMotion ? "auto" : "smooth" });
+  }
+
+  previousProductStep.addEventListener("click", () => goToProductStep(activeProductStep - 1));
+  nextProductStep.addEventListener("click", () => goToProductStep(activeProductStep + 1));
+
+  productShowcase.addEventListener(
+    "scroll",
+    () => {
+      window.cancelAnimationFrame(productScrollFrame);
+      productScrollFrame = window.requestAnimationFrame(() => updateProductStepper(productStepFromScroll()));
+    },
+    { passive: true }
+  );
+
+  window.addEventListener("resize", () => updateProductStepper(productStepFromScroll()));
+  updateProductStepper(0);
 }
