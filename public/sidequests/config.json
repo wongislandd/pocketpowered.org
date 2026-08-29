@@ -7,6 +7,5 @@
   "ios": {
     "testFlightUrl": "/sidequests/go/ios",
     "status": "review"
-  },
-  "guideUrl": "/sidequests/go/guide"
+  }
 }
