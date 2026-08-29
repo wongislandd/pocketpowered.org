@@ -852,10 +852,120 @@ a:focus-visible {
   font-size: 0.9rem;
 }
 
+.interest-signup {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(340px, 1.18fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+  margin-top: 34px;
+  padding: clamp(26px, 4vw, 44px);
+  border: var(--line);
+  border-radius: 24px;
+  background: #fffaf0;
+  box-shadow: var(--shadow);
+}
+
+.interest-signup__copy .kicker {
+  margin: 0 0 12px;
+}
+
+.interest-signup__copy h3 {
+  margin: 0 0 12px;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 0.98;
+}
+
+.interest-signup__copy > p:last-child {
+  margin: 0;
+  color: var(--muted);
+}
+
+.interest-form {
+  position: relative;
+  min-width: 0;
+}
+
+.interest-form > label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 900;
+}
+
+.interest-form__fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.interest-form input[type="email"] {
+  min-width: 0;
+  min-height: 54px;
+  padding: 12px 16px;
+  border: 3px solid var(--ink);
+  border-radius: 12px;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+}
+
+.interest-form input[type="email"]:focus-visible {
+  outline: 4px solid rgb(118 79 238 / 0.28);
+  outline-offset: 2px;
+}
+
+.interest-form__fields .button {
+  min-height: 54px;
+  white-space: nowrap;
+}
+
+.interest-form__fields .button:disabled {
+  cursor: wait;
+  opacity: 0.62;
+  transform: none;
+}
+
+.interest-form__honeypot {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.interest-form__consent {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.interest-form__consent a {
+  color: inherit;
+  font-weight: 800;
+}
+
+.interest-form__status {
+  min-height: 1.5em;
+  margin: 10px 0 0;
+  font-size: 0.86rem;
+  font-weight: 850;
+}
+
+.interest-form__status.is-success {
+  color: #08774f;
+}
+
+.interest-form__status.is-error {
+  color: #a12b25;
+}
+
 @media (max-width: 860px) {
   .product-card,
   .sq-hero,
-  .access-grid {
+  .access-grid,
+  .interest-signup {
     grid-template-columns: 1fr;
   }
 
@@ -1052,6 +1162,18 @@ a:focus-visible {
 
   .access-card {
     box-shadow: 5px 5px 0 var(--ink);
+  }
+
+  .interest-signup {
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+
+  .interest-form__fields {
+    grid-template-columns: 1fr;
+  }
+
+  .interest-form__fields .button {
+    width: 100%;
   }
 
   .site-footer {

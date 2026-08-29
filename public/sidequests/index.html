@@ -11,8 +11,8 @@
     <meta property="og:url" content="https://pocketpowered.org/sidequests/" />
     <meta name="twitter:card" content="summary_large_image" />
     <title>Sidequests NYC Early Access · Pocket Powered</title>
-    <link rel="stylesheet" href="/styles.css?v=sidequests-centered-hero-1" />
-    <script src="/sidequests/sidequests.js?v=sidequests-stepper-1" defer></script>
+    <link rel="stylesheet" href="/styles.css?v=sidequests-interest-1" />
+    <script src="/sidequests/sidequests.js?v=sidequests-interest-1" defer></script>
   </head>
   <body class="sidequests-page">
     <header class="site-header shell">
@@ -279,6 +279,41 @@
             </ol>
             <p class="fine-print" data-ios-message>We’re preparing the public TestFlight link now. This page will update automatically when it is approved.</p>
           </article>
+        </div>
+
+        <div class="interest-signup" aria-labelledby="interest-signup-title">
+          <div class="interest-signup__copy">
+            <p class="kicker">Stay in the loop</p>
+            <h3 id="interest-signup-title">Get Sidequests updates.</h3>
+            <p>Leave your email and we’ll let you know when new builds, wider access, and launch news are ready.</p>
+          </div>
+
+          <form
+            class="interest-form"
+            data-interest-form
+            data-interest-endpoint="https://ktrglbdocowhekhjfkir.supabase.co/functions/v1/subscribe-sidequests-updates"
+          >
+            <label for="sidequests-interest-email">Email address</label>
+            <div class="interest-form__fields">
+              <input
+                id="sidequests-interest-email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                inputmode="email"
+                maxlength="254"
+                placeholder="you@example.com"
+                required
+              />
+              <button class="button button--yellow" type="submit" data-interest-submit>Keep me posted</button>
+            </div>
+            <div class="interest-form__honeypot" aria-hidden="true">
+              <label for="sidequests-company-website">Company website</label>
+              <input id="sidequests-company-website" name="company_website" type="text" tabindex="-1" autocomplete="off" />
+            </div>
+            <p class="interest-form__consent">We’ll only send Sidequests availability and product updates. Unsubscribe anytime. See our <a href="/sidequests/privacy/">Privacy Policy</a>.</p>
+            <p class="interest-form__status" role="status" aria-live="polite" data-interest-status></p>
+          </form>
         </div>
 
       </section>

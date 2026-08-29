@@ -12,6 +12,10 @@ const previousProductStep = document.querySelector("[data-product-step-previous]
 const nextProductStep = document.querySelector("[data-product-step-next]");
 const currentProductStep = document.querySelector("[data-product-step-current]");
 const totalProductSteps = document.querySelector("[data-product-step-total]");
+const interestForm = document.querySelector("[data-interest-form]");
+const interestSubmit = document.querySelector("[data-interest-submit]");
+const interestStatus = document.querySelector("[data-interest-status]");
+let interestEndpoint = interestForm instanceof HTMLFormElement ? interestForm.dataset.interestEndpoint ?? "" : "";
 
 function isIPhone() {
   return /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -80,6 +84,10 @@ fetch("/sidequests/config.json", { headers: { accept: "application/json" } })
       enableIosAccess(config.ios.testFlightUrl);
     }
 
+    if (config?.interest?.status === "open" && config?.interest?.endpoint) {
+      interestEndpoint = config.interest.endpoint;
+    }
+
     if (smartCta instanceof HTMLAnchorElement) {
       if (isAndroid() && config?.android?.status === "open" && config?.android?.groupUrl) {
         smartCta.href = config.android.groupUrl;
@@ -93,6 +101,56 @@ fetch("/sidequests/config.json", { headers: { accept: "application/json" } })
   .catch(() => {
     // The page remains fully usable with its server-rendered fallback state.
   });
+
+if (
+  interestForm instanceof HTMLFormElement &&
+  interestSubmit instanceof HTMLButtonElement &&
+  interestStatus instanceof HTMLElement
+) {
+  interestForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!interestForm.reportValidity()) return;
+
+    const formData = new FormData(interestForm);
+    const email = String(formData.get("email") ?? "").trim();
+    const companyWebsite = String(formData.get("company_website") ?? "");
+    const originalButtonText = interestSubmit.textContent;
+
+    interestSubmit.disabled = true;
+    interestSubmit.textContent = "Joining…";
+    interestStatus.textContent = "";
+    interestStatus.classList.remove("is-success", "is-error");
+
+    try {
+      if (!interestEndpoint) throw new Error("endpoint_unavailable");
+      const response = await fetch(interestEndpoint, {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ email, companyWebsite }),
+      });
+
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        throw new Error(result?.code ?? "signup_failed");
+      }
+
+      interestForm.reset();
+      interestStatus.textContent = "You’re on the list. We’ll keep you posted.";
+      interestStatus.classList.add("is-success");
+    } catch (error) {
+      interestStatus.textContent = error instanceof Error && error.message === "invalid_email"
+        ? "Enter a valid email address and try again."
+        : "We couldn’t add you right now. Please try again.";
+      interestStatus.classList.add("is-error");
+    } finally {
+      interestSubmit.disabled = false;
+      interestSubmit.textContent = originalButtonText;
+    }
+  });
+}
 
 if (iosLink instanceof HTMLAnchorElement) {
   iosLink.addEventListener("click", (event) => {
