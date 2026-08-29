@@ -762,14 +762,23 @@ a:focus-visible {
   border: var(--line);
   border-radius: 14px;
   background: var(--green);
-  font-size: 1.35rem;
-  font-weight: 900;
   place-items: center;
+}
+
+.platform-icon img {
+  display: block;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
 }
 
 .platform-icon--apple {
   background: white;
-  font-size: 1.1rem;
+}
+
+.platform-icon--apple img {
+  width: 28px;
+  height: 32px;
 }
 
 .status-badge {
