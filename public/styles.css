@@ -1073,7 +1073,7 @@ a:focus-visible {
   }
 
   .sq-hero__visual {
-    overflow: clip;
+    overflow: visible;
     min-height: 390px;
   }
 
