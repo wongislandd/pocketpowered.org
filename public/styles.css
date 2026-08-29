@@ -962,6 +962,17 @@ a:focus-visible {
     min-height: 390px;
   }
 
+  .sq-hero__visual .pack-stack {
+    inset: 4% auto auto 50%;
+    transform: translateX(-55%);
+  }
+
+  .sq-hero__visual .skyline-sticker {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
   .hero-actions,
   .hero-actions .button {
     width: 100%;
