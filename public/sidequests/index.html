@@ -111,24 +111,116 @@
         <div class="shell">
           <div class="section-heading section-heading--center">
             <p class="kicker">How it works</p>
-            <h2>Explore. Capture. Collect.</h2>
+            <h2>From prompt to proof.</h2>
+            <p>See one quest all the way through: know what counts, submit your photo, and get a clear result.</p>
           </div>
-          <div class="feature-grid">
-            <article>
-              <span class="feature-number">01</span>
-              <h3>Pick a pack</h3>
-              <p>Choose what sounds fun today—from subway details and storefronts to parks and neighborhood cats.</p>
-            </article>
-            <article>
-              <span class="feature-number">02</span>
-              <h3>Capture your find</h3>
-              <p>Follow the prompts, spot each subject in the real world, and complete the quest with a photo.</p>
-            </article>
-            <article>
-              <span class="feature-number">03</span>
-              <h3>Build your collection</h3>
-              <p>Save your finds, complete packs, earn badges, and share the best discoveries with friends.</p>
-            </article>
+
+          <div class="product-walkthrough" data-walkthrough>
+            <div class="product-walkthrough__stage">
+              <div class="walkthrough-phone" aria-label="Sidequests app walkthrough. Swipe left or right to change steps.">
+                <img
+                  class="walkthrough-phone__screen is-active"
+                  src="/sidequests/assets/walkthrough/01-criteria.png"
+                  alt="The Subway entrance quest showing two required criteria and two optional bonus criteria"
+                  width="720"
+                  height="1600"
+                  data-walkthrough-image
+                />
+                <img
+                  class="walkthrough-phone__screen"
+                  src="/sidequests/assets/walkthrough/02-submit.png"
+                  alt="The photo review screen showing a subway entrance image and the Submit photo button"
+                  width="720"
+                  height="1600"
+                  loading="lazy"
+                  data-walkthrough-image
+                  aria-hidden="true"
+                />
+                <img
+                  class="walkthrough-phone__screen"
+                  src="/sidequests/assets/walkthrough/03-checking.png"
+                  alt="The checking screen preparing the photo for grading"
+                  width="720"
+                  height="1600"
+                  loading="lazy"
+                  data-walkthrough-image
+                  aria-hidden="true"
+                />
+                <img
+                  class="walkthrough-phone__screen"
+                  src="/sidequests/assets/walkthrough/04-complete.png"
+                  alt="The result screen confirming all requirements were met and awarding 35 XP"
+                  width="720"
+                  height="1600"
+                  loading="lazy"
+                  data-walkthrough-image
+                  aria-hidden="true"
+                />
+              </div>
+              <p class="walkthrough-swipe-hint" aria-hidden="true">SWIPE TO EXPLORE <span>↔</span></p>
+            </div>
+
+            <div class="product-walkthrough__story">
+              <p class="walkthrough-story__kicker">ONE FIND · START TO FINISH</p>
+              <div class="walkthrough-story__copy" aria-live="polite" aria-atomic="true">
+                <span class="walkthrough-story__number" data-walkthrough-number>01 / 04</span>
+                <h3 data-walkthrough-title>Know what counts</h3>
+                <p data-walkthrough-description>Every quest spells out the must-have details and the optional touches that earn bonus XP.</p>
+              </div>
+
+              <div class="walkthrough-steps" aria-label="Walkthrough steps">
+                <button
+                  class="walkthrough-step is-active"
+                  type="button"
+                  data-walkthrough-step="0"
+                  data-title="Know what counts"
+                  data-description="Every quest spells out the must-have details and the optional touches that earn bonus XP."
+                  aria-pressed="true"
+                >
+                  <span>01</span>
+                  <strong>Check the criteria</strong>
+                </button>
+                <button
+                  class="walkthrough-step"
+                  type="button"
+                  data-walkthrough-step="1"
+                  data-title="Review your shot"
+                  data-description="See the photo beside the criteria before you send it. If something is missing, retake it on the spot."
+                  aria-pressed="false"
+                >
+                  <span>02</span>
+                  <strong>Submit the photo</strong>
+                </button>
+                <button
+                  class="walkthrough-step"
+                  type="button"
+                  data-walkthrough-step="2"
+                  data-title="Get it checked"
+                  data-description="Sidequests checks the image against the quest requirements and keeps you posted while it works."
+                  aria-pressed="false"
+                >
+                  <span>03</span>
+                  <strong>Watch the grade</strong>
+                </button>
+                <button
+                  class="walkthrough-step"
+                  type="button"
+                  data-walkthrough-step="3"
+                  data-title="Add it to your collection"
+                  data-description="See exactly what passed, collect your XP, and keep moving through the pack."
+                  aria-pressed="false"
+                >
+                  <span>04</span>
+                  <strong>Complete the find</strong>
+                </button>
+              </div>
+
+              <div class="walkthrough-controls">
+                <button type="button" class="walkthrough-control" data-walkthrough-previous aria-label="Show previous step">←</button>
+                <button type="button" class="walkthrough-control walkthrough-control--pause" data-walkthrough-toggle>Pause</button>
+                <button type="button" class="walkthrough-control" data-walkthrough-next aria-label="Show next step">→</button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
