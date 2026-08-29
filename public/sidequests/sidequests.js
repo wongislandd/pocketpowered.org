@@ -90,10 +90,10 @@ fetch("/sidequests/config.json", { headers: { accept: "application/json" } })
 
     if (smartCta instanceof HTMLAnchorElement) {
       if (isAndroid() && config?.android?.status === "open" && config?.android?.groupUrl) {
-        smartCta.href = config.android.groupUrl;
+        smartCta.href = "#access";
         smartCta.textContent = "Join on Android";
       } else if (isIPhone() && config?.ios?.status === "open" && config?.ios?.testFlightUrl) {
-        smartCta.href = config.ios.testFlightUrl;
+        smartCta.href = "#access";
         smartCta.textContent = "Join on iPhone";
       }
     }
