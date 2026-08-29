@@ -385,11 +385,16 @@ a:focus-visible {
 
 .skyline-sticker {
   position: absolute;
-  z-index: 2;
-  right: -8%;
-  bottom: -4%;
-  width: 72%;
-  filter: drop-shadow(10px 14px 0 rgb(8 44 47 / 0.22));
+  z-index: 4;
+  right: -4%;
+  bottom: -2%;
+  display: block;
+  width: 68%;
+  border: var(--line);
+  border-radius: 24px;
+  background: var(--cream);
+  box-shadow: 9px 10px 0 var(--ink);
+  transform: rotate(4deg);
 }
 
 .pack-stack {
@@ -1080,7 +1085,7 @@ a:focus-visible {
   .sq-hero__visual .skyline-sticker {
     right: auto;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) rotate(4deg);
   }
 
   .hero-actions,
