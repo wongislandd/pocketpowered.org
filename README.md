@@ -20,6 +20,17 @@ The public page links to stable `/sidequests/go/*` routes, so the landing-page U
 
 ## Deploy
 
+Every push to `main` is validated and deployed automatically to the
+`pocketpowered-site` Cloudflare Pages project by GitHub Actions. The workflow
+can also be run manually from the repository's **Actions** tab.
+
+The workflow requires these GitHub Actions repository secrets:
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_API_TOKEN` with Cloudflare Pages Write access
+
+For a manual fallback deployment:
+
 ```bash
 npm run check
 npm run deploy
