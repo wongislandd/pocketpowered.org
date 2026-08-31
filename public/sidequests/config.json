@@ -6,7 +6,7 @@
   },
   "ios": {
     "testFlightUrl": "/sidequests/go/ios",
-    "status": "review"
+    "status": "open"
   },
   "interest": {
     "endpoint": "https://ktrglbdocowhekhjfkir.supabase.co/functions/v1/subscribe-sidequests-updates",
