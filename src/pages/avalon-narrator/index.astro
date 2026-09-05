@@ -67,6 +67,21 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       </div>
     </section>
 
+    <section class="avalon-project__features shell" aria-labelledby="avalon-features-title">
+      <div class="section-heading">
+        <p class="kicker">What The App Does</p>
+        <h2 id="avalon-features-title">Everything you need to start the round.</h2>
+      </div>
+
+      <ul class="avalon-project__feature-list">
+        <li>Lets players configure their exact role and module setup</li>
+        <li>Validates setup rules before narration starts</li>
+        <li>Builds a dynamic, deterministic announcement timeline</li>
+        <li>Plays narration with timing controls and voice pack support</li>
+        <li>Keeps everything local/offline for reliability at the table</li>
+      </ul>
+    </section>
+
     <section class="avalon-project__stack" aria-labelledby="avalon-stack-title">
       <div class="shell">
         <p class="kicker kicker--light">Built once, shared everywhere</p>
@@ -238,6 +253,36 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     color: var(--muted);
   }
 
+  .avalon-project__features {
+    padding-bottom: clamp(90px, 12vw, 150px);
+  }
+
+  .avalon-project__feature-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 48px;
+    max-width: 960px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .avalon-project__feature-list li {
+    padding: 22px 0 22px 34px;
+    border-top: 2px solid color-mix(in srgb, var(--ink), transparent 65%);
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    font-weight: 700;
+  }
+
+  .avalon-project__feature-list li::before {
+    display: inline-block;
+    width: 22px;
+    margin-left: -32px;
+    color: var(--orange);
+    content: "✓";
+    font-weight: 900;
+  }
+
   .avalon-project__stack h2 {
     max-width: 800px;
     margin: 10px 0 20px;
@@ -269,6 +314,10 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 
     .avalon-project__walkthrough-grid {
       grid-template-columns: repeat(2, 1fr);
+    }
+
+    .avalon-project__feature-list {
+      grid-template-columns: 1fr;
     }
   }
 
