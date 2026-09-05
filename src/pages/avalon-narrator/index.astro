@@ -29,39 +29,14 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       </div>
     </section>
 
-    <section class="avalon-project__details shell" aria-labelledby="avalon-details-title">
+    <section class="avalon-project__walkthrough shell" aria-labelledby="avalon-walkthrough-title">
       <div class="section-heading">
-        <p class="kicker">Designed for setup phase</p>
-        <h2 id="avalon-details-title">Choose the characters. Press play.</h2>
-      </div>
-
-      <div class="avalon-project__feature-grid">
-        <article>
-          <span class="avalon-project__number">01</span>
-          <h3>Select tonight’s characters</h3>
-          <p>Choose the roles your table is playing, plus optional modules like Excalibur and Lady of the Lake.</p>
-        </article>
-        <article>
-          <span class="avalon-project__number">02</span>
-          <h3>We build the narration</h3>
-          <p>We turn your exact lineup into the correct announcement order, with the right reminders and timing.</p>
-        </article>
-        <article>
-          <span class="avalon-project__number">03</span>
-          <h3>Run setup without a narrator</h3>
-          <p>Press play and let the app guide the table through the opening, without anyone having to memorize or read the script.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="avalon-project__screenshots shell" aria-labelledby="avalon-screenshots-title">
-      <div class="section-heading">
-        <p class="kicker">A look inside the app</p>
-        <h2 id="avalon-screenshots-title">From character selection to setup narration.</h2>
+        <p class="kicker">How it works</p>
+        <h2 id="avalon-walkthrough-title">Choose the characters. Press play.</h2>
         <p>Pick the characters your table is using, then let Announcer for Avalon take care of the rest of the opening sequence.</p>
       </div>
 
-      <div class="avalon-project__screenshots-grid">
+      <div class="avalon-project__walkthrough-grid">
         <figure>
           <div class="avalon-project__shot">
             <img src="/avalon-narrator/screenshots/01-iphone-setup.png" alt="Announcer for Avalon setup screen with character selection" width="1284" height="2778" loading="lazy" />
@@ -209,73 +184,34 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     transform: rotate(18deg) scaleY(0.42);
   }
 
-  .avalon-project__details {
-    padding-bottom: clamp(90px, 12vw, 150px);
-  }
-
-  .avalon-project__feature-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-  }
-
-  .avalon-project__feature-grid article {
-    min-height: 260px;
-    padding: 28px;
-    border: 3px solid var(--ink);
-    border-radius: 20px;
-    background: var(--paper);
-    box-shadow: 5px 5px 0 var(--ink);
-  }
-
-  .avalon-project__number {
-    display: inline-block;
-    color: var(--orange);
-    font-size: 0.82rem;
-    font-weight: 900;
-    letter-spacing: 0.1em;
-  }
-
-  .avalon-project__feature-grid h3 {
-    margin: 54px 0 12px;
-    font-size: 1.55rem;
-    line-height: 0.98;
-    letter-spacing: -0.04em;
-  }
-
-  .avalon-project__feature-grid p {
-    margin: 0;
-    color: var(--muted);
-  }
-
   .avalon-project__stack {
     padding-block: clamp(76px, 10vw, 120px);
     background: var(--ink-deep);
     color: var(--paper);
   }
 
-  .avalon-project__screenshots {
+  .avalon-project__walkthrough {
     padding-bottom: clamp(90px, 12vw, 150px);
   }
 
-  .avalon-project__screenshots .section-heading {
+  .avalon-project__walkthrough .section-heading {
     max-width: 760px;
   }
 
-  .avalon-project__screenshots .section-heading > p:last-child {
+  .avalon-project__walkthrough .section-heading > p:last-child {
     max-width: 650px;
     margin: 20px 0 0;
     color: var(--muted);
     font-size: 1.12rem;
   }
 
-  .avalon-project__screenshots-grid {
+  .avalon-project__walkthrough-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 34px 18px;
   }
 
-  .avalon-project__screenshots-grid figure {
+  .avalon-project__walkthrough-grid figure {
     margin: 0;
   }
 
@@ -292,11 +228,11 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     height: auto;
   }
 
-  .avalon-project__screenshots-grid figcaption {
+  .avalon-project__walkthrough-grid figcaption {
     padding: 20px 4px 0;
   }
 
-  .avalon-project__screenshots-grid figcaption span {
+  .avalon-project__walkthrough-grid figcaption span {
     color: var(--orange);
     font-size: 0.76rem;
     font-weight: 900;
@@ -304,14 +240,14 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     text-transform: uppercase;
   }
 
-  .avalon-project__screenshots-grid h3 {
+  .avalon-project__walkthrough-grid h3 {
     margin: 9px 0 8px;
     font-size: 1.45rem;
     line-height: 0.98;
     letter-spacing: -0.04em;
   }
 
-  .avalon-project__screenshots-grid figcaption p {
+  .avalon-project__walkthrough-grid figcaption p {
     margin: 0;
     color: var(--muted);
   }
@@ -345,16 +281,8 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       min-height: 360px;
     }
 
-    .avalon-project__feature-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .avalon-project__screenshots-grid {
+    .avalon-project__walkthrough-grid {
       grid-template-columns: repeat(2, 1fr);
-    }
-
-    .avalon-project__feature-grid article {
-      min-height: 0;
     }
   }
 
@@ -368,7 +296,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       align-items: stretch;
     }
 
-    .avalon-project__screenshots-grid {
+    .avalon-project__walkthrough-grid {
       grid-template-columns: 1fr;
     }
   }
