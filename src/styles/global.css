@@ -1,0 +1,351 @@
+:root {
+  --ink: #082c2f;
+  --ink-deep: #001b1d;
+  --paper: #fffaf0;
+  --cream: #f3ead7;
+  --yellow: #ffd510;
+  --green: #00c985;
+  --purple: #7148ed;
+  --orange: #ff6c4c;
+  --blue: #4d8ed6;
+  --muted: #526d70;
+  --line: 3px solid var(--ink);
+  --shadow: 8px 8px 0 var(--ink);
+  color-scheme: light;
+  font-family: Arial, Helvetica, sans-serif;
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+video:focus-visible {
+  outline: 4px solid var(--orange);
+  outline-offset: 4px;
+}
+
+.shell {
+  width: min(1160px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.site-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 86px;
+  gap: 24px;
+}
+
+.site-header--compact {
+  min-height: 76px;
+}
+
+.pocket-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-decoration: none;
+}
+
+.pocket-mark__dot {
+  width: 18px;
+  aspect-ratio: 1;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 22px;
+}
+
+.site-nav a,
+.text-link {
+  font-weight: 800;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
+.kicker,
+.brand-chip,
+.status-pill {
+  margin: 0;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.kicker {
+  color: var(--muted);
+}
+
+.kicker--light {
+  color: color-mix(in srgb, var(--paper), transparent 24%);
+}
+
+.button {
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border: var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 900;
+  line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow 150ms ease, transform 150ms ease;
+}
+
+.button:hover {
+  box-shadow: 4px 4px 0 var(--ink);
+  transform: translate(-2px, -2px);
+}
+
+.button--yellow {
+  background: var(--yellow);
+}
+
+.button--paper {
+  background: var(--paper);
+}
+
+.button--app {
+  background: var(--app-accent, var(--yellow));
+  color: var(--app-accent-text, var(--ink));
+}
+
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding-block: 34px;
+  border-top: 2px solid color-mix(in srgb, var(--ink), transparent 75%);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.site-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 18px;
+}
+
+.site-footer a {
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+/* Portfolio landing page */
+.portfolio-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 90% 4%, color-mix(in srgb, var(--yellow), transparent 15%) 0 10%, transparent 10.2%),
+    var(--cream);
+}
+
+.portfolio-hero {
+  padding: clamp(76px, 12vw, 150px) 0 clamp(72px, 10vw, 126px);
+}
+
+.portfolio-hero h1 {
+  max-width: 900px;
+  margin: 12px 0 26px;
+  font-size: clamp(4rem, 11vw, 9.5rem);
+  line-height: 0.82;
+  letter-spacing: -0.08em;
+}
+
+.portfolio-hero__lede {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+}
+
+.work-section {
+  padding-bottom: clamp(96px, 12vw, 148px);
+  scroll-margin-top: 24px;
+}
+
+.section-heading {
+  max-width: 780px;
+  margin-bottom: 34px;
+}
+
+.section-heading--split {
+  display: flex;
+  max-width: none;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.section-heading h2 {
+  margin: 8px 0 0;
+  font-size: clamp(2.2rem, 5vw, 4.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.section-heading--split > p {
+  max-width: 430px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.06rem;
+}
+
+.portfolio-projects {
+  display: grid;
+  gap: 42px;
+}
+
+.about-section {
+  scroll-margin-top: 24px;
+  background: var(--ink-deep);
+  color: var(--paper);
+}
+
+.about-section__inner {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: clamp(50px, 9vw, 120px);
+  padding-block: clamp(72px, 10vw, 120px);
+}
+
+.about-section h2 {
+  max-width: 520px;
+  margin: 10px 0 0;
+  font-size: clamp(2.7rem, 6vw, 5.4rem);
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+}
+
+.about-section__copy {
+  align-self: end;
+}
+
+.about-section__copy p {
+  max-width: 650px;
+  margin: 0 0 18px;
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+}
+
+.about-section__copy .button {
+  margin-top: 16px;
+}
+
+.portfolio-page .site-footer {
+  border-top-color: transparent;
+}
+
+@media (max-width: 900px) {
+  .about-section__inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .shell {
+    width: min(100% - 28px, 1160px);
+  }
+
+  .site-header {
+    min-height: 76px;
+  }
+
+  .site-nav {
+    gap: 14px;
+  }
+
+  .site-nav a:not(:last-child) {
+    display: none;
+  }
+
+  .site-footer,
+  .section-heading--split {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .site-footer nav {
+    justify-content: flex-start;
+  }
+
+  .portfolio-hero {
+    padding-top: 62px;
+  }
+
+  .portfolio-hero h1 {
+    font-size: clamp(3.8rem, 20vw, 6rem);
+  }
+
+  .section-heading--split > p {
+    max-width: none;
+  }
+
+  .about-section__inner {
+    gap: 42px;
+  }
+}
+
+@media (max-width: 440px) {
+  .button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

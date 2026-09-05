@@ -1,0 +1,268 @@
+---
+import SiteFooter from "../../components/SiteFooter.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Announcer for Avalon · Pocket Powered"
+  description="An offline Avalon narrator that builds a correct announcement sequence from your exact role setup."
+  bodyClass="project-page"
+>
+  <SiteHeader compact />
+
+  <main class="avalon-project">
+    <section class="avalon-project__hero shell">
+      <div class="avalon-project__intro">
+        <p class="kicker">Pocket Powered · Open source project</p>
+        <h1>Keep the table in the game.</h1>
+        <p class="avalon-project__lede">Announcer for Avalon turns the fiddly opening narration into a reliable, repeatable part of game night.</p>
+        <div class="avalon-project__actions">
+          <a class="button button--yellow" href="https://wongislandd.github.io/avalon-narrator/" target="_blank" rel="noopener">Try the web app <span aria-hidden="true">↗</span></a>
+          <a class="button button--paper" href="https://github.com/wongislandd/avalon-narrator" target="_blank" rel="noopener">View source on GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+
+      <div class="avalon-project__hero-art" aria-label="Announcer for Avalon app icon">
+        <div class="avalon-project__ring" aria-hidden="true"></div>
+        <img src="/avalon-narrator/assets/app-logo.png" alt="Announcer for Avalon app icon" width="192" height="192" />
+        <span>THE NARRATOR CHAMBER</span>
+      </div>
+    </section>
+
+    <section class="avalon-project__details shell" aria-labelledby="avalon-details-title">
+      <div class="section-heading">
+        <p class="kicker">Designed for the awkward bit</p>
+        <h2 id="avalon-details-title">Less setup friction. More secret roles.</h2>
+      </div>
+
+      <div class="avalon-project__feature-grid">
+        <article>
+          <span class="avalon-project__number">01</span>
+          <h3>Configure the exact game</h3>
+          <p>Select roles, modules, and quantities. The app validates the lineup before anyone closes their eyes.</p>
+        </article>
+        <article>
+          <span class="avalon-project__number">02</span>
+          <h3>Generate the right sequence</h3>
+          <p>A deterministic planner assembles the announcements for the setup you actually chose, including reminders and timing.</p>
+        </article>
+        <article>
+          <span class="avalon-project__number">03</span>
+          <h3>Run it offline</h3>
+          <p>Voice packs, playback controls, and saved settings stay local, so game night does not depend on a network connection.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="avalon-project__stack" aria-labelledby="avalon-stack-title">
+      <div class="shell">
+        <p class="kicker kicker--light">Built once, shared everywhere</p>
+        <h2 id="avalon-stack-title">Kotlin Multiplatform for Android, iPhone, and Web.</h2>
+        <p>One shared domain model carries setup validation, narration planning, playback, and persistence across the three targets.</p>
+        <a class="text-link" href="https://github.com/wongislandd/avalon-narrator" target="_blank" rel="noopener">Read the code and the decisions behind it <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>
+
+<style>
+  .avalon-project {
+    background: var(--cream);
+  }
+
+  .avalon-project__hero {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    min-height: min(720px, calc(100vh - 76px));
+    align-items: center;
+    gap: clamp(40px, 8vw, 110px);
+    padding-block: clamp(68px, 10vw, 120px);
+  }
+
+  .avalon-project__intro h1 {
+    max-width: 760px;
+    margin: 14px 0 26px;
+    font-size: clamp(4rem, 8vw, 7.8rem);
+    line-height: 0.84;
+    letter-spacing: -0.08em;
+  }
+
+  .avalon-project__lede {
+    max-width: 590px;
+    margin: 0;
+    color: var(--muted);
+    font-size: clamp(1.2rem, 2.3vw, 1.65rem);
+  }
+
+  .avalon-project__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 34px;
+  }
+
+  .avalon-project__hero-art {
+    position: relative;
+    display: grid;
+    min-height: 420px;
+    place-items: center;
+    overflow: hidden;
+    border: 3px solid var(--ink);
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at 50% 44%, color-mix(in srgb, var(--orange), transparent 24%) 0 13%, transparent 13.5%),
+      radial-gradient(circle at 50% 44%, color-mix(in srgb, var(--orange), transparent 72%) 0 36%, transparent 36.5%),
+      var(--ink-deep);
+    box-shadow: var(--shadow);
+    isolation: isolate;
+  }
+
+  .avalon-project__hero-art::before,
+  .avalon-project__hero-art::after {
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    border: 1px solid color-mix(in srgb, var(--orange), transparent 50%);
+    border-radius: 50%;
+    content: "";
+    transform: rotate(22deg);
+  }
+
+  .avalon-project__hero-art::after {
+    width: 110%;
+    height: 110%;
+    border-color: color-mix(in srgb, var(--yellow), transparent 66%);
+    transform: rotate(-20deg);
+  }
+
+  .avalon-project__hero-art img {
+    position: relative;
+    z-index: 1;
+    width: min(48%, 192px);
+    border: 4px solid var(--paper);
+    border-radius: 30px;
+    box-shadow: 10px 10px 0 var(--orange);
+    transform: rotate(-6deg);
+  }
+
+  .avalon-project__ring {
+    position: absolute;
+    width: 250px;
+    aspect-ratio: 1;
+    border: 2px solid var(--orange);
+    border-radius: 50%;
+    box-shadow: 0 0 0 16px color-mix(in srgb, var(--orange), transparent 82%), 0 0 0 34px color-mix(in srgb, var(--yellow), transparent 90%);
+    transform: rotate(18deg) scaleY(0.42);
+  }
+
+  .avalon-project__hero-art span {
+    position: absolute;
+    right: 24px;
+    bottom: 22px;
+    z-index: 2;
+    padding: 7px 10px;
+    border: 2px solid var(--paper);
+    border-radius: 999px;
+    color: var(--paper);
+    font-size: 0.67rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  .avalon-project__details {
+    padding-bottom: clamp(90px, 12vw, 150px);
+  }
+
+  .avalon-project__feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .avalon-project__feature-grid article {
+    min-height: 260px;
+    padding: 28px;
+    border: 3px solid var(--ink);
+    border-radius: 20px;
+    background: var(--paper);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+
+  .avalon-project__number {
+    display: inline-block;
+    color: var(--orange);
+    font-size: 0.82rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+  }
+
+  .avalon-project__feature-grid h3 {
+    margin: 54px 0 12px;
+    font-size: 1.55rem;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+  }
+
+  .avalon-project__feature-grid p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .avalon-project__stack {
+    padding-block: clamp(76px, 10vw, 120px);
+    background: var(--ink-deep);
+    color: var(--paper);
+  }
+
+  .avalon-project__stack h2 {
+    max-width: 800px;
+    margin: 10px 0 20px;
+    font-size: clamp(2.7rem, 6vw, 5.4rem);
+    line-height: 0.9;
+    letter-spacing: -0.06em;
+  }
+
+  .avalon-project__stack p:not(.kicker) {
+    max-width: 650px;
+    margin: 0 0 24px;
+    color: color-mix(in srgb, var(--paper), transparent 16%);
+    font-size: 1.2rem;
+  }
+
+  .avalon-project__stack .text-link {
+    color: var(--paper);
+  }
+
+  @media (max-width: 900px) {
+    .avalon-project__hero {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+
+    .avalon-project__hero-art {
+      min-height: 360px;
+    }
+
+    .avalon-project__feature-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .avalon-project__feature-grid article {
+      min-height: 0;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .avalon-project__intro h1 {
+      font-size: clamp(3.8rem, 18vw, 6rem);
+    }
+
+    .avalon-project__actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+</style>

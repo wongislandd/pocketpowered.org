@@ -1,0 +1,62 @@
+---
+import { getCollection } from "astro:content";
+import AvalonNarratorFeature from "../components/projects/AvalonNarratorFeature.astro";
+import SidequestsFeature from "../components/projects/SidequestsFeature.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const projects = (await getCollection("projects"))
+  .filter((project) => project.data.featured)
+  .sort((a, b) => b.data.order - a.data.order);
+const sidequests = projects.find((project) => project.id === "sidequests");
+const avalonNarrator = projects.find((project) => project.id === "avalon-narrator");
+---
+
+<BaseLayout
+  title="Pocket Powered · Independent apps with big ideas"
+  description="Pocket Powered is an independent software studio creating playful, useful apps designed to fit into everyday life."
+  image="/og.jpg"
+  bodyClass="portfolio-page"
+>
+  <SiteHeader />
+
+  <main>
+    <section class="portfolio-hero shell">
+      <p class="kicker">Independent software studio</p>
+      <h1>Big ideas.<br />Pocket sized.</h1>
+      <p class="portfolio-hero__lede">Pocket Powered is where I design, build, and ship playful software that helps people notice more, do more, and enjoy the world around them.</p>
+    </section>
+
+    <section class="work-section shell" id="work" aria-labelledby="work-title">
+      <div class="section-heading section-heading--split">
+        <div>
+          <p class="kicker">Selected work</p>
+          <h2 id="work-title">Apps worth opening.</h2>
+        </div>
+        <p>A few products, fully considered.</p>
+      </div>
+
+      <div class="portfolio-projects">
+        {sidequests && <SidequestsFeature project={sidequests} />}
+        {avalonNarrator && <AvalonNarratorFeature project={avalonNarrator} />}
+      </div>
+    </section>
+
+    <section class="about-section" id="about" aria-labelledby="about-title">
+      <div class="about-section__inner shell">
+        <div>
+          <p class="kicker kicker--light">About Pocket Powered</p>
+          <h2 id="about-title">The developer behind the apps.</h2>
+        </div>
+        <div class="about-section__copy">
+          <p>Pocket Powered is my independent software studio: a home for products that are useful enough to earn a place on your phone and playful enough to feel human.</p>
+          <p>Each project combines product thinking, design, engineering, and the practical work of getting software into people’s hands.</p>
+          <a class="button button--yellow" href="mailto:hello@pocketpowered.org">Start a conversation <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+</BaseLayout>

@@ -4,11 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler pages dev public",
-    "check": "node --check public/sidequests/sidequests.js",
-    "deploy": "wrangler pages deploy public --project-name pocketpowered-site"
+    "dev": "astro dev",
+    "build": "astro build",
+    "check": "astro check && node --check public/sidequests/sidequests.js",
+    "validate": "node scripts/validate-build.mjs",
+    "deploy": "npm run build && npm run validate && wrangler pages deploy dist --project-name pocketpowered-site --branch main"
   },
   "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "astro": "7.2.10",
+    "typescript": "6.0.3",
     "wrangler": "latest"
   }
 }

@@ -1,0 +1,19 @@
+---
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+---
+
+<header class:list={["site-header", "shell", { "site-header--compact": compact }]}>
+  <a class="pocket-mark" href="/" aria-label="Pocket Powered home">
+    <span class="pocket-mark__dot" aria-hidden="true"></span>
+    <span>POCKET POWERED</span>
+  </a>
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="/#work">Work</a>
+    <a href="/#about">About</a>
+    <a href="mailto:hello@pocketpowered.org">Contact</a>
+  </nav>
+</header>

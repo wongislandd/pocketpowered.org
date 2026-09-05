@@ -1,6 +1,6 @@
 # Pocket Powered
 
-Static Pocket Powered marketing site and the stable Sidequests NYC early-access landing page.
+Static Pocket Powered portfolio and the stable Sidequests NYC early-access landing page. Astro provides a small shared brand shell while every product keeps its own page structure, visual language, and interaction model.
 
 ## Local development
 
@@ -8,6 +8,16 @@ Static Pocket Powered marketing site and the stable Sidequests NYC early-access 
 npm install
 npm run dev
 ```
+
+## Add a project
+
+Pocket Powered is optimized for a few high-quality products, not a large uniform catalogue. Adding a project is intentionally a small product-design task:
+
+1. Add its identity, status, and canonical URL to `src/content/projects/` so shared navigation and the sitemap know it exists.
+2. Create a bespoke homepage feature under `src/components/projects/<project>/`.
+3. Build the product page at its own route with whatever components, media, styling, and interaction model suit that product.
+
+Shared code should cover Pocket Powered navigation, accessibility, metadata, and deployment—not force product pages into one template. Sidequests is the reference for this approach.
 
 ## Store destinations
 
@@ -33,6 +43,8 @@ For a manual fallback deployment:
 
 ```bash
 npm run check
+npm run build
+npm run validate
 npm run deploy
 ```
 
