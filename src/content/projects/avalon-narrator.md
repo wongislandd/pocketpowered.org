@@ -1,6 +1,6 @@
 ---
 name: Announcer for Avalon
-summary: Build a correct, timed Avalon announcement sequence from your exact role setup—then let the table narrator run offline.
+summary: Choose the characters in tonight’s Avalon game and let the app build and run the setup narration for you.
 statusLabel: Open source
 year: 2026
 href: /avalon-narrator/
