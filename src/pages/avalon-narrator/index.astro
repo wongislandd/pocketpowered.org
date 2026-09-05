@@ -54,6 +54,58 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       </div>
     </section>
 
+    <section class="avalon-project__screenshots shell" aria-labelledby="avalon-screenshots-title">
+      <div class="section-heading">
+        <p class="kicker">A look inside the app</p>
+        <h2 id="avalon-screenshots-title">From lineup to late-night narration.</h2>
+        <p>Each screen keeps the rules visible and the next action obvious, whether you’re on a phone or opening the web build at the table.</p>
+      </div>
+
+      <div class="avalon-project__screenshots-grid">
+        <figure>
+          <div class="avalon-project__shot">
+            <img src="https://github.com/user-attachments/assets/8ac6b640-db72-46a4-a6c6-f2bbd72f64b6" alt="Announcer for Avalon setup screen with character selection" width="1179" height="2556" loading="lazy" />
+          </div>
+          <figcaption><span>01 · iPhone</span><h3>Set the lineup</h3><p>Choose the roles and modules for tonight’s exact game.</p></figcaption>
+        </figure>
+
+        <figure>
+          <div class="avalon-project__shot">
+            <img src="https://github.com/user-attachments/assets/5fd23907-b66e-43f3-a59f-a3f0a8102c6e" alt="Announcer for Avalon Android screen for selecting evil roles" width="1080" height="2400" loading="lazy" />
+          </div>
+          <figcaption><span>02 · Android</span><h3>Shape the teams</h3><p>Adjust role quantities without losing track of the balance.</p></figcaption>
+        </figure>
+
+        <figure>
+          <div class="avalon-project__shot">
+            <img src="https://github.com/user-attachments/assets/a8e3d02b-eab4-42a7-b033-27cfb4346612" alt="Announcer for Avalon Android voice pack selection screen" width="1080" height="2400" loading="lazy" />
+          </div>
+          <figcaption><span>03 · Android</span><h3>Pick a voice</h3><p>Preview a voice pack and set the mood for the room.</p></figcaption>
+        </figure>
+
+        <figure>
+          <div class="avalon-project__shot">
+            <img src="https://github.com/user-attachments/assets/c55a22a2-008f-4da6-ae05-8854d1f92764" alt="Announcer for Avalon web role preview overlay for Percival" width="1440" height="2560" loading="lazy" />
+          </div>
+          <figcaption><span>04 · Web</span><h3>Check a role</h3><p>Use the long-press preview and guidance when a role is unfamiliar.</p></figcaption>
+        </figure>
+
+        <figure>
+          <div class="avalon-project__shot">
+            <img src="https://github.com/user-attachments/assets/68d4e4bf-b8bd-486c-b7c9-362d475c4664" alt="Announcer for Avalon iPhone narrator chamber playback timeline" width="1179" height="2556" loading="lazy" />
+          </div>
+          <figcaption><span>05 · iPhone</span><h3>Run the chamber</h3><p>Play, pause, step, or restart the generated narration timeline.</p></figcaption>
+        </figure>
+
+        <figure>
+          <div class="avalon-project__shot">
+            <img src="https://github.com/user-attachments/assets/f0e76d5a-e4ad-4294-bcf1-bf2d559cd1e2" alt="Announcer for Avalon web narrator chamber playback timeline" width="1440" height="2560" loading="lazy" />
+          </div>
+          <figcaption><span>06 · Web</span><h3>Keep the table moving</h3><p>Everything stays ready for the next round, without a network dependency.</p></figcaption>
+        </figure>
+      </div>
+    </section>
+
     <section class="avalon-project__stack" aria-labelledby="avalon-stack-title">
       <div class="shell">
         <p class="kicker kicker--light">Built once, shared everywhere</p>
@@ -202,6 +254,69 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     color: var(--paper);
   }
 
+  .avalon-project__screenshots {
+    padding-bottom: clamp(90px, 12vw, 150px);
+  }
+
+  .avalon-project__screenshots .section-heading {
+    max-width: 760px;
+  }
+
+  .avalon-project__screenshots .section-heading > p:last-child {
+    max-width: 650px;
+    margin: 20px 0 0;
+    color: var(--muted);
+    font-size: 1.12rem;
+  }
+
+  .avalon-project__screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 34px 18px;
+  }
+
+  .avalon-project__screenshots-grid figure {
+    margin: 0;
+  }
+
+  .avalon-project__shot {
+    overflow: hidden;
+    border: 3px solid var(--ink);
+    border-radius: 20px;
+    background: var(--ink-deep);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+
+  .avalon-project__shot img {
+    width: 100%;
+    aspect-ratio: 9 / 19.5;
+    object-fit: cover;
+  }
+
+  .avalon-project__screenshots-grid figcaption {
+    padding: 20px 4px 0;
+  }
+
+  .avalon-project__screenshots-grid figcaption span {
+    color: var(--orange);
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .avalon-project__screenshots-grid h3 {
+    margin: 9px 0 8px;
+    font-size: 1.45rem;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+  }
+
+  .avalon-project__screenshots-grid figcaption p {
+    margin: 0;
+    color: var(--muted);
+  }
+
   .avalon-project__stack h2 {
     max-width: 800px;
     margin: 10px 0 20px;
@@ -235,6 +350,10 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       grid-template-columns: 1fr;
     }
 
+    .avalon-project__screenshots-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
     .avalon-project__feature-grid article {
       min-height: 0;
     }
@@ -248,6 +367,10 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     .avalon-project__actions {
       flex-direction: column;
       align-items: stretch;
+    }
+
+    .avalon-project__screenshots-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
