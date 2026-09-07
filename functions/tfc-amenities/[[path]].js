@@ -38,7 +38,7 @@ export async function onRequest({ request }) {
       const destination = new URL(location, target);
       if (destination.origin === ORIGIN) responseHeaders.set("location", new URL(destination.pathname + destination.search + destination.hash, url.origin).href);
     }
-    if (url.pathname.startsWith(`${PREFIX}/api/`)) responseHeaders.set("cache-control", "private, no-store");
+    if (!upstream.ok || url.pathname.startsWith(`${PREFIX}/api/`)) responseHeaders.set("cache-control", "private, no-store");
     return new Response(upstream.body, { status: upstream.status, statusText: upstream.statusText, headers: responseHeaders });
   } catch {
     return new Response("TFC Amenities is temporarily unavailable. Please try again shortly.", { status: 502, headers: { "cache-control": "no-store" } });
