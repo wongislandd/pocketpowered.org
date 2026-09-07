@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "check": "astro check && node --check public/sidequests/sidequests.js",
+    "check": "astro check && node --check public/sidequests/sidequests.js && node --test tests/*.test.mjs",
     "validate": "node scripts/validate-build.mjs",
     "deploy": "npm run build && npm run validate && wrangler pages deploy dist --project-name pocketpowered-site --branch main"
   },

@@ -49,3 +49,13 @@ npm run deploy
 ```
 
 The project is deployed with Cloudflare Pages Direct Upload. The production custom domain is `pocketpowered.org`; Cloudflare manages DNS and TLS.
+
+## TFC Amenities
+
+`/tfc-amenities` and its child routes proxy the live TFC Amenities Sites deployment.
+The app is built with `/tfc-amenities` as its base path, including API calls and assets.
+The Pages Function forwards only TFC session cookies and scopes returned cookies to
+this path. Other Pocket Powered routes continue to serve static pages.
+
+Keep `functions/tfc-amenities/[[path]].js` and `public/_routes.json` in deployments.
+Reservation application updates are published through the TFC Reserve Sites project.
