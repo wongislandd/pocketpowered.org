@@ -4,6 +4,7 @@ import path from "node:path";
 const outputDirectory = path.resolve("dist");
 const requiredFiles = [
   "index.html",
+  "hexicon/index.html",
   "sidequests/index.html",
   "sidequests/privacy/index.html",
   "sitemap.xml",

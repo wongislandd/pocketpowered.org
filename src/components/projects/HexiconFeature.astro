@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from "astro:content";
+interface Props { project: CollectionEntry<"projects">; }
+const { data } = Astro.props.project;
+---
+<article class="hexicon-feature">
+  <div class="hexicon-feature__copy">
+    <p class="eyebrow">WORDPLAY MEETS ROGUELIKE · {data.statusLabel}</p>
+    <h3>{data.name}</h3>
+    <p>{data.summary}</p>
+    <a href={data.href} class="button">Enter the world of Hexicon <span aria-hidden="true">→</span></a>
+  </div>
+  <div class="hexicon-feature__art">
+    <img src="/hexicon/assets/enemy-teacup_griffin.png" alt="A tiny pixel-art griffin nestled inside a blue-and-white teacup" width="512" height="512" loading="lazy" />
+    <span>A small creature.<br />A surprisingly big problem.</span>
+  </div>
+</article>
+<style>
+  .hexicon-feature { display:grid; grid-template-columns:1.1fr .9fr; overflow:hidden; border:3px solid var(--ink); border-radius:28px; background:#172127; color:#f2e8d1; box-shadow:var(--shadow); }
+  .hexicon-feature__copy { padding:clamp(28px,5vw,64px); align-self:center; }
+  .eyebrow { color:#d7b86c; font-size:.75rem; letter-spacing:.1em; font-weight:700; }
+  h3 { font-family:Georgia,serif; font-size:clamp(3rem,6vw,5.5rem); font-weight:400; line-height:1; margin:22px 0; letter-spacing:-.05em; }
+  .hexicon-feature__copy > p:not(.eyebrow) { max-width:32rem; font-size:1.1rem; color:#d5d7cd; }
+  .button { background:#d7b86c; color:#172127; border-color:#d7b86c; margin-top:18px; font-size:.95rem; }
+  .hexicon-feature__art { position:relative; background:#302b23; }
+  .hexicon-feature__art img { width:100%; height:100%; object-fit:cover; }
+  .hexicon-feature__art span { position:absolute; bottom:20px; left:24px; font-family:Georgia,serif; font-style:italic; background:#172127e8; padding:10px 16px; border-radius:6px; }
+  @media(max-width:700px) { .hexicon-feature { grid-template-columns:1fr; } .hexicon-feature__art { max-height:360px; } .hexicon-feature__art img { object-position:center 45%; } }
+</style>

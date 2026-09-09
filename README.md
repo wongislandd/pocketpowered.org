@@ -59,3 +59,12 @@ this path. Other Pocket Powered routes continue to serve static pages.
 
 Keep `functions/tfc-amenities/[[path]].js` and `public/_routes.json` in deployments.
 Reservation application updates are published through the TFC Reserve Sites project.
+
+## Hexicon showcase
+
+`/hexicon/` is the dedicated word-roguelike showcase, with a bespoke homepage
+feature and the actual 0.2.6 game screenshots and artwork. Its collection entry
+adds it to the sitemap. `/hexicon/go/ios` redirects to the public TestFlight link.
+The page currently labels the public beta as awaiting Apple review; update the
+availability copy when the external build is approved. Asset provenance is in
+`public/hexicon/assets/README.md`.
