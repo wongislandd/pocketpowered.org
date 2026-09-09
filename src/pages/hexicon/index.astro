@@ -1,0 +1,106 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+const steps = [
+  { number:"01", title:"Make every letter count.", text:"Build words from your hand and cast them as attacks. An encounter’s special effect can turn a good word into a great move.", image:"02-forest-active", alt:"Hexicon combat with a Moss Kirin and a Forest Blessing that rewards words of five or more letters" },
+  { number:"02", title:"Find your kind of magic.", text:"Spend your gold on relics, items, and rune enhancements. Shape your pouch around the combinations you want to play.", image:"08-shop", alt:"The Hexicon shop with enhanced runes, relics, packs, and potion items" },
+  { number:"03", title:"Write the next chapter.", text:"Choose your rewards, grow your collection, and take your build into the next battle. Every run is another chance to try something new.", image:"10-rewards", alt:"Hexicon’s round-cleared screen showing a collected rune and earned gold" },
+];
+const creatures = [
+  { image:"moss_kirin", name:"Moss Kirin", label:"A little forest magic." },
+  { image:"teacup_griffin", name:"Teacup Griffin", label:"Trouble, by the cupful." },
+  { image:"moonlit_librarian", name:"Moonlit Librarian", label:"Mind your words." },
+];
+---
+<BaseLayout title="Hexicon · A word-building roguelike · Pocket Powered" description="Turn letters into spells. Meet curious creatures, collect powerful relics, and build your own kind of magic in Hexicon, a word-building roguelike for iPhone." image="/hexicon/assets/enemy-teacup_griffin.png" themeColor="#172127" bodyClass="hexicon-page">
+  <SiteHeader />
+  <main>
+    <section class="hx-hero shell" aria-labelledby="hexicon-title">
+      <div class="hx-hero-copy">
+        <p class="hx-eyebrow">HEXICON / A WORD-BUILDING ROGUELIKE</p>
+        <h1 id="hexicon-title">A little wordplay.<br /><em>A lot of magic.</em></h1>
+        <p class="hx-lede">Your letters are your spells. Build clever words, collect curious relics, and take on a world of creatures with a few tricks of their own.</p>
+        <div class="hx-actions"><a class="hx-button" href="#beta">Explore the iPhone beta <span aria-hidden="true">↓</span></a><a class="hx-text-link" href="#how-to-play">See how it plays</a></div>
+        <p class="hx-note">Single player. Small screen. One more run.</p>
+      </div>
+      <figure class="hx-hero-art">
+        <img src="/hexicon/assets/enemy-teacup_griffin.png" alt="Hexicon’s Teacup Griffin, a fluffy pixel-art creature with blue wings and a porcelain teacup body" width="512" height="512" fetchpriority="high" />
+        <figcaption><span>MEET THE LOCALS</span><strong>Teacup Griffin</strong><i>Not your usual word game.</i></figcaption>
+      </figure>
+    </section>
+    <section class="hx-word-strip" aria-label="Turn words into magic">
+      <div class="shell hx-word-inner"><p>A good vocabulary is a start.<br /><strong>A clever build is where it gets interesting.</strong></p><div class="hx-tiles" aria-label="M A G I C">{["M","A","G","I","C"].map((letter) => <span aria-hidden="true">{letter}</span>)}</div></div>
+    </section>
+    <section id="how-to-play" class="hx-loop shell" aria-labelledby="loop-title">
+      <div class="hx-section-heading"><p class="hx-eyebrow">THE SHAPE OF A RUN</p><h2 id="loop-title">Spell. Collect. <em>Surprise yourself.</em></h2><p>Part word puzzle, part ever-changing strategy. It’s what you do with the letters you draw.</p></div>
+      <div class="hx-steps">{steps.map((step) => <figure class="hx-step"><figcaption><span class="hx-step-number">{step.number}</span><h3>{step.title}</h3><p>{step.text}</p></figcaption><a class="hx-screen" href={`/hexicon/assets/${step.image}.png`} aria-label={`View full-size screenshot: ${step.title}`}><img src={`/hexicon/assets/${step.image}.png`} alt={step.alt} width="390" height="844" loading="lazy" /></a></figure>)}</div>
+      <p class="hx-caption">Actual gameplay from the 0.2.6 development build. Tap a screen for a closer look.</p>
+    </section>
+    <section class="hx-world" aria-labelledby="world-title"><div class="shell">
+      <div class="hx-section-heading"><p class="hx-eyebrow">A CURIOUS CAST OF CHARACTERS</p><h2 id="world-title">Charming faces.<br /><em>Challenging encounters.</em></h2><p>From forest guardians to creatures made of storybook odds and ends, there’s always someone new between you and the next chapter.</p></div>
+      <div class="hx-creatures">{creatures.map((creature) => <figure><img src={`/hexicon/assets/enemy-${creature.image}.png`} alt={`Pixel artwork of the ${creature.name}`} width="512" height="512" loading="lazy" /><figcaption><h3>{creature.name}</h3><p>{creature.label}</p></figcaption></figure>)}</div>
+    </div></section>
+    <section id="beta" class="hx-beta shell" aria-labelledby="beta-title">
+      <div><p class="hx-eyebrow">THE NEXT CHAPTER</p><h2 id="beta-title">Put a little magic<br /><em>in your pocket.</em></h2><p>Hexicon is in beta for iPhone. Help shape the game with your wordplay, wild combinations, and feedback.</p></div>
+      <div class="hx-beta-details"><span class="hx-status">PUBLIC BETA · AWAITING APPLE REVIEW</span><h3>Your invitation is here.</h3><p>The public TestFlight link is ready. New testers can join once Apple approves the build. Requires an iPhone with iOS 16 or later and Apple’s TestFlight app.</p><a class="hx-button" href="/hexicon/go/ios" target="_blank" rel="noopener">View on TestFlight <span aria-hidden="true">↗</span></a><a class="hx-support" href="mailto:hello@pocketpowered.org?subject=Hexicon%20feedback">Questions or feedback? Get in touch.</a></div>
+    </section>
+  </main>
+  <SiteFooter />
+</BaseLayout>
+<style>
+  :global(.hexicon-page) { background:#f3eddf; color:#243633; --ink:#243633; --paper:#f3eddf; --yellow:#d7b86c; }
+  .hx-hero { display:grid; grid-template-columns:1.12fr 1fr; align-items:center; gap:52px; padding-block:64px 90px; }
+  .hx-eyebrow { font-size:.72rem; font-weight:800; letter-spacing:.14em; line-height:1.6; }
+  h1,h2,h3 { font-family:Georgia,'Times New Roman',serif; font-weight:400; }
+  h1 { font-size:clamp(3rem,5.5vw,5rem); line-height:1.04; letter-spacing:-.055em; margin:26px 0; }
+  h1 em,h2 em { color:#526b55; font-weight:400; }
+  .hx-lede { max-width:32rem; font-size:1.15rem; line-height:1.7; }
+  .hx-actions { display:flex; flex-wrap:wrap; gap:24px; align-items:center; margin-top:30px; }
+  .hx-button { display:inline-flex; justify-content:center; align-items:center; gap:22px; background:#d7b86c; color:#172127; border:1px solid #a88d48; border-radius:7px; padding:15px 22px; font-weight:700; text-decoration:none; min-height:50px; transition:background .15s; }
+  .hx-button:hover { background:#e8ca7f; }
+  .hx-text-link { text-underline-offset:5px; font-size:.9rem; font-weight:700; }
+  .hx-note { color:#58655c; font-size:.8rem; margin-top:25px; }
+  .hx-hero-art { margin:0; border-radius:50% 50% 12px 12px; overflow:hidden; background:#172127; color:#f3eddf; transform:rotate(2deg); }
+  .hx-hero-art img { width:100%; }
+  .hx-hero-art figcaption { padding:21px 25px 25px; display:grid; gap:5px; }
+  .hx-hero-art figcaption span { font-size:.65rem; letter-spacing:.16em; color:#d7b86c; }
+  .hx-hero-art strong { font-family:Georgia,serif; font-size:1.65rem; font-weight:400; }
+  .hx-hero-art i { font-size:.85rem; color:#c6cebf; }
+  .hx-word-strip { background:#243633; color:#f3eddf; padding:30px 0; }
+  .hx-word-inner { display:flex; justify-content:space-between; align-items:center; gap:24px; }
+  .hx-word-inner p { font-size:1rem; line-height:1.8; }
+  .hx-tiles { display:flex; gap:8px; flex-shrink:0; }
+  .hx-tiles span { display:grid; place-items:center; width:49px; height:60px; border-radius:5px; background:#f3eddf; color:#243633; border-bottom:4px solid #b3a789; font:bold 1.6rem Georgia,serif; }
+  .hx-tiles span:nth-child(2) { transform:rotate(-7deg) translateY(-4px); }
+  .hx-tiles span:nth-child(5) { transform:rotate(7deg); }
+  .hx-loop { padding-block:90px; scroll-margin-top:25px; }
+  .hx-section-heading { max-width:730px; margin-bottom:50px; }
+  h2 { font-size:clamp(2.2rem,4vw,3.5rem); letter-spacing:-.04em; line-height:1.12; margin:20px 0; }
+  .hx-section-heading > p:last-child { max-width:570px; font-size:1.1rem; line-height:1.7; }
+  .hx-steps { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:40px; }
+  .hx-step { margin:0; display:flex; flex-direction:column; }
+  .hx-step-number { font-size:.75rem; color:#536d56; font-weight:800; letter-spacing:.12em; }
+  h3 { font-size:1.5rem; line-height:1.2; margin:14px 0; }
+  .hx-step p { font-size:.95rem; line-height:1.65; margin-bottom:26px; }
+  .hx-screen { margin-top:auto; display:block; padding:7px; border:1px solid #566059; border-radius:20px; background:#172127; box-shadow:0 12px 24px #24363318; }
+  .hx-screen img { width:100%; border-radius:14px; }
+  .hx-caption { font-size:.8rem; color:#58655c; text-align:center; margin:28px 0 0; }
+  .hx-world { padding-block:75px; background:#172127; color:#f3eddf; }
+  .hx-world .hx-eyebrow { color:#d7b86c; }
+  .hx-world h2 em { color:#b6cbb2; }
+  .hx-world .hx-section-heading > p:last-child { color:#c6cebf; }
+  .hx-creatures { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px; }
+  .hx-creatures figure { margin:0; }
+  .hx-creatures img { border-radius:10px; width:100%; }
+  .hx-creatures h3 { margin-bottom:7px; }
+  .hx-creatures p { margin:0; font-size:.9rem; color:#c6cebf; }
+  .hx-beta { display:grid; grid-template-columns:1fr 1fr; gap:80px; padding-block:100px; align-items:center; }
+  .hx-beta p { max-width:480px; line-height:1.7; }
+  .hx-beta-details { padding-left:36px; border-left:1px solid #b6bdaa; }
+  .hx-status { font-size:.68rem; font-weight:800; letter-spacing:.08em; color:#526b55; }
+  .hx-support { display:block; margin-top:20px; font-size:.85rem; text-underline-offset:4px; }
+  @media(max-width:900px) { .hx-hero { gap:28px; } .hx-steps { gap:22px; } .hx-beta { gap:36px; } }
+  @media(max-width:700px) { .hx-hero { grid-template-columns:1fr; padding-block:30px 55px; gap:34px; } .hx-hero-art { width:min(100% - 12px,440px); justify-self:center; } .hx-word-inner { flex-direction:column; align-items:flex-start; } .hx-word-inner p { margin-top:0; } .hx-loop { padding-block:55px; } .hx-steps { grid-template-columns:1fr; gap:48px; } .hx-step { max-width:390px; margin-inline:auto; } .hx-section-heading { margin-bottom:34px; } .hx-creatures { grid-template-columns:1fr; gap:32px; max-width:390px; margin:auto; } .hx-world { padding-block:55px; } .hx-beta { grid-template-columns:1fr; padding-block:60px; gap:20px; } .hx-beta-details { border-left:0; border-top:1px solid #b6bdaa; padding:26px 0 0; } }
+  @media(prefers-reduced-motion:reduce) { .hx-button { transition:none; } }
+</style>
