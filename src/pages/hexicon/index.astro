@@ -2,10 +2,12 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
-const steps = [
-  { number:"01", title:"Make every letter count.", text:"Build words from your hand and cast them as attacks. An encounter’s special effect can turn a good word into a great move.", image:"02-forest-active", alt:"Hexicon combat with a Moss Kirin and a Forest Blessing that rewards words of five or more letters" },
-  { number:"02", title:"Find your kind of magic.", text:"Spend your gold on relics, items, and rune enhancements. Shape your pouch around the combinations you want to play.", image:"08-shop", alt:"The Hexicon shop with enhanced runes, relics, packs, and potion items" },
-  { number:"03", title:"Write the next chapter.", text:"Choose your rewards, grow your collection, and take your build into the next battle. Every run is another chance to try something new.", image:"10-rewards", alt:"Hexicon’s round-cleared screen showing a collected rune and earned gold" },
+const screenshots = [
+  { image:"01-spell", alt:"Words are your spells. Hexicon combat with QUIT prepared as an attack against a Dust Sprite." },
+  { image:"02-relics", alt:"Build around your relics. The shop offers runes, relics, packs, and potions." },
+  { image:"03-runes", alt:"Make each rune your own. Choose a rune to enhance with Root." },
+  { image:"04-bosses", alt:"Learn the boss’s rules. A battle against the Stitch Duchess and her Binding Stitch effect." },
+  { image:"05-collection", alt:"Fill your collection. Browse discovered relics and their effects." },
 ];
 const creatures = [
   { image:"moss_kirin", name:"Moss Kirin", label:"A little forest magic." },
@@ -13,12 +15,12 @@ const creatures = [
   { image:"moonlit_librarian", name:"Moonlit Librarian", label:"Mind your words." },
 ];
 ---
-<BaseLayout title="Hexicon · A word-building roguelike · Pocket Powered" description="Turn letters into spells. Meet curious creatures, collect powerful relics, and build your own kind of magic in Hexicon, a word-building roguelike for iPhone." image="/hexicon/assets/enemy-teacup_griffin.png" themeColor="#172127" bodyClass="hexicon-page">
+<BaseLayout title="Hexicon · A word-building roguelike · Pocket Powered" description="Turn letters into spells. Meet curious creatures, collect powerful relics, and build your own kind of magic in Hexicon, a word-building roguelike for iPhone." image="/hexicon/assets/store/overview.png" themeColor="#172127" bodyClass="hexicon-page">
   <SiteHeader />
   <main>
     <section class="hx-hero shell" aria-labelledby="hexicon-title">
       <div class="hx-hero-copy">
-        <p class="hx-eyebrow">HEXICON / A WORD-BUILDING ROGUELIKE</p>
+        <div class="hx-brand"><img src="/hexicon/assets/store/app-icon.svg" alt="" width="64" height="64" /><p class="hx-eyebrow">HEXICON / A WORD-BUILDING ROGUELIKE</p></div>
         <h1 id="hexicon-title">A little wordplay.<br /><em>A lot of magic.</em></h1>
         <p class="hx-lede">Your letters are your spells. Build clever words, collect curious relics, and take on a world of creatures with a few tricks of their own.</p>
         <div class="hx-actions"><a class="hx-button" href="#beta">Explore the iPhone beta <span aria-hidden="true">↓</span></a><a class="hx-text-link" href="#how-to-play">See how it plays</a></div>
@@ -34,8 +36,8 @@ const creatures = [
     </section>
     <section id="how-to-play" class="hx-loop shell" aria-labelledby="loop-title">
       <div class="hx-section-heading"><p class="hx-eyebrow">THE SHAPE OF A RUN</p><h2 id="loop-title">Spell. Collect. <em>Surprise yourself.</em></h2><p>Part word puzzle, part ever-changing strategy. It’s what you do with the letters you draw.</p></div>
-      <div class="hx-steps">{steps.map((step) => <figure class="hx-step"><figcaption><span class="hx-step-number">{step.number}</span><h3>{step.title}</h3><p>{step.text}</p></figcaption><a class="hx-screen" href={`/hexicon/assets/${step.image}.png`} aria-label={`View full-size screenshot: ${step.title}`}><img src={`/hexicon/assets/${step.image}.png`} alt={step.alt} width="390" height="844" loading="lazy" /></a></figure>)}</div>
-      <p class="hx-caption">Actual gameplay from the 0.2.6 development build. Tap a screen for a closer look.</p>
+      <div class="hx-screenshots" role="region" aria-label="Hexicon gameplay screenshots" tabindex="0">{screenshots.map((shot) => <a class="hx-screen" href={`/hexicon/assets/store/${shot.image}.png`} aria-label={`View full-size screenshot: ${shot.alt}`}><img src={`/hexicon/assets/store/${shot.image}.png`} alt={shot.alt} width="1242" height="2688" loading="lazy" /></a>)}</div>
+      <p class="hx-caption">Scroll to explore. Tap a screen for a closer look.</p>
     </section>
     <section class="hx-world" aria-labelledby="world-title"><div class="shell">
       <div class="hx-section-heading"><p class="hx-eyebrow">A CURIOUS CAST OF CHARACTERS</p><h2 id="world-title">Charming faces.<br /><em>Challenging encounters.</em></h2><p>From forest guardians to creatures made of storybook odds and ends, there’s always someone new between you and the next chapter.</p></div>
@@ -51,6 +53,8 @@ const creatures = [
 <style>
   :global(.hexicon-page) { background:#f3eddf; color:#243633; --ink:#243633; --paper:#f3eddf; --yellow:#d7b86c; }
   .hx-hero { display:grid; grid-template-columns:1.12fr 1fr; align-items:center; gap:52px; padding-block:64px 90px; }
+  .hx-brand { display:flex; align-items:center; gap:14px; }
+  .hx-brand img { flex-shrink:0; border-radius:14px; }
   .hx-eyebrow { font-size:.72rem; font-weight:800; letter-spacing:.14em; line-height:1.6; }
   h1,h2,h3 { font-family:Georgia,'Times New Roman',serif; font-weight:400; }
   h1 { font-size:clamp(3rem,5.5vw,5rem); line-height:1.04; letter-spacing:-.055em; margin:26px 0; }
@@ -78,13 +82,12 @@ const creatures = [
   .hx-section-heading { max-width:730px; margin-bottom:50px; }
   h2 { font-size:clamp(2.2rem,4vw,3.5rem); letter-spacing:-.04em; line-height:1.12; margin:20px 0; }
   .hx-section-heading > p:last-child { max-width:570px; font-size:1.1rem; line-height:1.7; }
-  .hx-steps { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:40px; }
-  .hx-step { margin:0; display:flex; flex-direction:column; }
-  .hx-step-number { font-size:.75rem; color:#536d56; font-weight:800; letter-spacing:.12em; }
   h3 { font-size:1.5rem; line-height:1.2; margin:14px 0; }
-  .hx-step p { font-size:.95rem; line-height:1.65; margin-bottom:26px; }
-  .hx-screen { margin-top:auto; display:block; padding:7px; border:1px solid #566059; border-radius:20px; background:#172127; box-shadow:0 12px 24px #24363318; }
-  .hx-screen img { width:100%; border-radius:14px; }
+  .hx-screenshots { display:flex; gap:24px; overflow-x:auto; scroll-snap-type:x mandatory; padding:4px 4px 24px; scrollbar-color:#a88d48 #e4dccb; }
+  .hx-screen { display:block; flex:0 0 min(78vw,340px); scroll-snap-align:start; border:1px solid #c6b58f; border-radius:14px; overflow:hidden; background:#f1e5ce; box-shadow:0 8px 16px #24363312; }
+  .hx-screen img { display:block; width:100%; height:auto; }
+  .hx-screenshots:focus-visible { outline:2px solid #526b55; outline-offset:5px; }
+  .hx-screen:focus-visible { outline:3px solid #526b55; outline-offset:1px; }
   .hx-caption { font-size:.8rem; color:#58655c; text-align:center; margin:28px 0 0; }
   .hx-world { padding-block:75px; background:#172127; color:#f3eddf; }
   .hx-world .hx-eyebrow { color:#d7b86c; }
@@ -100,7 +103,7 @@ const creatures = [
   .hx-beta-details { padding-left:36px; border-left:1px solid #b6bdaa; }
   .hx-status { font-size:.68rem; font-weight:800; letter-spacing:.08em; color:#526b55; }
   .hx-support { display:block; margin-top:20px; font-size:.85rem; text-underline-offset:4px; }
-  @media(max-width:900px) { .hx-hero { gap:28px; } .hx-steps { gap:22px; } .hx-beta { gap:36px; } }
-  @media(max-width:700px) { .hx-hero { grid-template-columns:1fr; padding-block:30px 55px; gap:34px; } .hx-hero-art { width:min(100% - 12px,440px); justify-self:center; } .hx-word-inner { flex-direction:column; align-items:flex-start; } .hx-word-inner p { margin-top:0; } .hx-loop { padding-block:55px; } .hx-steps { grid-template-columns:1fr; gap:48px; } .hx-step { max-width:390px; margin-inline:auto; } .hx-section-heading { margin-bottom:34px; } .hx-creatures { grid-template-columns:1fr; gap:32px; max-width:390px; margin:auto; } .hx-world { padding-block:55px; } .hx-beta { grid-template-columns:1fr; padding-block:60px; gap:20px; } .hx-beta-details { border-left:0; border-top:1px solid #b6bdaa; padding:26px 0 0; } }
+  @media(max-width:900px) { .hx-hero { gap:28px; } .hx-beta { gap:36px; } }
+  @media(max-width:700px) { .hx-hero { grid-template-columns:1fr; padding-block:30px 55px; gap:34px; } .hx-hero-art { width:min(100% - 12px,440px); justify-self:center; } .hx-word-inner { flex-direction:column; align-items:flex-start; } .hx-word-inner p { margin-top:0; } .hx-loop { padding-block:55px; } .hx-section-heading { margin-bottom:34px; } .hx-creatures { grid-template-columns:1fr; gap:32px; max-width:390px; margin:auto; } .hx-world { padding-block:55px; } .hx-beta { grid-template-columns:1fr; padding-block:60px; gap:20px; } .hx-beta-details { border-left:0; border-top:1px solid #b6bdaa; padding:26px 0 0; } }
   @media(prefers-reduced-motion:reduce) { .hx-button { transition:none; } }
 </style>
