@@ -9,11 +9,6 @@ const screenshots = [
   { image:"04-bosses", alt:"Learn the boss’s rules. A battle against the Stitch Duchess and her Binding Stitch effect." },
   { image:"05-collection", alt:"Fill your collection. Browse discovered relics and their effects." },
 ];
-const creatures = [
-  { image:"moss_kirin", name:"Moss Kirin", label:"A little forest magic." },
-  { image:"walking_grimoire", name:"Walking Grimoire", label:"A book with a bad attitude." },
-  { image:"moonlit_librarian", name:"Moonlit Librarian", label:"Mind your words." },
-];
 ---
 <BaseLayout title="Hexicon · A word-building roguelike · Pocket Powered" description="Turn letters into spells. Meet curious creatures, collect powerful relics, and build your own kind of magic in Hexicon, a word-building roguelike for iPhone." image="/hexicon/assets/store/overview.png" themeColor="#172127" bodyClass="hexicon-page">
   <SiteHeader />
@@ -39,10 +34,6 @@ const creatures = [
       <div class="hx-screenshots" role="region" aria-label="Hexicon gameplay screenshots" tabindex="0">{screenshots.map((shot) => <a class="hx-screen" href={`/hexicon/assets/store/${shot.image}.png`} aria-label={`View full-size screenshot: ${shot.alt}`}><img src={`/hexicon/assets/store/${shot.image}.png`} alt={shot.alt} width="1242" height="2688" loading="lazy" /></a>)}</div>
       <p class="hx-caption">Scroll to explore. Tap a screen for a closer look.</p>
     </section>
-    <section class="hx-world" aria-labelledby="world-title"><div class="shell">
-      <div class="hx-section-heading"><p class="hx-eyebrow">A CURIOUS CAST OF CHARACTERS</p><h2 id="world-title">Charming faces.<br /><em>Challenging encounters.</em></h2><p>From forest guardians to creatures made of storybook odds and ends, there’s always someone new between you and the next chapter.</p></div>
-      <div class="hx-creatures">{creatures.map((creature) => <figure><img src={`/hexicon/assets/enemy-${creature.image}.png`} alt={`Pixel artwork of the ${creature.name}`} width="512" height="512" loading="lazy" /><figcaption><h3>{creature.name}</h3><p>{creature.label}</p></figcaption></figure>)}</div>
-    </div></section>
     <section id="beta" class="hx-beta shell" aria-labelledby="beta-title">
       <div><p class="hx-eyebrow">THE NEXT CHAPTER</p><h2 id="beta-title">Put a little magic<br /><em>in your pocket.</em></h2><p>Hexicon is in beta for iPhone. Help shape the game with your wordplay, wild combinations, and feedback.</p></div>
       <div class="hx-beta-details"><span class="hx-status">PUBLIC BETA · AWAITING APPLE REVIEW</span><h3>Your invitation is here.</h3><p>The public TestFlight link is ready. New testers can join once Apple approves the build. Requires an iPhone with iOS 16 or later and Apple’s TestFlight app.</p><a class="hx-button" href="/hexicon/go/ios" target="_blank" rel="noopener">View on TestFlight <span aria-hidden="true">↗</span></a><a class="hx-support" href="mailto:hello@pocketpowered.org?subject=Hexicon%20feedback">Questions or feedback? Get in touch.</a></div>
@@ -89,21 +80,12 @@ const creatures = [
   .hx-screenshots:focus-visible { outline:2px solid #526b55; outline-offset:5px; }
   .hx-screen:focus-visible { outline:3px solid #526b55; outline-offset:1px; }
   .hx-caption { font-size:.8rem; color:#58655c; text-align:center; margin:28px 0 0; }
-  .hx-world { padding-block:75px; background:#172127; color:#f3eddf; }
-  .hx-world .hx-eyebrow { color:#d7b86c; }
-  .hx-world h2 em { color:#b6cbb2; }
-  .hx-world .hx-section-heading > p:last-child { color:#c6cebf; }
-  .hx-creatures { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px; }
-  .hx-creatures figure { margin:0; }
-  .hx-creatures img { border-radius:10px; width:100%; }
-  .hx-creatures h3 { margin-bottom:7px; }
-  .hx-creatures p { margin:0; font-size:.9rem; color:#c6cebf; }
   .hx-beta { display:grid; grid-template-columns:1fr 1fr; gap:80px; padding-block:100px; align-items:center; }
   .hx-beta p { max-width:480px; line-height:1.7; }
   .hx-beta-details { padding-left:36px; border-left:1px solid #b6bdaa; }
   .hx-status { font-size:.68rem; font-weight:800; letter-spacing:.08em; color:#526b55; }
   .hx-support { display:block; margin-top:20px; font-size:.85rem; text-underline-offset:4px; }
   @media(max-width:900px) { .hx-hero { gap:28px; } .hx-beta { gap:36px; } }
-  @media(max-width:700px) { .hx-hero { grid-template-columns:1fr; padding-block:30px 55px; gap:34px; } .hx-hero-art { width:min(100% - 12px,440px); justify-self:center; } .hx-word-inner { flex-direction:column; align-items:flex-start; } .hx-word-inner p { margin-top:0; } .hx-loop { padding-block:55px; } .hx-section-heading { margin-bottom:34px; } .hx-creatures { grid-template-columns:1fr; gap:32px; max-width:390px; margin:auto; } .hx-world { padding-block:55px; } .hx-beta { grid-template-columns:1fr; padding-block:60px; gap:20px; } .hx-beta-details { border-left:0; border-top:1px solid #b6bdaa; padding:26px 0 0; } }
+  @media(max-width:700px) { .hx-hero { grid-template-columns:1fr; padding-block:30px 55px; gap:34px; } .hx-hero-art { width:min(100% - 12px,440px); justify-self:center; } .hx-word-inner { flex-direction:column; align-items:flex-start; } .hx-word-inner p { margin-top:0; } .hx-loop { padding-block:55px; } .hx-section-heading { margin-bottom:34px; } .hx-beta { grid-template-columns:1fr; padding-block:60px; gap:20px; } .hx-beta-details { border-left:0; border-top:1px solid #b6bdaa; padding:26px 0 0; } }
   @media(prefers-reduced-motion:reduce) { .hx-button { transition:none; } }
 </style>
