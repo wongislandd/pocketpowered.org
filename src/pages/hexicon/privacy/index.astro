@@ -1,0 +1,35 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import SiteHeader from "../../../components/SiteHeader.astro";
+import SiteFooter from "../../../components/SiteFooter.astro";
+---
+<BaseLayout title="Hexicon Privacy Policy · Pocket Powered" description="How Pocket Powered handles information for the Hexicon game and beta testing.">
+  <SiteHeader />
+  <main class="shell privacy">
+    <p>Effective September 9, 2026</p>
+    <h1>Hexicon Privacy Policy</h1>
+    <p>Hexicon is an offline, single-player word game from Pocket Powered. This policy describes the current Android and iPhone beta.</p>
+    <h2>Information in the game</h2>
+    <p>Hexicon does not require an account and does not collect or send personal information to Pocket Powered. Your saved runs, progress, and settings stay on your device. The current beta does not include advertising, analytics SDKs, tracking, or in-app purchases.</p>
+    <h2>Beta membership and support</h2>
+    <p>If you join Pocket Powered Early Testers through Google Groups, Google processes your membership information, and group managers can see your Google account email and membership details to manage test access. Joining the group is separate from playing Hexicon. You can leave through your Google Groups membership settings.</p>
+    <p>If you email us, we receive your email address and the information you choose to send. We use that correspondence to respond to your request, manage beta access, and investigate feedback. Please avoid including sensitive information in reports or screenshots. You can contact us to request deletion of your correspondence or beta-access information.</p>
+    <h2>Apple and Google services</h2>
+    <p>Google Play, Google Groups, Apple’s App Store, and TestFlight may process account, installation, diagnostic, and beta-feedback information under their own privacy policies. This processing is separate from Hexicon’s offline gameplay. See <a href="https://policies.google.com/privacy">Google’s privacy policy</a> and <a href="https://www.apple.com/legal/privacy/">Apple’s privacy policy</a>.</p>
+    <h2>Your choices</h2>
+    <p>You can play without submitting feedback. You can remove the game’s local data by clearing its app storage on Android or deleting the app and its data on your device. Removing local data may permanently erase your progress. Leaving a testing group or uninstalling the app does not delete emails you previously sent us.</p>
+    <h2>Changes to this policy</h2>
+    <p>We will update this page when Hexicon’s data practices change, including before introducing features that collect information. The effective date identifies the latest revision.</p>
+    <h2>Contact</h2>
+    <p>For privacy questions or requests, email <a href="mailto:hello@pocketpowered.org?subject=Hexicon%20privacy">hello@pocketpowered.org</a>.</p>
+    <p><a href="/hexicon/">Back to Hexicon</a></p>
+  </main>
+  <SiteFooter />
+</BaseLayout>
+<style>
+  .privacy { max-width:800px; padding-block:60px 80px; line-height:1.75; }
+  h1,h2 { font-family:Georgia,serif; line-height:1.2; }
+  h1 { font-size:clamp(2rem,5vw,3rem); }
+  h2 { margin-top:36px; font-size:1.5rem; }
+  a { text-underline-offset:3px; }
+</style>
