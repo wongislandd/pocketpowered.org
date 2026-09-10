@@ -65,6 +65,10 @@ Reservation application updates are published through the TFC Reserve Sites proj
 `/hexicon/` is the dedicated word-roguelike showcase, with a bespoke homepage
 feature and the actual 0.2.6 game screenshots and artwork. Its collection entry
 adds it to the sitemap. `/hexicon/go/ios` redirects to the public TestFlight link.
-The page currently labels the public beta as awaiting Apple review; update the
-availability copy when the external build is approved. Asset provenance is in
+The iPhone beta is labeled as awaiting Apple review; update its availability copy
+when the external build is approved. `/hexicon/go/android` redirects to the active
+Google Play internal test. Android currently requires an email-list invitation;
+the page provides a request-access email link and same-account instructions.
+Only add a Google Group join link once that group is connected to a testing track
+that supports it. Asset provenance is in
 `public/hexicon/assets/README.md`.
