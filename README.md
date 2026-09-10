@@ -66,9 +66,12 @@ Reservation application updates are published through the TFC Reserve Sites proj
 feature and the actual 0.2.6 game screenshots and artwork. Its collection entry
 adds it to the sitemap. `/hexicon/go/ios` redirects to the public TestFlight link.
 The iPhone beta is labeled as awaiting Apple review; update its availability copy
-when the external build is approved. `/hexicon/go/android` redirects to the active
-Google Play internal test. Android currently requires an email-list invitation;
-the page provides a request-access email link and same-account instructions.
-Only add a Google Group join link once that group is connected to a testing track
-that supports it. Asset provenance is in
+when the external build is approved. `/hexicon/go/android-group` redirects to the
+public Pocket Powered Early Testers group. `/hexicon/go/android` redirects to
+Hexicon's Google Play closed-test opt-in. The initial US closed release is submitted
+for Google review; the page lets visitors join the group now and explains that
+installation opens after approval. Update the Android status and review-specific
+copy once that release is available. Both enrollment steps must use the same
+Google account. The group is reusable across participating apps, each of which
+requires a separate Play opt-in. Asset provenance is in
 `public/hexicon/assets/README.md`.
