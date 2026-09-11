@@ -43,11 +43,14 @@ const screenshots = [
           <p>Join the free Android beta through Google Play. Use the same Google account for the tester group, beta signup, and Play Store on your phone.</p>
           <ol class="hx-beta-steps">
             <li>Open <strong>Pocket Powered Early Testers</strong>, sign in, and choose <strong>Join group</strong>. Already a member? Continue to step 2.</li>
-            <li>Return here and open <strong>Join the Android beta</strong>. With the same account, choose <strong>Become a tester</strong> when the test is available.</li>
-            <li>Follow the Google Play download link on the tester page to install Hexicon on your phone.</li>
+            <li>Open <strong>Join the Android beta</strong> with the same account and choose <strong>Become a tester</strong>. Once you see <strong>You are a tester</strong>, continue to step 3.</li>
+            <li>Open <strong>Install from Google Play</strong> to download Hexicon on your phone.</li>
           </ol>
-          <a class="hx-button" href="/hexicon/go/android-group" target="_blank" rel="noopener">1. Join the tester group <span aria-hidden="true">↗</span></a>
-          <a class="hx-support" href="/hexicon/go/android" target="_blank" rel="noopener">2. Join the Android beta <span aria-hidden="true">↗</span></a>
+          <div class="hx-beta-actions">
+            <a class="hx-button" href="/hexicon/go/android-group" target="_blank" rel="noopener">1. Join the tester group <span aria-hidden="true">↗</span></a>
+            <a class="hx-button" href="/hexicon/go/android" target="_blank" rel="noopener">2. Join the Android beta <span aria-hidden="true">↗</span></a>
+            <a class="hx-button" href="/hexicon/go/android-store" target="_blank" rel="noopener">3. Install from Google Play <span aria-hidden="true">↗</span></a>
+          </div>
           <p class="hx-note">If Google Play says the app is unavailable, check that you joined the group with the same account and that your Play country is the United States. Access may take time to update and requires an approved release. Requires Android 7 or later. Updates arrive through Google Play.</p>
           <a class="hx-support" href="mailto:hello@pocketpowered.org?subject=Hexicon%20Android%20beta">Need help joining? Get in touch.</a>
         </article>
@@ -115,6 +118,7 @@ const screenshots = [
   .hx-beta-details { padding:32px; border:1px solid #b6bdaa; border-radius:12px; }
   .hx-beta-steps { padding-left:22px; line-height:1.7; margin-block:20px 26px; }
   .hx-beta-steps li + li { margin-top:12px; }
+  .hx-beta-actions { display:grid; gap:12px; }
   .hx-status { font-size:.68rem; font-weight:800; letter-spacing:.08em; color:#526b55; }
   .hx-support { display:block; margin-top:20px; font-size:.85rem; text-underline-offset:4px; }
   @media(max-width:900px) { .hx-hero { gap:28px; } }
