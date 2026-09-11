@@ -78,7 +78,6 @@ The group is reusable across participating apps, each of which
 requires a separate Play opt-in. Asset provenance is in
 `public/hexicon/assets/README.md`.
 
-Hexicon also includes a separate invited-tester section. The stable routes
-`/hexicon/go/android-paid-internal` and `/hexicon/go/android-internal` point to
-the paid and original Android internal tracks, respectively. Access requires an
-account on the corresponding tester list; public beta enrollment remains above.
+Internal testing links remain available at `/hexicon/go/android-paid-internal`
+and `/hexicon/go/android-internal` for direct sharing with invited testers.
+They are not displayed on the public showcase page.
