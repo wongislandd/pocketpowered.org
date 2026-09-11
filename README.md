@@ -70,9 +70,9 @@ public invitation. `/hexicon/go/android-group` redirects to the
 public Pocket Powered Early Testers group. `/hexicon/go/android` redirects to
 Hexicon's Google Play closed-test opt-in. `/hexicon/go/android-store` redirects to
 the Play Store listing. The Android instructions have three matching buttons for
-joining the group, opting into the test, and installing through Google Play. Access is
-limited to the United States and requires an approved release; the page includes
-account and availability troubleshooting without claiming a current review status.
+joining the group, opting into the test, and installing through Google Play.
+Essential account and device details appear inside the buttons. The Android card
+identifies United States availability without claiming a current review status.
 Both enrollment steps and the phone's Play Store must use the same Google account.
 The group is reusable across participating apps, each of which
 requires a separate Play opt-in. Asset provenance is in
