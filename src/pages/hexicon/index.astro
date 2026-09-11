@@ -50,14 +50,11 @@ const screenshots = [
         <article class="hx-beta-details" aria-labelledby="ios-beta-title">
           <span class="hx-status">IPHONE BETA · OPEN</span>
           <h3 id="ios-beta-title">Play on iPhone.</h3>
-          <p>The free iPhone beta is open. Join through our public TestFlight link—no email invitation needed.</p>
-          <ol class="hx-beta-steps">
-            <li>Install <a href="https://apps.apple.com/app/testflight/id899247664" target="_blank" rel="noopener">Apple’s TestFlight app</a> on your iPhone.</li>
-            <li>Open <strong>Join the iPhone beta</strong> on your phone, then tap <strong>Accept</strong> and <strong>Install</strong> in TestFlight.</li>
-          </ol>
-          <a class="hx-button" href="/hexicon/go/ios" target="_blank" rel="noopener">Join the iPhone beta <span aria-hidden="true">↗</span></a>
-          <p class="hx-note">Requires iOS 16 or later. Updates and beta feedback are available in TestFlight.</p>
-          <a class="hx-support" href="mailto:hello@pocketpowered.org?subject=Hexicon%20feedback">Questions or feedback? Get in touch.</a>
+          <div class="hx-beta-actions">
+            <a class="hx-button" href="https://apps.apple.com/app/testflight/id899247664" target="_blank" rel="noopener"><span>1. Install TestFlight<small>Free · iOS 16 or later</small></span><span aria-hidden="true">↗</span></a>
+            <a class="hx-button" href="/hexicon/go/ios" target="_blank" rel="noopener"><span>2. Join the iPhone beta<small>Open on your iPhone · Tap “Accept”, then “Install”</small></span><span aria-hidden="true">↗</span></a>
+          </div>
+          <a class="hx-support" href="mailto:hello@pocketpowered.org?subject=Hexicon%20iPhone%20beta">Need help joining? Get in touch.</a>
         </article>
       </div>
       <article class="hx-beta-details hx-internal" aria-labelledby="internal-test-title">
@@ -119,8 +116,6 @@ const screenshots = [
   .hx-beta-details { padding:32px; border:1px solid #b6bdaa; border-radius:12px; }
   .hx-internal { margin-top:24px; }
   .hx-internal .hx-beta-actions { grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); }
-  .hx-beta-steps { padding-left:22px; line-height:1.7; margin-block:20px 26px; }
-  .hx-beta-steps li + li { margin-top:12px; }
   .hx-beta-actions { display:grid; gap:12px; }
   .hx-beta-actions .hx-button { justify-content:space-between; text-align:left; }
   .hx-beta-actions small { display:block; margin-top:4px; font-size:.75rem; font-weight:400; line-height:1.4; }

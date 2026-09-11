@@ -65,8 +65,8 @@ Reservation application updates are published through the TFC Reserve Sites proj
 `/hexicon/` is the dedicated word-roguelike showcase, with a bespoke homepage
 feature and the actual 0.2.6 game screenshots and artwork. Its collection entry
 adds it to the sitemap. `/hexicon/go/ios` redirects to the public TestFlight link.
-The iPhone beta is open, with instructions to install TestFlight and accept the
-public invitation. `/hexicon/go/android-group` redirects to the
+The iPhone beta is open, with two numbered buttons to install TestFlight and
+join the public beta. Essential details are inline, matching the Android card. `/hexicon/go/android-group` redirects to the
 public Pocket Powered Early Testers group. `/hexicon/go/android` redirects to
 Hexicon's Google Play closed-test opt-in. `/hexicon/go/android-store` redirects to
 the Play Store listing. The Android instructions have three matching buttons for
