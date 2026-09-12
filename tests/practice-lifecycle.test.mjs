@@ -9,7 +9,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const publicDir=process.env.RESONANCE_PUBLIC || path.join(root,'public/resonance');
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 
-function harness({denyMic=false,deferAudio=false}={}){
+function harness({denyMic=false,deferAudio=false,reducedMotion=false,width=950}={}){
   class Element {
     value=''; textContent=''; hidden=false; disabled=false; handlers={}; children=[]; attributes={};
     addEventListener(event,fn){this.handlers[event]=fn;}
@@ -20,8 +20,15 @@ function harness({denyMic=false,deferAudio=false}={}){
     setAttribute(k,v){this.attributes[k]=v;}
   }
   const nodes=new Map();const get=id=>{if(!nodes.has(id))nodes.set(id,new Element());return nodes.get(id);};
-  const ctx2d=new Proxy({},{get:()=>()=>{}});
-  Object.assign(get('ribbon'),{clientWidth:950,clientHeight:218,getContext:()=>ctx2d});
+  let drawn=[];
+  const ctx2d=new Proxy({},{get:(target,key)=>{
+    if (['arc','moveTo','lineTo'].includes(key)) return (...values)=>{
+      assert.ok(values.every(Number.isFinite),'canvas geometry must stay finite');
+      if(key==='arc') drawn.push(values);
+    };
+    return ()=>{};
+  }});
+  Object.assign(get('ribbon'),{clientWidth:width,clientHeight:218,getContext:()=>ctx2d});
   for(const [k,v] of Object.entries({backing:'.8',guide:'.55',timing:'0',seek:'0'}))get(k).value=v;
   const sources=[],streams=[],worklets=[],contexts=[];let releaseAudio;
   const audioGate=deferAudio?new Promise(resolve=>{releaseAudio=resolve;}):Promise.resolve();
@@ -48,13 +55,13 @@ function harness({denyMic=false,deferAudio=false}={}){
   const document={hidden:false,handlers:{},getElementById:get,createElement:()=>new Element(),addEventListener(event,fn){this.handlers[event]=fn;}};
   const window={AudioContext,handlers:{},addEventListener(event,fn){this.handlers[event]=fn;}};
   let frame;
-  const box=vm.createContext({console,window,document,navigator:{mediaDevices:media},location:{href:'https://example.com/practice.html?song=chmunk'},history:{replaceState(){}},URL,performance:{now:()=>1000},devicePixelRatio:1,AudioWorkletNode,Option:class extends Element{constructor(text,value){super();this.textContent=text;this.value=value;}},matchMedia:()=>({matches:false}),requestAnimationFrame:fn=>{frame=fn;},fetch:async url=>{
+  const box=vm.createContext({console,window,document,navigator:{mediaDevices:media},location:{href:'https://example.com/practice.html?song=chmunk'},history:{replaceState(){}},URL,performance:{now:()=>1000},devicePixelRatio:1,AudioWorkletNode,Option:class extends Element{constructor(text,value){super();this.textContent=text;this.value=value;}},matchMedia:()=>({matches:reducedMotion}),requestAnimationFrame:fn=>{frame=fn;},fetch:async url=>{
     const file=path.join(publicDir,url);
     return {ok:fs.existsSync(file),json:async()=>JSON.parse(fs.readFileSync(file)),arrayBuffer:async()=>new ArrayBuffer(8)};
   }});
   vm.runInContext(fs.readFileSync(path.join(publicDir,'practice-core.js'),'utf8'),box);
   vm.runInContext(fs.readFileSync(path.join(publicDir,'practice.js'),'utf8'),box);
-  return {get,sources,streams,worklets,contexts,document,window,media,releaseAudio,paint:()=>frame(2000)};
+  return {get,sources,streams,worklets,contexts,document,window,media,releaseAudio,paint:(now=2000)=>{drawn=[];frame(now);return drawn;}};
 }
 
 test('listen, pause, seek and resume keep both stems on one clock',async()=>{
@@ -89,4 +96,24 @@ test('backgrounding during audio preparation cannot start playback afterward',as
   h.get('listen').handlers.click();await flush();
   h.document.hidden=true;h.document.handlers.visibilitychange();h.releaseAudio();await flush();await flush();
   assert.equal(h.sources.length,0);assert.match(h.get('status').textContent,/Paused/);
+});
+
+test('the decorative current keeps flowing while paused at desktop and mobile sizes',async()=>{
+  for(const width of [390,1100]){
+    const h=harness({width});await flush();
+    const first=h.paint(2000),next=h.paint(2017);
+    assert.ok(first.length>600,'a populated current exists before playback');
+    assert.equal(next.length,first.length);
+    let movingLeft=0;
+    for(let i=0;i<first.length-1;i++){
+      if(next[i][0]<first[i][0]) movingLeft++;
+      assert.ok(Math.abs(next[i][1]-first[i][1])<8,'neighboring frames follow a smooth field');
+    }
+    assert.ok(movingLeft>first.length*.95,'particles advect together through the viewport');
+    assert.equal(h.sources.length,0);assert.equal(h.streams.length,0);
+  }
+});
+test('reduced motion keeps the idle current still across frames',async()=>{
+  const h=harness({reducedMotion:true});await flush();
+  assert.deepEqual(h.paint(2000),h.paint(2100));
 });

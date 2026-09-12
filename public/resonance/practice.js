@@ -8,7 +8,9 @@
   let stream, micSource, worklet, silent, micEpoch = 0, workletLoaded = false;
   let voice = [], lastPitch = null, stableFrames = 0, lastLine = -2, wordNodes = [];
   let loopOn = false, loopLine = null, detectedSeconds = 0, lastCaptureTime = null;
-  let yLow = 45, yHigh = 80, lastPaint = 0;
+  let yLow = 45, yHigh = 80, lastPaint = 0, flowClock = 0;
+  const flowField = new Float32Array(129), flowTargets = new Float32Array(129);
+  let fieldReady = false;
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const canvas = $("ribbon"), painter = canvas.getContext("2d");
   const formatTime = time => `${Math.floor(Math.max(0, time) / 60)}:${String(Math.floor(Math.max(0, time) % 60)).padStart(2, "0")}`;
@@ -199,8 +201,10 @@
   }
   function render(now) {
     requestAnimationFrame(render);
-    if (document.hidden || now - lastPaint < (reducedMotion.matches ? 80 : 25)) return;
+    if (document.hidden || now - lastPaint < (reducedMotion.matches ? 80 : 16)) return;
+    const elapsed = Math.min(.05, Math.max(0, (now - lastPaint) / 1000));
     lastPaint = now;
+    if (!reducedMotion.matches) flowClock += elapsed;
     const time = data ? songTime() : 0;
     if (running && loopOn && loopLine && time >= Math.min(data.duration, loopLine.end + .3)) { seek(Math.max(0, loopLine.start - .6)); return; }
     if (running && time >= data.duration) { finish(); return; }
@@ -214,38 +218,84 @@
     const history = voice.filter(v => v.time >= time - 1.4).map(v => [v.time, v.value, 1]);
     const fresh = Boolean(stream && running && lastPitch && lastPitch.value !== null && now - lastPitch.at < 220);
     const together = fresh && lastPitch.aligned;
-    const flowTime = reducedMotion.matches ? 0 : now * .000035;
+    const flowTime = reducedMotion.matches ? 0 : flowClock;
     const fract = value => value - Math.floor(value);
-    const palette = ["#409ea9", "#648bc6", "#638ab0", "#63b6b8", "#8b97c5"];
-    const count = reducedMotion.matches ? 260 : Math.min(1350, Math.round(width * 1.3));
+    const palette = ["#389ba9", "#728bca", "#598cb5", "#62b5b5", "#9c91c6"];
+    const count = reducedMotion.matches ? 380 : Math.min(1800, Math.round(width * 1.8));
 
-    // Continuous advection: particles travel right to left through the field,
-    // even when paused. Ambient dust is decoration; only the thin contour and
-    // the current pitch marker represent measured notes.
-    for (let i = 0; i < count; i++) {
-      const seed = fract(i * .61803398875), lane = fract(i * .754877666);
-      const speed = .65 + fract(i * .569840291) * .8;
-      const u = fract(seed - flowTime * speed);
-      const t = time + (u - .28) / .72 * 3;
-      const target = data ? C.targetAt(data.pitch, t) : null;
-      const anchored = target !== null;
-      const center = anchored ? y(target) : height * .51 + Math.sin(u * 5.7 + flowTime * 1.5) * 14;
-      const spread = anchored ? 9 + 21 * Math.sin(u * Math.PI) ** 2 : 24;
-      const twist = Math.sin(u * 13 + flowTime * 9 + lane * 6.28);
-      const envelope = Math.sin(u * Math.PI) ** .6;
-      const cross = (lane - .5) * 2;
-      const py = center + cross * spread * (1.2 + twist * .45) + Math.sin(u * 28 - flowTime * 5 + i) * 3;
-      const px = u * width;
-      const blend = together && Math.abs(px - x(time)) < 65;
-      painter.globalAlpha = envelope * (anchored ? .18 + (1 - Math.abs(cross)) * .48 : .1 + (1 - Math.abs(cross)) * .2);
-      painter.fillStyle = blend ? "#8d70b1" : palette[i % palette.length];
-      const size = .55 + fract(i * .414213562) * (anchored ? 1.05 : .7);
-      painter.beginPath(); painter.arc(px, py, size, 0, Math.PI * 2); painter.fill();
-      // A few fine streaks give the stream direction without a bright bloom.
-      if (!reducedMotion.matches && i % 9 === 0) {
-        painter.strokeStyle = painter.fillStyle; painter.lineWidth = .5;
-        painter.beginPath(); painter.moveTo(px + 2 + speed * 3, py); painter.lineTo(px, py); painter.stroke();
+    // A slow, spatially smoothed field keeps the decorative current connected
+    // across rests and pitch jumps. Only the thin contour below is note data.
+    for (let i = 0; i < flowTargets.length; i++) {
+      const u = i / (flowTargets.length - 1);
+      const target = data ? C.targetAt(data.pitch, time + (u - .28) / .72 * 3) : null;
+      flowTargets[i] = target === null ? height * .5 : height * .5 + (y(target) - height * .5) * .65;
+    }
+    const settling = reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed * 3);
+    for (let i = 0; i < flowField.length; i++) {
+      let sum = 0, weight = 0;
+      for (let j = -10; j <= 10; j++) {
+        const w = 11 - Math.abs(j);
+        sum += flowTargets[C.clamp(i + j, 0, flowTargets.length - 1)] * w; weight += w;
       }
+      const center = sum / weight;
+      flowField[i] = fieldReady ? flowField[i] + (center - flowField[i]) * settling : center;
+    }
+    fieldReady = true;
+    const envelope = u => Math.sin(C.clamp(u, 0, 1) * Math.PI) ** .65;
+    function current(u, lane, depth) {
+      const bin = C.clamp(u, 0, 1) * (flowField.length - 1);
+      const left = Math.floor(bin), fraction = bin - left;
+      const center = flowField[left] * (1 - fraction) + flowField[Math.min(left + 1, flowField.length - 1)] * fraction;
+      // All particles ride the same traveling waves. Depth produces braided
+      // sheets, instead of independent jitter or disconnected particle bursts.
+      const wave = u * 8.5 + flowTime * 1.35;
+      const breadth = 19 + 15 * Math.sin(u * 5 - flowTime * .65) ** 2;
+      return center + envelope(u) * (
+        Math.sin(wave) * 20 + Math.sin(u * 17 + flowTime * 2.1) * 7
+        + lane * breadth * (.8 + .35 * Math.cos(wave))
+        + Math.sin(wave + depth * Math.PI * 2) * (9 + Math.abs(lane) * 10)
+      );
+    }
+    painter.lineCap = "round"; painter.lineJoin = "round";
+    // Fine, unbroken filaments provide continuity beneath the moving grains.
+    for (let strand = 0; strand < 18; strand++) {
+      const lane = (strand / 17 - .5) * 2, depth = fract(strand * .61803398875);
+      painter.strokeStyle = palette[strand % palette.length];
+      for (let section = 0; section < 10; section++) {
+        painter.beginPath();
+        for (let step = 0; step <= 10; step++) {
+          const u = (section + step / 10) / 10;
+          const py = current(u, lane, depth);
+          if (!step) painter.moveTo(u * width, py); else painter.lineTo(u * width, py);
+        }
+        painter.globalAlpha = envelope((section + .5) / 10) * .065;
+        painter.lineWidth = strand % 3 === 0 ? 2 : .65; painter.stroke();
+      }
+    }
+    for (let i = 0; i < count; i++) {
+      const seed = fract(i * .61803398875), lane = (fract(i * .754877666) - .5) * 2;
+      const depth = fract(i * .569840291), speed = .105 + depth * .07;
+      const u = fract(seed - flowTime * speed);
+      const py = current(u, lane, depth), px = u * width;
+      const opacity = envelope(u) * (.2 + (1 - Math.abs(lane)) * .4);
+      const blend = together && Math.abs(px - x(time)) < 65;
+      painter.fillStyle = painter.strokeStyle = blend ? "#8d70b1" : palette[i % palette.length];
+      // Reconstruct each curved wake on the same field as its head. There is
+      // no wrapping line across the viewport and no accumulated canvas ghosting.
+      if (!reducedMotion.matches) {
+        const tail = .011 + depth * .03;
+        for (let segment = 3; segment >= 0; segment--) {
+          const a = u + tail * segment / 4, b = Math.min(1, u + tail * (segment + 1) / 4);
+          if (a >= 1) continue;
+          painter.globalAlpha = opacity * (1 - segment / 4) * .38;
+          painter.lineWidth = .55 + depth * .5;
+          painter.beginPath(); painter.moveTo(a * width, current(a, lane, depth));
+          painter.lineTo(b * width, current(b, lane, depth)); painter.stroke();
+        }
+      }
+      painter.globalAlpha = opacity;
+      const size = .45 + depth * .95;
+      painter.beginPath(); painter.arc(px, py, size, 0, Math.PI * 2); painter.fill();
     }
     painter.globalAlpha = 1;
     if (!data) return;
