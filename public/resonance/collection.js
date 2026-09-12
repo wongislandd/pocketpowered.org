@@ -20,7 +20,7 @@ const tracks = [
     title: "Sacred Spoon",
     artist: "Chmeeze",
     duration: "2:00",
-    audio: "chmeezus-sacred-spoon.mp3",
+    audio: "sacred-spoon-first-person.mp3",
     vinyl: "vinyl.png",
     photo: "chmeeze-vintage-label.png",
     monogram: "C",
