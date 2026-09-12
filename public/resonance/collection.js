@@ -42,7 +42,7 @@ const tracks = [
     title: "Breakfast Was Due",
     artist: "Bean",
     duration: "2:30",
-    audio: "bean-breakfast-was-due.mp3",
+    audio: "breakfast-was-due-sunlit-pop.mp3",
     vinyl: "vinyl.png",
     photo: "bean-vintage-label.png",
     monogram: "B",
