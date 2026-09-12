@@ -25,6 +25,17 @@ const tracks = [
     photo: "chmeeze-vintage-label.png",
     monogram: "C",
     lyrics: "chmeezus-lyrics.txt"
+  },
+  {
+    id: "chmit-mr-inconvenient",
+    title: "Mr. Inconvenient",
+    artist: "Chmit",
+    duration: "2:00",
+    audio: "chmit-mr-inconvenient.mp3",
+    vinyl: "vinyl.png",
+    photo: "chmit-vintage-label.png",
+    monogram: "C",
+    lyrics: "chmit-lyrics.txt"
   }
 ];
 
