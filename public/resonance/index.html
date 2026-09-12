@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base href="/resonance/">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="A little collection of songs from a very musical family. Meet Chmunk and Chmeeze.">
+    <title>Resonance — The collection</title>
+    <link rel="stylesheet" href="collection.css">
+    <script src="collection.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#collection">Skip to records</a>
+    <div class="page">
+      <header class="masthead">
+        <a class="wordmark" href="./" aria-label="Resonance home"><span class="brand-disc" aria-hidden="true"></span>resonance</a>
+        <span class="record-count" id="record-count">02 records</span>
+      </header>
+      <main id="collection" tabindex="-1" aria-label="Record collection">
+        <div class="records" id="records"></div>
+        <noscript><p class="no-script">Biscuit Business · Chmunk<br><a href="original.mp3">Play the song</a> · <a href="analysis.html">View analysis</a> · <a href="lyrics.txt">Read lyrics</a></p><p class="no-script">Sacred Spoon · Chmeeze<br><a href="chmeezus-sacred-spoon.mp3">Play the song</a> · <a href="chmeezus-lyrics.txt">Read lyrics</a></p></noscript>
+      </main>
+    </div>
+    <audio id="preview-player" preload="none"></audio>
+    <p id="player-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+  </body>
+</html>

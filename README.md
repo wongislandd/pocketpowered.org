@@ -50,6 +50,14 @@ npm run deploy
 
 The project is deployed with Cloudflare Pages Direct Upload. The production custom domain is `pocketpowered.org`; Cloudflare manages DNS and TLS.
 
+## Resonance collection
+
+`/resonance/` hosts the cat-song vinyl collection, audio, portraits, lyrics, and
+Chmunk's analysis page. Its static files live in `public/resonance/` and are
+included in normal Pages deployments. The ChatGPT Sites copy remains separate;
+future collection updates must also be copied here. Preserve the `/resonance/`
+base URL and keep analysis scripts and styles external to satisfy the site's CSP.
+
 ## TFC Amenities
 
 `/tfc-amenities` and its child routes proxy the live TFC Amenities Sites deployment.
