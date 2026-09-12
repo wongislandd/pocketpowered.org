@@ -38,7 +38,7 @@
     for (const source of sources) { source.onended = null; try { source.stop(); } catch {} source.disconnect(); }
     sources = [];
   }
-  function pause(message = "Paused. Take your time.") {
+  function pause(message = "Paused.") {
     if (running) offset = songTime();
     running = false; stopSources(); stableFrames = 0; lastPitch = null;
     controls(); status(message);
@@ -87,7 +87,7 @@
       return source;
     });
     running = true; ui.complete.hidden = true;
-    controls(); status(stream ? "Mic is on. Sing along when you’re ready." : "Listening. Follow the words and the melody.");
+    controls(); status(stream ? "Mic on" : "Listening");
   }
   function seek(time) {
     const resume = running;
@@ -104,7 +104,7 @@
     micSource?.disconnect(); silent?.disconnect();
     worklet = null; micSource = null; silent = null;
     lastPitch = null; lastCaptureTime = null; stableFrames = 0; voice = [];
-    ui.feedback.textContent = "Follow the melody. Make it yours.";
+    ui.feedback.textContent = "";
     controls();
   }
   async function enableMic() {
@@ -182,7 +182,7 @@
       ui["lyric-current"].replaceChildren();
       if (index < 0) {
         const next = lines.find(line => line.start > time);
-        ui["lyric-current"].textContent = next ? "A little space. Listen in." : "Let it ring out.";
+        ui["lyric-current"].textContent = "";
         ui["lyric-next"].textContent = next?.text || "";
         ui["lyric-section"].textContent = "Instrumental";
       } else {
@@ -210,15 +210,49 @@
     if (canvas.width !== Math.round(width * ratio) || canvas.height !== Math.round(height * ratio)) { canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio); }
     painter.setTransform(ratio, 0, 0, ratio, 0, 0); painter.clearRect(0, 0, width, height);
     const x = t => width * .28 + (t - time) / 3 * width * .72;
-    const y = midi => height - 24 - (midi - yLow) / (yHigh - yLow) * (height - 48);
-    painter.lineWidth = 1; painter.strokeStyle = "#4c705026";
-    for (let midi = Math.ceil(yLow / 3) * 3; midi <= yHigh; midi += 3) { painter.beginPath(); painter.moveTo(0, y(midi)); painter.lineTo(width, y(midi)); painter.stroke(); }
-    painter.strokeStyle = "#a7e9c22a"; painter.beginPath(); painter.moveTo(x(time), 5); painter.lineTo(x(time), height - 3); painter.stroke();
+    const y = midi => height - 42 - (midi - yLow) / (yHigh - yLow) * (height - 84);
+    const history = voice.filter(v => v.time >= time - 1.4).map(v => [v.time, v.value, 1]);
+    const fresh = Boolean(stream && running && lastPitch && lastPitch.value !== null && now - lastPitch.at < 220);
+    const together = fresh && lastPitch.aligned;
+    const flowTime = reducedMotion.matches ? 0 : now * .000035;
+    const fract = value => value - Math.floor(value);
+    const palette = ["#409ea9", "#648bc6", "#638ab0", "#63b6b8", "#8b97c5"];
+    const count = reducedMotion.matches ? 260 : Math.min(1350, Math.round(width * 1.3));
+
+    // Continuous advection: particles travel right to left through the field,
+    // even when paused. Ambient dust is decoration; only the thin contour and
+    // the current pitch marker represent measured notes.
+    for (let i = 0; i < count; i++) {
+      const seed = fract(i * .61803398875), lane = fract(i * .754877666);
+      const speed = .65 + fract(i * .569840291) * .8;
+      const u = fract(seed - flowTime * speed);
+      const t = time + (u - .28) / .72 * 3;
+      const target = data ? C.targetAt(data.pitch, t) : null;
+      const anchored = target !== null;
+      const center = anchored ? y(target) : height * .51 + Math.sin(u * 5.7 + flowTime * 1.5) * 14;
+      const spread = anchored ? 9 + 21 * Math.sin(u * Math.PI) ** 2 : 24;
+      const twist = Math.sin(u * 13 + flowTime * 9 + lane * 6.28);
+      const envelope = Math.sin(u * Math.PI) ** .6;
+      const cross = (lane - .5) * 2;
+      const py = center + cross * spread * (1.2 + twist * .45) + Math.sin(u * 28 - flowTime * 5 + i) * 3;
+      const px = u * width;
+      const blend = together && Math.abs(px - x(time)) < 65;
+      painter.globalAlpha = envelope * (anchored ? .18 + (1 - Math.abs(cross)) * .48 : .1 + (1 - Math.abs(cross)) * .2);
+      painter.fillStyle = blend ? "#8d70b1" : palette[i % palette.length];
+      const size = .55 + fract(i * .414213562) * (anchored ? 1.05 : .7);
+      painter.beginPath(); painter.arc(px, py, size, 0, Math.PI * 2); painter.fill();
+      // A few fine streaks give the stream direction without a bright bloom.
+      if (!reducedMotion.matches && i % 9 === 0) {
+        painter.strokeStyle = painter.fillStyle; painter.lineWidth = .5;
+        painter.beginPath(); painter.moveTo(px + 2 + speed * 3, py); painter.lineTo(px, py); painter.stroke();
+      }
+    }
+    painter.globalAlpha = 1;
     if (!data) return;
     const begin = Math.max(0, C.before(data.pitch, time - 1.25, p => p[0]));
     const visible = [];
     for (let i = begin; i < data.pitch.length && data.pitch[i][0] <= time + 3.05; i++) visible.push(data.pitch[i]);
-    function ribbon(points, color, stroke, glow) {
+    function ribbon(points, color, stroke) {
       painter.beginPath(); let previous = null;
       for (const point of points) {
         if (point[1] === null || point[2] < .5) { previous = null; continue; }
@@ -226,33 +260,40 @@
         if (!previous || point[0] - previous[0] > .09 || Math.abs(point[1] - previous[1]) > 5) painter.moveTo(px, py); else painter.lineTo(px, py);
         previous = point;
       }
-      painter.lineWidth = stroke; painter.lineCap = "round"; painter.lineJoin = "round"; painter.strokeStyle = color;
-      painter.shadowBlur = reducedMotion.matches ? 0 : glow; painter.shadowColor = color; painter.stroke(); painter.shadowBlur = 0;
+      painter.lineWidth = stroke; painter.lineCap = "round"; painter.lineJoin = "round"; painter.strokeStyle = color; painter.stroke();
     }
-    ribbon(visible, "#78b99329", 14, 0); ribbon(visible, "#a7e9c2", 2.4, 10);
-    const history = voice.filter(v => v.time >= time - 1.3).map(v => [v.time, v.value, 1]);
-    ribbon(history, "#ffb4c7", 2.6, 11);
-    const fresh = stream && running && lastPitch?.value !== null && lastPitch && now - lastPitch.at < 220;
+    ribbon(visible, "#50979e50", 1);
+    ribbon(history, together ? "#886ba8" : "#ca7f94", 1.4);
+    if (history.length && !reducedMotion.matches) {
+      for (let i = 0; i < 260; i++) {
+        const age = fract(i * .61803398875 + flowTime * 2) * 1.35;
+        const t = time - age;
+        const point = history[C.before(history, t, p => p[0])];
+        if (!point || point[1] === null || t - point[0] > .08) continue;
+        const lane = fract(i * .754877666) - .5;
+        const px = x(t), py = y(point[1]) + lane * (14 + age * 18) + Math.sin(age * 12 + now * .001 + i) * 3;
+        painter.globalAlpha = (1 - age / 1.35) * .55;
+        painter.fillStyle = together && age < .3 ? "#9876b6" : i % 3 ? "#d791a6" : "#d8a387";
+        painter.beginPath(); painter.arc(px, py, .6 + fract(i * .4142), 0, Math.PI * 2); painter.fill();
+      }
+      painter.globalAlpha = 1;
+    }
+    const currentTarget = C.targetAt(data.pitch, time);
+    if (currentTarget !== null) {
+      painter.fillStyle = "#418e98";
+      painter.beginPath(); painter.arc(x(time), y(currentTarget), 2.5, 0, Math.PI * 2); painter.fill();
+    }
     if (fresh) {
       const px = x(lastPitch.time), py = y(lastPitch.value);
+      painter.fillStyle = together ? "#8665a8" : "#c5758d";
       if (py < 7 || py > height - 7) {
-        painter.fillStyle = "#ffb4c7"; painter.font = "16px sans-serif"; painter.fillText(py < 7 ? "↑" : "↓", px - 5, C.clamp(py, 15, height - 6));
+        painter.font = "16px sans-serif"; painter.fillText(py < 7 ? "↑" : "↓", px - 5, C.clamp(py, 15, height - 6));
       } else {
-        const together = lastPitch.aligned;
-        painter.shadowColor = together ? "#f0ffd7" : "#ffb4c7"; painter.shadowBlur = reducedMotion.matches ? 0 : together ? 28 : 14;
-        painter.fillStyle = together ? "#f2ffdb" : "#ffb4c7";
-        painter.beginPath(); painter.arc(px, py, together ? 5.5 : 4.5, 0, Math.PI * 2); painter.fill(); painter.shadowBlur = 0;
-        if (together && !reducedMotion.matches) {
-          for (let i = 0; i < 12; i++) {
-            const phase = (now / 1600 + i / 12) % 1, angle = i * 2.399;
-            painter.globalAlpha = (1 - phase) * .65; painter.fillStyle = i % 2 ? "#ffb4c7" : "#beefc4";
-            painter.beginPath(); painter.arc(px + Math.cos(angle) * (7 + phase * 33), py + Math.sin(angle) * (7 + phase * 25), 1.3, 0, 2 * Math.PI); painter.fill();
-          }
-          painter.globalAlpha = 1;
-        }
+        painter.beginPath(); painter.arc(px, py, together ? 4 : 3.5, 0, Math.PI * 2); painter.fill();
       }
     }
   }
+
   async function selectRecord(key) {
     if (busy) return;
     const selected = records.find(r => r.key === key) || records[0];
@@ -278,7 +319,7 @@
       yHigh = Math.max(yLow + 16, Math.ceil(pitches[Math.floor(pitches.length * .98)] || 78) + 4);
       document.title = `${selected.title} — Sing with Resonance`;
       const url = new URL(location.href); url.searchParams.set("song", selected.key); history.replaceState(null, "", url);
-      status("Ready. Listen first, or bring your voice in."); updateLyrics(0);
+      status(""); updateLyrics(0);
     } catch (error) { status(error.message); }
     finally { busy = false; controls(); }
   }
