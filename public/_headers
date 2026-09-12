@@ -8,3 +8,15 @@
 
 /sidequests/assets/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/resonance/*.css
+  Cache-Control: no-store
+  CDN-Cache-Control: no-store
+
+/resonance/*.js
+  Cache-Control: no-store
+  CDN-Cache-Control: no-store
+
+/resonance/*.mjs
+  Cache-Control: no-store
+  CDN-Cache-Control: no-store

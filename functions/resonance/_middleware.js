@@ -5,6 +5,11 @@ export async function onRequest(context) {
   const pathname = new URL(context.request.url).pathname;
   if (!["/resonance/practice", "/resonance/practice/", "/resonance/practice.html"].includes(pathname)) return response;
   const headers = new Headers(response.headers);
+  headers.set("Cache-Control", "no-store");
+  if (new URL(context.request.url).searchParams.get("fresh") === "1") {
+    // One-off browser cache reset; cookies and stored application data remain.
+    headers.set("Clear-Site-Data", '"cache"');
+  }
   headers.set("Permissions-Policy", "camera=(), microphone=(self), geolocation=(), payment=()");
   headers.set("Content-Security-Policy", "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self' https://ktrglbdocowhekhjfkir.supabase.co; base-uri 'self'; form-action 'self'; frame-ancestors 'none'");
   headers.set("Cross-Origin-Opener-Policy", "same-origin");
