@@ -1,0 +1,12 @@
+name = "pocketpowered-site"
+compatibility_date = "2026-08-28"
+pages_build_output_dir = "dist"
+
+[[kv_namespaces]]
+binding = "RESONANCE_CLASSICS"
+id = "d78b4468df6841799fbbbe967aea636a"
+
+[env.production]
+[[env.production.kv_namespaces]]
+binding = "RESONANCE_CLASSICS"
+id = "d78b4468df6841799fbbbe967aea636a"

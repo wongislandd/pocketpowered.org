@@ -1,0 +1,212 @@
+[
+  {
+    "key": "classics-20260912-v1/aint-misbehavin/accompaniment.mp3",
+    "sha256": "9f8bd230d3f23969c09cf3f5a095955c6d2e5f9e08f109b5f4b3fc8517b196da",
+    "size": 3842759
+  },
+  {
+    "key": "classics-20260912-v1/aint-misbehavin/display.json",
+    "sha256": "d2e89b25ce1bfa098b918db967792eb05323907f2bbd897e9c8146e5f0470e5d",
+    "size": 299393
+  },
+  {
+    "key": "classics-20260912-v1/aint-misbehavin/lyrics.txt",
+    "sha256": "90b7186361d923ef6a0689be534e05b95d958a2625623c8c0f1284095b3144eb",
+    "size": 507
+  },
+  {
+    "key": "classics-20260912-v1/aint-misbehavin/lyrics.vtt",
+    "sha256": "f6ea8040c0d30c92a6ee50e009071a9c90f6adf23c53d364703f0a4edb505d46",
+    "size": 1307
+  },
+  {
+    "key": "classics-20260912-v1/aint-misbehavin/provenance.json",
+    "sha256": "580e2f33cc540f47890bfcdf96ae53aa3707d726c184cde52973c2cdb4a9d991",
+    "size": 2008
+  },
+  {
+    "key": "classics-20260912-v1/aint-misbehavin/source.mp3",
+    "sha256": "503392b340db08d8a8997289175648ab20d0cf4eef95f1aa0259afb4398f398c",
+    "size": 2880673
+  },
+  {
+    "key": "classics-20260912-v1/aint-misbehavin/vocals.mp3",
+    "sha256": "c4644e63c35d24d5e6736a08bb2020927363378d5b469749be2464b715073b78",
+    "size": 3842759
+  },
+  {
+    "key": "classics-20260912-v1/dream-a-little-dream-of-me/accompaniment.mp3",
+    "sha256": "ffef053e35c4a74c9380481d7922a38e3e23cdfaf9968690a2b9c06a0de6caeb",
+    "size": 3842759
+  },
+  {
+    "key": "classics-20260912-v1/dream-a-little-dream-of-me/display.json",
+    "sha256": "8cc60351cae79dff2a617073bfe638c9a7f87083599684aa919e59bbeaa31c57",
+    "size": 301488
+  },
+  {
+    "key": "classics-20260912-v1/dream-a-little-dream-of-me/lyrics.txt",
+    "sha256": "3a3fe036c81986d734c3d8af430492b99f4b22d4759d9df7a6aa585e43c3c65a",
+    "size": 530
+  },
+  {
+    "key": "classics-20260912-v1/dream-a-little-dream-of-me/lyrics.vtt",
+    "sha256": "f67acac419669dc4f3e656c39f473ec886832547241a136fb99df252b1030896",
+    "size": 1213
+  },
+  {
+    "key": "classics-20260912-v1/dream-a-little-dream-of-me/provenance.json",
+    "sha256": "9554838fd0e916c96a877c7f57544003a31857a01c341b3c80aa05672e0a76c0",
+    "size": 1974
+  },
+  {
+    "key": "classics-20260912-v1/dream-a-little-dream-of-me/source.mp3",
+    "sha256": "aff64fb36f9e9da87253eecddf71e5ac00a39b94a6ef96f6f4a36364318994b5",
+    "size": 2880673
+  },
+  {
+    "key": "classics-20260912-v1/dream-a-little-dream-of-me/vocals.mp3",
+    "sha256": "52fc94f55fa044c580f78fd7b7e9e49ff91823d04f843ee2e404f5d0fdd2344f",
+    "size": 3842759
+  },
+  {
+    "key": "classics-20260912-v1/georgia-on-my-mind/accompaniment.mp3",
+    "sha256": "e828b01a8ad33130616a339a6a6e2378ebb24a2592677d2f7dc781d771eeff24",
+    "size": 3842759
+  },
+  {
+    "key": "classics-20260912-v1/georgia-on-my-mind/display.json",
+    "sha256": "bba82c7f6caa69afeef61057139f54a3000d65d6bee98ca89611db1b8fd6645f",
+    "size": 297347
+  },
+  {
+    "key": "classics-20260912-v1/georgia-on-my-mind/lyrics.txt",
+    "sha256": "690e9ab017370bc75a0ab113a725eba8b618fb5170254c180b8e3f7c2043e7a7",
+    "size": 378
+  },
+  {
+    "key": "classics-20260912-v1/georgia-on-my-mind/lyrics.vtt",
+    "sha256": "ae8fde616713705b8105f2dd61b76c4e8e2cf5f3657d744dbb53a21ceedf38e7",
+    "size": 944
+  },
+  {
+    "key": "classics-20260912-v1/georgia-on-my-mind/provenance.json",
+    "sha256": "399ba0cf5ebfb0f76a7220af452f3d93c16a552e203f311406e9f16c9060ed3a",
+    "size": 1952
+  },
+  {
+    "key": "classics-20260912-v1/georgia-on-my-mind/source.mp3",
+    "sha256": "0f79e2113f35f29213fdee0f2b5e613f4f479018a893b179547629e2b0b3f7a8",
+    "size": 2880673
+  },
+  {
+    "key": "classics-20260912-v1/georgia-on-my-mind/vocals.mp3",
+    "sha256": "b2c5912dad4df941f62f644634a1b6393433451b36fe88b065adf13c0deefe64",
+    "size": 3842759
+  },
+  {
+    "key": "classics-20260912-v1/i-got-rhythm/accompaniment.mp3",
+    "sha256": "47f33d88aa89b9937447f9690139aa82c811d03449b43d43b9516ad932aa57b2",
+    "size": 3842759
+  },
+  {
+    "key": "classics-20260912-v1/i-got-rhythm/display.json",
+    "sha256": "337194a50aab2e66e50b6a36e5076c39a7e9cb1d83b82fbbb306babb143151aa",
+    "size": 300446
+  },
+  {
+    "key": "classics-20260912-v1/i-got-rhythm/lyrics.txt",
+    "sha256": "883419ae31cb34afc74c2e9843884c8379f414f4ea99d604531791b411d0f3fe",
+    "size": 382
+  },
+  {
+    "key": "classics-20260912-v1/i-got-rhythm/lyrics.vtt",
+    "sha256": "d4ae50965aa0f38c517ae8801c5202653422fd3f53173dd7b30b2775132f4a56",
+    "size": 1104
+  },
+  {
+    "key": "classics-20260912-v1/i-got-rhythm/provenance.json",
+    "sha256": "b2f5c721aa7a8387d0a88c31373e157446ff124195391f492e1ef96b18d0f791",
+    "size": 1960
+  },
+  {
+    "key": "classics-20260912-v1/i-got-rhythm/source.mp3",
+    "sha256": "79175148a9c978fac3be8e0504c12c29aafbbbe9194f3f7c9c1f403fcbd4349b",
+    "size": 2880673
+  },
+  {
+    "key": "classics-20260912-v1/i-got-rhythm/vocals.mp3",
+    "sha256": "43f1bfeca96f3a04cf9d8ffa28707f648c3fb9ab38606cd0df81b8f8d6726038",
+    "size": 3842759
+  },
+  {
+    "key": "classics-20260912-v1/on-the-sunny-side-of-the-street/accompaniment.mp3",
+    "sha256": "95eff599172969ef1b4839075004ca084b48beb23a460b2ade1138014ae582aa",
+    "size": 3842759
+  },
+  {
+    "key": "classics-20260912-v1/on-the-sunny-side-of-the-street/display.json",
+    "sha256": "c344a03a2e9ae7ac3acf589b24a835e353d9890486032b993152e8bfeffb8024",
+    "size": 294105
+  },
+  {
+    "key": "classics-20260912-v1/on-the-sunny-side-of-the-street/lyrics.txt",
+    "sha256": "e775de30cf5a21e46682e1d30c601e13f454b33f4c4259c2b4b92bf021c21c29",
+    "size": 438
+  },
+  {
+    "key": "classics-20260912-v1/on-the-sunny-side-of-the-street/lyrics.vtt",
+    "sha256": "2fde5bb5979a912ffbe08bc7e3b3581c149dfcd2622bcd99da4aa00b8821671f",
+    "size": 1117
+  },
+  {
+    "key": "classics-20260912-v1/on-the-sunny-side-of-the-street/provenance.json",
+    "sha256": "3a334f6cbddc0904c27281024ea2d0540344a92d0c8ffd4d84d3062b431aff05",
+    "size": 2008
+  },
+  {
+    "key": "classics-20260912-v1/on-the-sunny-side-of-the-street/source.mp3",
+    "sha256": "e5220966314f9c3f58105edb0209ae5c6b5dc546e47c0e24af5778696567672b",
+    "size": 2880673
+  },
+  {
+    "key": "classics-20260912-v1/on-the-sunny-side-of-the-street/vocals.mp3",
+    "sha256": "376073e62326af71550941de9685e3cea78cc03cd67b03d7e5b13fd54e9b34a8",
+    "size": 3842759
+  },
+  {
+    "key": "classics-20260912-v1/singin-in-the-rain/accompaniment.mp3",
+    "sha256": "2c5be1f5a3f0ba496a76f36a5f04c725eef712cd965fd3501ff6df4ac1c895cc",
+    "size": 3842759
+  },
+  {
+    "key": "classics-20260912-v1/singin-in-the-rain/display.json",
+    "sha256": "57326155181b429029863683701a75df0f09193abdafb5d3f5d694ccaa4f353d",
+    "size": 296798
+  },
+  {
+    "key": "classics-20260912-v1/singin-in-the-rain/lyrics.txt",
+    "sha256": "b823d22e6d458f139edb93599dcd39fe2ed85c6aeda642d9c5a04b1ee398fa3c",
+    "size": 443
+  },
+  {
+    "key": "classics-20260912-v1/singin-in-the-rain/lyrics.vtt",
+    "sha256": "cf02b20e939b0e5c22de04d2f9308e707f26538963bf4c921886b407401fb637",
+    "size": 1165
+  },
+  {
+    "key": "classics-20260912-v1/singin-in-the-rain/provenance.json",
+    "sha256": "b1620c10096418a9bde4eb6f83b517f148b38e02fed3acf61565534149cddf58",
+    "size": 1922
+  },
+  {
+    "key": "classics-20260912-v1/singin-in-the-rain/source.mp3",
+    "sha256": "76a1b20c07b76e38b256c83b955b283cfd69f02eaa459b029b508af744f5bb1e",
+    "size": 2880673
+  },
+  {
+    "key": "classics-20260912-v1/singin-in-the-rain/vocals.mp3",
+    "sha256": "b2bcfaafb324d96f095fde731cb4800e4bd50248f37788348aafa21e718e0373",
+    "size": 3842759
+  }
+]

@@ -352,11 +352,12 @@
     record = selected; controls(); status("Loading this record…");
     ui["song-select"].value = selected.key; ui["song-title"].textContent = selected.title; ui.artist.textContent = selected.artist;
     ui.portrait.src = selected.photo; ui["lyrics-download"].href = selected.lyricsText;
-    $("timed-lyrics").href = `practice/${selected.key}/lyrics.vtt`;
+    $("timed-lyrics").href = selected.timedLyrics || `practice/${selected.key}/lyrics.vtt`;
     ui.complete.hidden = true; ui["line-select"].replaceChildren(new Option("Whole song", ""));
     ui["lyric-current"].textContent = "A little room for your voice."; ui["lyric-next"].textContent = "";
     try {
       const response = await fetch(`${selected.practice}?v=particle-chart-1`);
+      if (response.status === 451) throw new Error("This rendition is available for listening in the United States only.");
       if (!response.ok) throw new Error("This record’s practice data couldn’t load. Reload the page to try again.");
       const result = await response.json();
       if (epoch !== loadEpoch) return;
@@ -390,7 +391,7 @@
   window.addEventListener("pagehide", () => { actionEpoch++; pause(""); micOff(); context?.close(); context = null; buffers = null; workletLoaded = false; });
   navigator.mediaDevices?.addEventListener("devicechange", () => { if (stream) { pause("Your audio devices changed. Check your headphones and reconnect the mic."); micOff(); } });
   requestAnimationFrame(render);
-  fetch("practice/records.json").then(response => { if (!response.ok) throw new Error("Couldn’t load the records. Please reload."); return response.json(); }).then(async list => {
+  fetch("practice/records.json?v=classics-20260912", { cache: "no-store" }).then(response => { if (!response.ok) throw new Error("Couldn’t load the records. Please reload."); return response.json(); }).then(async list => {
     records = list; ui["song-select"].replaceChildren(...records.map(r => new Option(`${r.title} · ${r.artist}`, r.key)));
     await selectRecord(new URL(location.href).searchParams.get("song"));
   }).catch(error => status(error.message));

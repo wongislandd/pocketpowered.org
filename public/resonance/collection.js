@@ -54,6 +54,95 @@ const tracks = [
   }
 ];
 
+// BEGIN CLASSICS
+tracks.push(...[
+  {
+    "id": "dream-a-little-dream-of-me",
+    "title": "Dream a Little Dream of Me",
+    "practice": "practice.html?song=dream-a-little-dream-of-me",
+    "artist": "Resonance Sessions",
+    "duration": "2:00",
+    "audio": "classics/dream-a-little-dream-of-me/source.mp3",
+    "vinyl": "vinyl.png",
+    "photo": "classic-labels/dream-a-little-dream-of-me.svg",
+    "monogram": "DD",
+    "lyrics": "classics/dream-a-little-dream-of-me/lyrics.txt",
+    "territory": "US",
+    "edition": "New rendition \u00b7 U.S. listening"
+  },
+  {
+    "id": "georgia-on-my-mind",
+    "title": "Georgia on My Mind",
+    "practice": "practice.html?song=georgia-on-my-mind",
+    "artist": "Resonance Sessions",
+    "duration": "2:00",
+    "audio": "classics/georgia-on-my-mind/source.mp3",
+    "vinyl": "vinyl.png",
+    "photo": "classic-labels/georgia-on-my-mind.svg",
+    "monogram": "GM",
+    "lyrics": "classics/georgia-on-my-mind/lyrics.txt",
+    "territory": "US",
+    "edition": "New rendition \u00b7 U.S. listening"
+  },
+  {
+    "id": "on-the-sunny-side-of-the-street",
+    "title": "On the Sunny Side of the Street",
+    "practice": "practice.html?song=on-the-sunny-side-of-the-street",
+    "artist": "Resonance Sessions",
+    "duration": "2:00",
+    "audio": "classics/on-the-sunny-side-of-the-street/source.mp3",
+    "vinyl": "vinyl.png",
+    "photo": "classic-labels/on-the-sunny-side-of-the-street.svg",
+    "monogram": "SS",
+    "lyrics": "classics/on-the-sunny-side-of-the-street/lyrics.txt",
+    "territory": "US",
+    "edition": "New rendition \u00b7 U.S. listening"
+  },
+  {
+    "id": "i-got-rhythm",
+    "title": "I Got Rhythm",
+    "practice": "practice.html?song=i-got-rhythm",
+    "artist": "Resonance Sessions",
+    "duration": "2:00",
+    "audio": "classics/i-got-rhythm/source.mp3",
+    "vinyl": "vinyl.png",
+    "photo": "classic-labels/i-got-rhythm.svg",
+    "monogram": "IR",
+    "lyrics": "classics/i-got-rhythm/lyrics.txt",
+    "territory": "US",
+    "edition": "New rendition \u00b7 U.S. listening"
+  },
+  {
+    "id": "singin-in-the-rain",
+    "title": "Singin' in the Rain",
+    "practice": "practice.html?song=singin-in-the-rain",
+    "artist": "Resonance Sessions",
+    "duration": "2:00",
+    "audio": "classics/singin-in-the-rain/source.mp3",
+    "vinyl": "vinyl.png",
+    "photo": "classic-labels/singin-in-the-rain.svg",
+    "monogram": "SR",
+    "lyrics": "classics/singin-in-the-rain/lyrics.txt",
+    "territory": "US",
+    "edition": "New rendition \u00b7 U.S. listening"
+  },
+  {
+    "id": "aint-misbehavin",
+    "title": "Ain't Misbehavin'",
+    "practice": "practice.html?song=aint-misbehavin",
+    "artist": "Resonance Sessions",
+    "duration": "2:00",
+    "audio": "classics/aint-misbehavin/source.mp3",
+    "vinyl": "vinyl.png",
+    "photo": "classic-labels/aint-misbehavin.svg",
+    "monogram": "AM",
+    "lyrics": "classics/aint-misbehavin/lyrics.txt",
+    "territory": "US",
+    "edition": "New rendition \u00b7 U.S. listening"
+  }
+]);
+// END CLASSICS
+
 const player = document.querySelector("#preview-player");
 const collection = document.querySelector("#records");
 const status = document.querySelector("#player-status");
@@ -118,6 +207,7 @@ for (const [index, track] of tracks.entries()) {
   const error = element("p", "record-error");
   error.setAttribute("role", "alert");
   card.append(artButton, title, element("p", "artist", track.artist), row, links, error);
+  if (track.edition) card.insertBefore(element("p", "edition", track.edition), row);
   collection.append(card);
   cards.set(track.id, { card, toggle, artButton, time, error });
   toggle.addEventListener("click", () => toggleTrack(track));
@@ -159,7 +249,7 @@ async function toggleTrack(track) {
     status.textContent = `Playing ${track.title} by ${track.artist}.`;
   } catch (error) {
     if (request !== requestNumber || error.name === "AbortError") return;
-    view.error.textContent = "Couldn’t play this record. Try again or download the song.";
+    view.error.textContent = track.territory === "US" ? "This rendition is available in the United States. If you’re in the U.S., try again." : "Couldn’t play this record. Try again or download the song.";
     updateControls();
   }
 }
@@ -179,7 +269,7 @@ player.addEventListener("ended", () => {
 player.addEventListener("error", () => {
   player.pause();
   if (!activeTrack) return;
-  cards.get(activeTrack.id).error.textContent = "Couldn’t load this record. Try again or download the song.";
+  cards.get(activeTrack.id).error.textContent = activeTrack.territory === "US" ? "This rendition is available in the United States. If you’re in the U.S., try again." : "Couldn’t load this record. Try again or download the song.";
   updateControls();
 });
 player.addEventListener("timeupdate", () => {

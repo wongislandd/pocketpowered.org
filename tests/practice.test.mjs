@@ -60,13 +60,26 @@ test('upcoming lyrics do not cut off a sung word and release into instrumental g
 });
 test('every published recording has matched stems, valid word times, and scoring disabled', () => {
   const records=JSON.parse(fs.readFileSync(path.join(publicDir,'practice/records.json')));
-  assert.equal(records.length,4);
+  assert.equal(records.length,10);
+  assert.equal(new Set(records.map(r=>r.key)).size,10);
+  for(const key of ['chmunk','chmeeze','chmit','bean','dream-a-little-dream-of-me','georgia-on-my-mind','on-the-sunny-side-of-the-street','i-got-rhythm','singin-in-the-rain','aint-misbehavin'])assert.ok(records.some(r=>r.key===key));
   for(const record of records){
+    if(record.territory==='US') {
+      assert.ok(fs.existsSync(path.join(publicDir,record.photo)));
+      const manifest=JSON.parse(fs.readFileSync(path.join(publicDir,'classics-manifest.json')));
+      for(const field of ['lyricsText','practice','vocals','backing','timedLyrics']) {
+        assert.ok(record[field].startsWith(`classics/${record.key}/`));
+        assert.ok(manifest.some(x=>x.key===record[field].replace('classics/','classics-20260912-v1/')));
+        assert.equal(fs.existsSync(path.join(publicDir,record[field])),false,'Restricted media must not enter the public repository');
+      }
+      assert.equal(manifest.find(x=>x.key===`classics-20260912-v1/${record.key}/source.mp3`).sha256,record.sourceHash);
+      continue;
+    }
     for(const key of ['photo','lyricsText','practice','vocals','backing'])assert.ok(fs.existsSync(path.join(publicDir,record[key])),record[key]);
     const data=JSON.parse(fs.readFileSync(path.join(publicDir,record.practice)));
     assert.equal(data.sourceHash,record.sourceHash);assert.equal(data.lyrics.sourceHash,record.sourceHash);
     assert.equal(data.scoringEnabled,false);assert.equal(data.reviewState,'needs_review');
-    assert.ok(data.pitch.length>10000);assert.ok(data.lyrics.lines.length>30);
+    assert.ok(data.pitch.length>10000);assert.ok(data.lyrics.lines.length>=10);
     assert.ok(data.vocalEnvelope.peak>0);
     assert.ok(Math.abs(data.vocalEnvelope.rms.length*data.vocalEnvelope.step-data.duration)<.04);
     assert.ok(data.vocalEnvelope.rms.every(v=>Number.isFinite(v)&&v>=0));

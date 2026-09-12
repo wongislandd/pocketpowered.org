@@ -5,3 +5,6 @@ dist/
 worker-configuration.d.ts
 .DS_Store
 npm-debug.log*
+# U.S.-restricted recordings must stay in private storage, not this public repo.
+public/resonance/classics/
+*.kv-bulk.json
