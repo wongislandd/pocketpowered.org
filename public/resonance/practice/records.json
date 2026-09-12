@@ -1,0 +1,46 @@
+[
+  {
+    "key": "chmunk",
+    "title": "Biscuit Business",
+    "artist": "Chmunk",
+    "photo": "chmunk-vintage-label.png",
+    "lyricsText": "lyrics.txt",
+    "sourceHash": "e308a4dd3d5e1bc4c291dc2ea17f96a20d0d890d1f5de7aab9deca8a708f2a24",
+    "practice": "practice/chmunk/display.json",
+    "backing": "practice/chmunk/accompaniment.mp3",
+    "vocals": "practice/chmunk/vocals.mp3"
+  },
+  {
+    "key": "chmeeze",
+    "title": "Sacred Spoon",
+    "artist": "Chmeeze",
+    "photo": "chmeeze-vintage-label.png",
+    "lyricsText": "chmeezus-lyrics.txt",
+    "sourceHash": "29f0a8417de94856d06678eefd03623ccc53d4d888cc939c690935963716c402",
+    "practice": "practice/chmeeze/display.json",
+    "backing": "practice/chmeeze/accompaniment.mp3",
+    "vocals": "practice/chmeeze/vocals.mp3"
+  },
+  {
+    "key": "chmit",
+    "title": "Mr. Inconvenient",
+    "artist": "Chmit",
+    "photo": "chmit-vintage-label.png",
+    "lyricsText": "chmit-lyrics.txt",
+    "sourceHash": "b42f5459d55c71105324eaaed8653253936356abfb681e0d3d5d77dbcb77314d",
+    "practice": "practice/chmit/display.json",
+    "backing": "practice/chmit/accompaniment.mp3",
+    "vocals": "practice/chmit/vocals.mp3"
+  },
+  {
+    "key": "bean",
+    "title": "Breakfast Was Due",
+    "artist": "Bean",
+    "photo": "bean-vintage-label.png",
+    "lyricsText": "bean-lyrics.txt",
+    "sourceHash": "fa0f65e2a77522b5c0055de3aee1fa1cf699a90244af1d108fcd7c7239ae284d",
+    "practice": "practice/bean/display.json",
+    "backing": "practice/bean/accompaniment.mp3",
+    "vocals": "practice/bean/vocals.mp3"
+  }
+]

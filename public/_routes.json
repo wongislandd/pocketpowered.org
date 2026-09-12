@@ -1,5 +1,5 @@
 {
   "version": 1,
-  "include": ["/tfc-amenities", "/tfc-amenities/*"],
+  "include": ["/tfc-amenities", "/tfc-amenities/*", "/resonance/practice", "/resonance/practice/", "/resonance/practice.html"],
   "exclude": []
 }

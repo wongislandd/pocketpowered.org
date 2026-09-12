@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <base href="/resonance/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101917">
+  <title>Sing — Resonance</title>
+  <meta name="description" content="Find your voice in the melody. Sing with your cats, follow the lyrics, and practice a line at a time.">
+  <link rel="stylesheet" href="practice.css">
+  <script defer src="practice-core.js"></script>
+  <script defer src="practice.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="index.html" class="back">← <span>Records</span></a>
+    <a href="index.html" class="brand">resonance<span class="brand-dot">.</span></a>
+    <span class="preview-badge">Practice preview</span>
+  </header>
+  <main>
+    <section class="song-header" aria-label="Current record">
+      <img id="portrait" class="portrait" alt="" width="56" height="56">
+      <div><p id="artist" class="eyebrow">Your collection</p><h1 id="song-title">Find your voice</h1></div>
+      <label class="song-picker"><span class="sr-only">Choose a song</span><select id="song-select" disabled><option>Loading records…</option></select></label>
+    </section>
+    <section class="stage" aria-label="Live singing practice">
+      <div class="stage-top"><div class="legend"><span class="target-key">Melody</span><span class="voice-key">You</span></div><p id="feedback" role="status">Follow the melody. Make it yours.</p></div>
+      <canvas id="ribbon" aria-label="The melody rises for higher notes and falls for lower notes. Your voice appears in pink." role="img"></canvas>
+      <div class="axis-label"><span>higher</span><span>lower</span></div>
+      <span class="now-label">NOW</span>
+      <div class="lyrics" aria-label="Karaoke lyrics">
+        <p id="lyric-section" class="eyebrow">Ready when you are</p>
+        <p id="lyric-current">A little room for your voice.</p>
+        <p id="lyric-next">Choose Sing with mic, or listen first.</p>
+      </div>
+    </section>
+    <section class="transport" aria-label="Playback controls">
+      <div class="scrubber"><output id="time">0:00</output><input id="seek" type="range" min="0" max="120" step="0.01" value="0" aria-label="Song position" disabled><output id="duration">0:00</output></div>
+      <div class="main-controls"><button id="restart" class="round-button" aria-label="Restart song" disabled>↺</button><button id="sing" class="primary" disabled>Sing with mic</button><button id="listen" class="secondary" disabled>Listen first</button><button id="mic-off" class="quiet" hidden>Turn mic off</button></div>
+      <p id="status" class="status" role="status">Loading this record…</p>
+      <p class="privacy">Headphones help us hear just you. Your microphone stays on this device.</p>
+    </section>
+    <details class="practice-tools">
+      <summary>Practice controls <span>Mix, repeat a line & timing</span></summary>
+      <div class="tools-grid">
+        <label>Backing track <input id="backing" type="range" min="0" max="1" step="0.01" value="0.8"></label>
+        <label>Guide vocal <input id="guide" type="range" min="0" max="1" step="0.01" value="0.55"></label>
+        <div class="line-controls"><label>Practice a line <select id="line-select"><option value="">Whole song</option></select></label><button id="loop" class="secondary" aria-pressed="false" disabled>Repeat off</button></div>
+        <label>Voice timing adjustment <span><output id="timing-value">0 ms</output></span><input id="timing" type="range" min="-400" max="400" step="10" value="0"><small>Move right if your voice trail arrives late. Headphone delay varies; this is a manual adjustment.</small></label>
+      </div>
+      <p class="review-note">Lyrics are automatically aligned to this recording. Pitch feedback is a preview; the reference still needs a listening review, so scores are off.</p>
+    </details>
+    <section id="complete" class="complete" hidden aria-label="Practice complete"><p class="eyebrow">One more time?</p><h2>You made room for your voice.</h2><p id="session-summary"></p><button id="again" class="secondary">Sing it again</button></section>
+  </main>
+  <footer><span>Four little voices. Yours makes five.</span><span><a id="lyrics-download" href="lyrics.txt">Original lyrics ↗</a> &nbsp; <a id="timed-lyrics" href="practice/chmunk/lyrics.vtt" download>Timed lyrics ↓</a></span></footer>
+</body>
+</html>

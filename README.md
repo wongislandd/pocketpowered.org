@@ -52,6 +52,18 @@ The project is deployed with Cloudflare Pages Direct Upload. The production cust
 
 ## Resonance collection
 
+The `Sing along` links open `/resonance/practice` with local microphone pitch
+tracking, synchronized vocal/backing stems, timed karaoke lyrics, particle
+feedback, and line repeats. Recording-bound display data and stems are under
+`public/resonance/practice/`. These are unreviewed practice references; scores are
+disabled. Timing still needs listening and real-device review. The matching Sites
+copy remains owner-only.
+
+`functions/resonance/_middleware.js` enables same-origin microphone access only
+for the practice document. Keep its three exact paths in `_routes.json`; the
+global microphone restriction and other applications remain unchanged. The
+practice tests run with the existing `npm run check` command.
+
 `/resonance/` hosts the cat-song vinyl collection, audio, portraits, lyrics, and
 Chmunk's analysis page. Its static files live in `public/resonance/` and are
 included in normal Pages deployments. The ChatGPT Sites copy remains separate;

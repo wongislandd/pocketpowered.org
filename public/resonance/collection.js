@@ -6,6 +6,7 @@ const tracks = [
   {
     id: "chmunk-biscuit-business",
     title: "Biscuit Business",
+    practice: "practice.html?song=chmunk",
     artist: "Chmunk",
     duration: "2:00",
     audio: "original.mp3",
@@ -18,6 +19,7 @@ const tracks = [
   {
     id: "chmeezus-sacred-spoon",
     title: "Sacred Spoon",
+    practice: "practice.html?song=chmeeze",
     artist: "Chmeeze",
     duration: "2:00",
     audio: "sacred-spoon-first-person.mp3",
@@ -29,6 +31,7 @@ const tracks = [
   {
     id: "chmit-mr-inconvenient",
     title: "Mr. Inconvenient",
+    practice: "practice.html?song=chmit",
     artist: "Chmit",
     duration: "2:00",
     audio: "mr-inconvenient-first-person.mp3",
@@ -40,6 +43,7 @@ const tracks = [
   {
     id: "bean-breakfast-was-due",
     title: "Breakfast Was Due",
+    practice: "practice.html?song=bean",
     artist: "Bean",
     duration: "2:30",
     audio: "breakfast-was-due-sunlit-pop.mp3",
@@ -102,9 +106,10 @@ for (const [index, track] of tracks.entries()) {
   const time = element("span", "duration", track.duration);
   row.append(toggle, time);
   const links = element("div", "detail-links");
-  for (const [text, href] of [["Analysis", track.analysis], ["Lyrics", track.lyrics], ["Download", track.audio]]) {
+  for (const [text, href] of [["Sing along", track.practice], ["Analysis", track.analysis], ["Lyrics", track.lyrics], ["Download", track.audio]]) {
     if (!href) continue;
     const link = element("a", "", text);
+    if (text === "Sing along") link.className = "sing-link";
     link.href = href;
     link.setAttribute("aria-label", `${text} — ${track.title}`);
     if (text === "Download") link.setAttribute("download", "");
