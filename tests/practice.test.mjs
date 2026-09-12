@@ -49,6 +49,15 @@ test('capture timestamps include output delay, seek offset, and manual correctio
   assert.ok(Math.abs(C.sampleSongTime(100.2,.08,95,40,100)-45.02)<1e-9);
   assert.equal(C.before([{start:1},{start:2},{start:4}],2),1);
 });
+test('upcoming lyrics do not cut off a sung word and release into instrumental gaps', () => {
+  const lines=[{start:2,end:4},{start:4.2,end:6},{start:10,end:12}];
+  assert.equal(C.lyricLineAt(lines,0),-1);
+  assert.equal(C.lyricLineAt(lines,1.5),0);
+  assert.equal(C.lyricLineAt(lines,3.99),0);
+  assert.equal(C.lyricLineAt(lines,4.1),1);
+  assert.equal(C.lyricLineAt(lines,8),-1);
+  assert.equal(C.lyricLineAt(lines,13.5),-1);
+});
 test('every published recording has matched stems, valid word times, and scoring disabled', () => {
   const records=JSON.parse(fs.readFileSync(path.join(publicDir,'practice/records.json')));
   assert.equal(records.length,4);

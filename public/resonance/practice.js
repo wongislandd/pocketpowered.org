@@ -176,8 +176,7 @@
   function updateLyrics(time) {
     if (!data) return;
     const lines = data.lyrics.lines;
-    let index = C.before(lines, time + .45);
-    if (index >= 0 && time > lines[index].end + 1 && (!lines[index + 1] || lines[index + 1].start - time > 1.5)) index = -1;
+    const index = C.lyricLineAt(lines, time);
     if (index !== lastLine) {
       lastLine = index; wordNodes = [];
       ui["lyric-current"].replaceChildren();

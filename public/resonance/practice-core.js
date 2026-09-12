@@ -51,8 +51,16 @@ globalThis.ResonanceCore = (() => {
     if (time >= word.start) return "active";
     return "";
   }
+  function lyricLineAt(lines, time) {
+    let index = before(lines, time);
+    const next = lines[index + 1];
+    // A short entrance preview must never replace a line that is still sung.
+    if (next && next.start - time <= .75 && (index < 0 || time >= lines[index].end)) index++;
+    if (index >= 0 && time > lines[index].end + 1 && (!lines[index + 1] || lines[index + 1].start - time > 1.5)) return -1;
+    return index;
+  }
   function sampleSongTime(sampleContextTime, outputDelay, startContextTime, offset, adjustmentMs) {
     return sampleContextTime - outputDelay - startContextTime + offset - adjustmentMs / 1000;
   }
-  return { detectPitch, midi, clamp, before, targetAt, wordState, sampleSongTime };
+  return { detectPitch, midi, clamp, before, targetAt, wordState, lyricLineAt, sampleSongTime };
 })();
