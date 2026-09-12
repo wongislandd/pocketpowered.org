@@ -31,11 +31,22 @@ const tracks = [
     title: "Mr. Inconvenient",
     artist: "Chmit",
     duration: "2:00",
-    audio: "chmit-mr-inconvenient.mp3",
+    audio: "mr-inconvenient-first-person.mp3",
     vinyl: "vinyl.png",
     photo: "chmit-vintage-label.png",
     monogram: "C",
     lyrics: "chmit-lyrics.txt"
+  },
+  {
+    id: "bean-breakfast-was-due",
+    title: "Breakfast Was Due",
+    artist: "Bean",
+    duration: "2:30",
+    audio: "bean-breakfast-was-due.mp3",
+    vinyl: "vinyl.png",
+    photo: "bean-vintage-label.png",
+    monogram: "B",
+    lyrics: "bean-lyrics.txt"
   }
 ];
 
