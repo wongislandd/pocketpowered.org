@@ -2,7 +2,7 @@
 (() => {
   const C = globalThis.ResonanceCore;
   const $ = id => document.getElementById(id);
-  const ui = Object.fromEntries(["song-select", "song-title", "artist", "portrait", "sing", "listen", "mic-off", "restart", "seek", "time", "duration", "status", "feedback", "backing", "guide", "line-select", "loop", "timing", "timing-value", "lyric-current", "lyric-next", "lyric-section", "complete", "session-summary", "lyrics-download"].map(id => [id, $(id)]));
+  const ui = Object.fromEntries(["song-select", "song-title", "artist", "portrait", "sing", "listen", "mic-off", "restart", "seek", "time", "duration", "status", "feedback", "backing", "guide", "line-select", "loop", "timing", "timing-value", "lyric-current", "lyric-next", "lyric-section", "complete", "session-summary", "lyrics-download", "voice-key"].map(id => [id, $(id)]));
   let records = [], record, data, context, buffers, gains, sources = [];
   let running = false, busy = false, offset = 0, startedAt = 0, playEpoch = 0, loadEpoch = 0, actionEpoch = 0;
   let stream, micSource, worklet, silent, micEpoch = 0, workletLoaded = false;
@@ -11,7 +11,7 @@
   let yLow = 45, yHigh = 80, lastPaint = 0, flowClock = 0;
   const flowField = new Float32Array(257), flowTargets = new Float32Array(257);
   const flowEnergy = new Float32Array(257), energyTargets = new Float32Array(257);
-  let flowActivity = 0;
+  let flowActivity = 0, viewLow = 45, viewHigh = 80;
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const canvas = $("ribbon"), painter = canvas.getContext("2d");
   const formatTime = time => `${Math.floor(Math.max(0, time) / 60)}:${String(Math.floor(Math.max(0, time) % 60)).padStart(2, "0")}`;
@@ -23,6 +23,7 @@
     ui.sing.textContent = running && stream ? "Pause" : stream ? "Resume singing" : "Sing with mic";
     ui.listen.textContent = running && !stream ? "Pause" : stream ? "Listen only" : offset > 0 ? "Resume listening" : "Listen first";
     ui["mic-off"].hidden = !stream;
+    ui["voice-key"].textContent = !stream ? "You · mic off" : running ? "You · listening" : "You · paused";
     ui.loop.disabled = !loopLine;
     ui.loop.setAttribute("aria-pressed", String(loopOn));
     ui.loop.textContent = loopOn ? "Repeat on" : "Repeat off";
@@ -143,6 +144,7 @@
     else stableFrames = 0;
     const aligned = stableFrames >= 4;
     lastPitch = { time, value, aligned, energy: C.clamp((sample.rms - .008) / .12, 0, 1), at: performance.now() };
+    ui["voice-key"].textContent = value !== null ? "You · live" : lastPitch.energy > .03 ? "You · finding pitch" : "You · quiet";
     voice.push(lastPitch);
     while (voice.length && voice[0].time < time - 6) voice.shift();
     if (value !== null && lastCaptureTime !== null) detectedSeconds += C.clamp(sample.contextTime - lastCaptureTime, 0, .1);
@@ -215,7 +217,14 @@
     if (canvas.width !== Math.round(width * ratio) || canvas.height !== Math.round(height * ratio)) { canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio); }
     painter.setTransform(ratio, 0, 0, ratio, 0, 0); painter.clearRect(0, 0, width, height);
     const x = t => width * (.5 + (t - time) / 4.8);
-    const y = midi => height - 42 - (midi - yLow) / (yHigh - yLow) * (height - 84);
+    // Share one scale for both streams, expanding it when a singer is outside
+    // the recording's range instead of silently drawing their voice offscreen.
+    const recentPitches = stream ? voice.filter(p => p.time >= time - 2.4 && p.value !== null).map(p => p.value) : [];
+    const low = Math.min(yLow, ...recentPitches.map(p => p - 3));
+    const high = Math.max(yHigh, ...recentPitches.map(p => p + 3));
+    const settling = reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed * 12);
+    viewLow += (low - viewLow) * settling; viewHigh += (high - viewHigh) * settling;
+    const y = midi => height - 42 - (midi - viewLow) / (viewHigh - viewLow) * (height - 84);
     const fresh = Boolean(stream && running && lastPitch && lastPitch.value !== null && now - lastPitch.at < 220);
     const together = fresh && lastPitch.aligned;
     const flowTime = reducedMotion.matches ? 0 : flowClock;
@@ -297,22 +306,39 @@
       painter.beginPath(); painter.arc(u * width, current(u, lane, depth), size, 0, Math.PI * 2); painter.fill();
     }
 
-    // A sung voice is another particle strand, positioned only from actual
-    // microphone samples. It joins the reference when the pitches agree.
-    if (running && stream && voice.length) {
-      const voiceCount = reducedMotion.matches ? 150 : 520;
-      for (let i = 0; i < voiceCount; i++) {
-        const age = fract(i * .61803398875 + flowTime * .35) * 2.4;
-        const t = time - age, index = C.before(voice, t, p => p.time);
-        const point = voice[index], next = voice[index + 1];
-        if (!point || point.value === null || t - point.time > .08 || !point.energy) continue;
-        const blend = next && next.value !== null && next.time - point.time < .08 ? C.clamp((t - point.time) / (next.time - point.time), 0, 1) : 0;
+    // A continuous pink stream makes mic presence visible even between notes.
+    // Unpitched/silent sections stay on a neutral baseline; only valid measured
+    // pitches move vertically. The stream ends at NOW, never inventing a future.
+    if (stream) {
+      const voiceCount = reducedMotion.matches ? 300 : Math.min(1100, Math.round(width * 1.3));
+      const baseline = Math.min(height - 24, height * .5 + 38);
+      function voiceAt(t) {
+        if (!running) return { y: baseline, energy: 0, pitched: false, aligned: false };
+        const index = C.before(voice, t, p => p.time), point = voice[index], next = voice[index + 1];
+        if (!point || t - point.time > .12) return { y: baseline, energy: 0, pitched: false, aligned: false };
+        if (point.value === null) return { y: baseline, energy: point.energy, pitched: false, aligned: false };
+        const blend = next && next.value !== null && next.time - point.time < .12 ? C.clamp((t - point.time) / (next.time - point.time), 0, 1) : 0;
         const pitch = point.value + ((next?.value ?? point.value) - point.value) * blend;
+        return { y: y(pitch), energy: point.energy, pitched: true, aligned: point.aligned };
+      }
+      for (let i = 0; i < voiceCount; i++) {
+        const position = fract(i * .61803398875 + flowTime * .35);
+        const age = position * (i > voiceCount * .7 ? .22 : 2.4);
+        const t = time - age, point = voiceAt(t);
         const lane = fract(i * .754877666) - .5;
-        const px = x(t), py = y(pitch) + lane * (2 + point.energy * 12);
-        painter.globalAlpha = (1 - age / 2.4) * (.3 + point.energy * .5);
-        painter.fillStyle = point.aligned ? "#9876b6" : i % 3 ? "#d791a6" : "#d8a387";
-        painter.beginPath(); painter.arc(px, py, .5 + fract(i * .4142), 0, Math.PI * 2); painter.fill();
+        const px = x(t), py = point.y + lane * (point.pitched ? 7 + point.energy * 16 : 2 + point.energy * 5);
+        painter.globalAlpha = (.3 + .7 * (1 - age / 2.4)) * (point.pitched ? .7 : .32);
+        painter.fillStyle = painter.strokeStyle = point.aligned ? "#a45496" : "#c76082";
+        if (!reducedMotion.matches) {
+          const tailTime = Math.max(time - 2.4, t - .035), tail = voiceAt(tailTime);
+          // A rest is a rest: never connect the neutral baseline to a note.
+          if (tail.pitched === point.pitched && Math.abs(tail.y - point.y) < 25) {
+            painter.lineWidth = .65;
+            painter.beginPath(); painter.moveTo(x(tailTime), tail.y + lane * (point.pitched ? 7 + tail.energy * 16 : 2 + tail.energy * 5));
+            painter.lineTo(px, py); painter.stroke();
+          }
+        }
+        painter.beginPath(); painter.arc(px, py, .55 + fract(i * .4142) * .8, 0, Math.PI * 2); painter.fill();
       }
     }
     painter.globalAlpha = 1;
@@ -341,6 +367,7 @@
       const pitches = data.pitch.filter(p => p[1] !== null && p[2] >= .5).map(p => p[1]).sort((a, b) => a - b);
       yLow = Math.floor(pitches[Math.floor(pitches.length * .02)] || 45) - 4;
       yHigh = Math.max(yLow + 16, Math.ceil(pitches[Math.floor(pitches.length * .98)] || 78) + 4);
+      viewLow = yLow; viewHigh = yHigh;
       document.title = `${selected.title} — Sing with Resonance`;
       const url = new URL(location.href); url.searchParams.set("song", selected.key); history.replaceState(null, "", url);
       status(""); updateLyrics(0);

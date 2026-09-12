@@ -24,7 +24,7 @@ function harness({denyMic=false,deferAudio=false,reducedMotion=false,width=950,f
   const ctx2d=new Proxy({},{get:(_target,key)=>{
     if (['arc','moveTo','lineTo'].includes(key)) return (...values)=>{
       assert.ok(values.every(Number.isFinite),'canvas geometry must stay finite');
-      if(key==='arc') drawn.push(values);
+      if(key==='arc'){values.color=_target.fillStyle;values.alpha=_target.globalAlpha;drawn.push(values);}
     };
     return ()=>{};
   }});
@@ -137,4 +137,33 @@ test('particles form the centered chart and vocal energy flattens silence',async
       assert.ok(Math.abs(mean-142.5)<6,'the particle body itself follows the reference pitch');
     }
   }
+});
+
+test('the You stream remains visible between notes and is absent when the mic is off',async()=>{
+  const h=harness();await flush();
+  const pink=frame=>frame.filter(p=>p.color==='#c76082'||p.color==='#a45496');
+  assert.equal(pink(h.paint(1000)).length,0);
+  assert.equal(h.get('voice-key').textContent,'You · mic off');
+  await h.get('sing').fire('click');
+  let particles=pink(h.paint(1100));
+  assert.ok(particles.length>500,'mic presence is a continuous stream before a pitch is detected');
+  assert.ok(Math.max(...particles.map(p=>p[1]))-Math.min(...particles.map(p=>p[1]))<3);
+  h.contexts[0].currentTime=20;
+  h.worklets[0].port.onmessage({data:{contextTime:19.95,hz:null,confidence:0,rms:.002}});
+  assert.equal(h.get('voice-key').textContent,'You · quiet');
+  assert.ok(pink(h.paint(1200)).length>500);
+  await h.get('mic-off').fire('click');
+  assert.equal(pink(h.paint(1300)).length,0);
+  assert.equal(h.get('voice-key').textContent,'You · mic off');
+});
+test('quiet valid low notes stay visible inside the shared chart range',async()=>{
+  const h=harness();await flush();await h.get('sing').fire('click');
+  h.contexts[0].currentTime=20;
+  h.worklets[0].port.onmessage({data:{contextTime:19.95,hz:80,confidence:.99,rms:.009}});
+  let frame;
+  for(let t=2000;t<2800;t+=50)frame=h.paint(t);
+  const pink=frame.filter(p=>p.color==='#c76082');
+  assert.ok(pink.every(p=>p[1]>0&&p[1]<218),'voice outside the song range must not disappear offscreen');
+  assert.ok(pink.filter(p=>p[1]>160).length>40,'the low measured note is visibly different from the neutral baseline');
+  assert.equal(h.get('voice-key').textContent,'You · live');
 });
