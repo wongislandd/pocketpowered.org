@@ -9,7 +9,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const publicDir=process.env.RESONANCE_PUBLIC || path.join(root,'public/resonance');
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 
-function harness({denyMic=false,deferAudio=false,reducedMotion=false,width=950}={}){
+function harness({denyMic=false,deferAudio=false,reducedMotion=false,width=950,fixture=null}={}){
   class Element {
     value=''; textContent=''; hidden=false; disabled=false; handlers={}; children=[]; attributes={};
     addEventListener(event,fn){this.handlers[event]=fn;}
@@ -21,7 +21,7 @@ function harness({denyMic=false,deferAudio=false,reducedMotion=false,width=950}=
   }
   const nodes=new Map();const get=id=>{if(!nodes.has(id))nodes.set(id,new Element());return nodes.get(id);};
   let drawn=[];
-  const ctx2d=new Proxy({},{get:(target,key)=>{
+  const ctx2d=new Proxy({},{get:(_target,key)=>{
     if (['arc','moveTo','lineTo'].includes(key)) return (...values)=>{
       assert.ok(values.every(Number.isFinite),'canvas geometry must stay finite');
       if(key==='arc') drawn.push(values);
@@ -56,8 +56,8 @@ function harness({denyMic=false,deferAudio=false,reducedMotion=false,width=950}=
   const window={AudioContext,handlers:{},addEventListener(event,fn){this.handlers[event]=fn;}};
   let frame;
   const box=vm.createContext({console,window,document,navigator:{mediaDevices:media},location:{href:'https://example.com/practice.html?song=chmunk'},history:{replaceState(){}},URL,performance:{now:()=>1000},devicePixelRatio:1,AudioWorkletNode,Option:class extends Element{constructor(text,value){super();this.textContent=text;this.value=value;}},matchMedia:()=>({matches:reducedMotion}),requestAnimationFrame:fn=>{frame=fn;},fetch:async url=>{
-    const file=path.join(publicDir,url);
-    return {ok:fs.existsSync(file),json:async()=>JSON.parse(fs.readFileSync(file)),arrayBuffer:async()=>new ArrayBuffer(8)};
+    const file=path.join(publicDir,url.split('?')[0]);
+    return {ok:fs.existsSync(file),json:async()=>{const result=JSON.parse(fs.readFileSync(file));return fixture&&result.pitch?{...result,...fixture}:result;},arrayBuffer:async()=>new ArrayBuffer(8)};
   }});
   vm.runInContext(fs.readFileSync(path.join(publicDir,'practice-core.js'),'utf8'),box);
   vm.runInContext(fs.readFileSync(path.join(publicDir,'practice.js'),'utf8'),box);
@@ -116,4 +116,25 @@ test('the decorative current keeps flowing while paused at desktop and mobile si
 test('reduced motion keeps the idle current still across frames',async()=>{
   const h=harness({reducedMotion:true});await flush();
   assert.deepEqual(h.paint(2000),h.paint(2100));
+});
+
+test('particles form the centered chart and vocal energy flattens silence',async()=>{
+  const pitch=Array.from({length:12001},(_,i)=>[i*.01,72,.99]);
+  for(const loudness of [0,.003,.25]){
+    const h=harness({fixture:{pitch,vocalEnvelope:{step:.02,peak:.25,rms:Array(6002).fill(loudness)}}});await flush();
+    h.get('seek').value='10';await h.get('seek').fire('input');
+    await h.get('listen').fire('click');
+    let frame;
+    for(let t=2000;t<3200;t+=50)frame=h.paint(t);
+    const center=frame.filter(p=>Math.abs(p[0]-475)<40);
+    assert.ok(center.length>frame.length*.3,'the current moment is concentrated at the center');
+    assert.ok(frame.every(p=>p[2]<1.5),'there is no separate large playhead dot');
+    const low=Math.min(...center.map(p=>p[1])), high=Math.max(...center.map(p=>p[1]));
+    if(loudness<.004){assert.ok(high-low<3,'silence and low stem bleed form a flat stream');}
+    else{
+      assert.ok(high-low>20,'strong vocals expand the particle wave');
+      const mean=center.reduce((sum,p)=>sum+p[1],0)/center.length;
+      assert.ok(Math.abs(mean-142.5)<6,'the particle body itself follows the reference pitch');
+    }
+  }
 });

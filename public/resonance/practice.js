@@ -9,8 +9,9 @@
   let voice = [], lastPitch = null, stableFrames = 0, lastLine = -2, wordNodes = [];
   let loopOn = false, loopLine = null, detectedSeconds = 0, lastCaptureTime = null;
   let yLow = 45, yHigh = 80, lastPaint = 0, flowClock = 0;
-  const flowField = new Float32Array(129), flowTargets = new Float32Array(129);
-  let fieldReady = false;
+  const flowField = new Float32Array(257), flowTargets = new Float32Array(257);
+  const flowEnergy = new Float32Array(257), energyTargets = new Float32Array(257);
+  let flowActivity = 0;
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const canvas = $("ribbon"), painter = canvas.getContext("2d");
   const formatTime = time => `${Math.floor(Math.max(0, time) / 60)}:${String(Math.floor(Math.max(0, time) % 60)).padStart(2, "0")}`;
@@ -141,7 +142,7 @@
     if (cents !== null && Math.abs(cents) < (stableFrames >= 4 ? 70 : 45)) stableFrames++;
     else stableFrames = 0;
     const aligned = stableFrames >= 4;
-    lastPitch = { time, value, aligned, at: performance.now() };
+    lastPitch = { time, value, aligned, energy: C.clamp((sample.rms - .008) / .12, 0, 1), at: performance.now() };
     voice.push(lastPitch);
     while (voice.length && voice[0].time < time - 6) voice.shift();
     if (value !== null && lastCaptureTime !== null) detectedSeconds += C.clamp(sample.contextTime - lastCaptureTime, 0, .1);
@@ -213,135 +214,108 @@
     const ratio = Math.min(devicePixelRatio || 1, 2);
     if (canvas.width !== Math.round(width * ratio) || canvas.height !== Math.round(height * ratio)) { canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio); }
     painter.setTransform(ratio, 0, 0, ratio, 0, 0); painter.clearRect(0, 0, width, height);
-    const x = t => width * .28 + (t - time) / 3 * width * .72;
+    const x = t => width * (.5 + (t - time) / 4.8);
     const y = midi => height - 42 - (midi - yLow) / (yHigh - yLow) * (height - 84);
-    const history = voice.filter(v => v.time >= time - 1.4).map(v => [v.time, v.value, 1]);
     const fresh = Boolean(stream && running && lastPitch && lastPitch.value !== null && now - lastPitch.at < 220);
     const together = fresh && lastPitch.aligned;
     const flowTime = reducedMotion.matches ? 0 : flowClock;
     const fract = value => value - Math.floor(value);
     const palette = ["#389ba9", "#728bca", "#598cb5", "#62b5b5", "#9c91c6"];
-    const count = reducedMotion.matches ? 380 : Math.min(1800, Math.round(width * 1.8));
+    const count = reducedMotion.matches ? 480 : Math.min(1900, Math.round(width * 1.9));
+    flowActivity += ((running ? 1 : 0) - flowActivity) * (reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed * 8));
 
-    // A slow, spatially smoothed field keeps the decorative current connected
-    // across rests and pitch jumps. Only the thin contour below is note data.
+    // The particle field IS the chart: x maps to song time, y to vocal pitch,
+    // and thickness/turbulence to measured vocal energy. Silence returns to a
+    // thin baseline. There is no independent chart line or playhead dot.
     for (let i = 0; i < flowTargets.length; i++) {
-      const u = i / (flowTargets.length - 1);
-      const target = data ? C.targetAt(data.pitch, time + (u - .28) / .72 * 3) : null;
-      flowTargets[i] = target === null ? height * .5 : height * .5 + (y(target) - height * .5) * .65;
+      const t = time + (i / (flowTargets.length - 1) - .5) * 4.8;
+      const target = data ? C.targetAt(data.pitch, t) : null;
+      const energy = data ? C.energyAt(data.vocalEnvelope, t) * flowActivity : 0;
+      energyTargets[i] = energy;
+      flowTargets[i] = height * .5 + (target === null ? 0 : y(target) - height * .5) * Math.min(1, energy * 2.5);
     }
-    const settling = reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed * 3);
+    // A 38 ms spatial filter joins neighboring grains without lagging the
+    // center behind the audible clock or bridging whole instrumental breaks.
     for (let i = 0; i < flowField.length; i++) {
-      let sum = 0, weight = 0;
-      for (let j = -10; j <= 10; j++) {
-        const w = 11 - Math.abs(j);
-        sum += flowTargets[C.clamp(i + j, 0, flowTargets.length - 1)] * w; weight += w;
-      }
-      const center = sum / weight;
-      flowField[i] = fieldReady ? flowField[i] + (center - flowField[i]) * settling : center;
+      const left = Math.max(0, i - 1), right = Math.min(flowField.length - 1, i + 1);
+      flowField[i] = (flowTargets[left] + flowTargets[i] * 2 + flowTargets[right]) / 4;
+      flowEnergy[i] = (energyTargets[left] + energyTargets[i] * 2 + energyTargets[right]) / 4;
     }
-    fieldReady = true;
     const envelope = u => Math.sin(C.clamp(u, 0, 1) * Math.PI) ** .65;
+    const focus = u => Math.exp(-(((u - .5) / .045) ** 2));
+    function fieldAt(field, u) {
+      const bin = C.clamp(u, 0, 1) * (field.length - 1), left = Math.floor(bin), fraction = bin - left;
+      return field[left] * (1 - fraction) + field[Math.min(left + 1, field.length - 1)] * fraction;
+    }
     function current(u, lane, depth) {
-      const bin = C.clamp(u, 0, 1) * (flowField.length - 1);
-      const left = Math.floor(bin), fraction = bin - left;
-      const center = flowField[left] * (1 - fraction) + flowField[Math.min(left + 1, flowField.length - 1)] * fraction;
-      // All particles ride the same traveling waves. Depth produces braided
-      // sheets, instead of independent jitter or disconnected particle bursts.
-      const wave = u * 8.5 + flowTime * 1.35;
-      const breadth = 19 + 15 * Math.sin(u * 5 - flowTime * .65) ** 2;
+      const center = fieldAt(flowField, u), energy = fieldAt(flowEnergy, u);
+      const wave = u * 16 + flowTime * 2.5;
+      const breadth = 1.1 + energy * (12 + 5 * Math.sin(wave * .4) ** 2);
       return center + envelope(u) * (
-        Math.sin(wave) * 20 + Math.sin(u * 17 + flowTime * 2.1) * 7
-        + lane * breadth * (.8 + .35 * Math.cos(wave))
-        + Math.sin(wave + depth * Math.PI * 2) * (9 + Math.abs(lane) * 10)
+        lane * breadth + energy * (Math.sin(wave + depth * Math.PI * 2) * 5
+        + Math.sin(u * 31 + flowTime * 3.2 + depth * 4) * 2)
       );
     }
     painter.lineCap = "round"; painter.lineJoin = "round";
-    // Fine, unbroken filaments provide continuity beneath the moving grains.
-    for (let strand = 0; strand < 18; strand++) {
-      const lane = (strand / 17 - .5) * 2, depth = fract(strand * .61803398875);
+    for (let strand = 0; strand < 14; strand++) {
+      const lane = (strand / 13 - .5) * 2, depth = fract(strand * .61803398875);
       painter.strokeStyle = palette[strand % palette.length];
-      for (let section = 0; section < 10; section++) {
+      for (let section = 0; section < 16; section++) {
         painter.beginPath();
-        for (let step = 0; step <= 10; step++) {
-          const u = (section + step / 10) / 10;
-          const py = current(u, lane, depth);
-          if (!step) painter.moveTo(u * width, py); else painter.lineTo(u * width, py);
+        for (let step = 0; step <= 16; step++) {
+          const u = (section + step / 16) / 16;
+          if (!step) painter.moveTo(u * width, current(u, lane, depth)); else painter.lineTo(u * width, current(u, lane, depth));
         }
-        painter.globalAlpha = envelope((section + .5) / 10) * .065;
-        painter.lineWidth = strand % 3 === 0 ? 2 : .65; painter.stroke();
+        const u = (section + .5) / 16;
+        painter.globalAlpha = envelope(u) * (.04 + focus(u) * .055);
+        painter.lineWidth = .65; painter.stroke();
       }
     }
     for (let i = 0; i < count; i++) {
       const seed = fract(i * .61803398875), lane = (fract(i * .754877666) - .5) * 2;
-      const depth = fract(i * .569840291), speed = .105 + depth * .07;
-      const u = fract(seed - flowTime * speed);
-      const py = current(u, lane, depth), px = u * width;
-      const opacity = envelope(u) * (.2 + (1 - Math.abs(lane)) * .4);
-      const blend = together && Math.abs(px - x(time)) < 65;
-      painter.fillStyle = painter.strokeStyle = blend ? "#8d70b1" : palette[i % palette.length];
-      // Reconstruct each curved wake on the same field as its head. There is
-      // no wrapping line across the viewport and no accumulated canvas ghosting.
+      const depth = fract(i * .569840291), speed = .17 + depth * .065;
+      const position = fract(seed - flowTime * speed);
+      // The final quarter of the grains concentrate around NOW at the exact
+      // center, making the current moment part of the wave, not an overlay.
+      const u = i > count * .75 ? .5 + (position - .5) * .08 : position;
+      const strength = fieldAt(flowEnergy, u), focal = focus(u);
+      const opacity = envelope(u) * (.14 + (1 - Math.abs(lane)) * .28 + focal * .2);
+      painter.fillStyle = painter.strokeStyle = together && focal > .5 ? "#8d70b1" : palette[i % palette.length];
       if (!reducedMotion.matches) {
-        const tail = .011 + depth * .03;
-        for (let segment = 3; segment >= 0; segment--) {
-          const a = u + tail * segment / 4, b = Math.min(1, u + tail * (segment + 1) / 4);
+        const tail = .006 + depth * (.009 + strength * .012);
+        for (let segment = 2; segment >= 0; segment--) {
+          const a = u + tail * segment / 3, b = Math.min(1, u + tail * (segment + 1) / 3);
           if (a >= 1) continue;
-          painter.globalAlpha = opacity * (1 - segment / 4) * .38;
-          painter.lineWidth = .55 + depth * .5;
+          painter.globalAlpha = opacity * (1 - segment / 3) * .3;
+          painter.lineWidth = .55 + depth * .4;
           painter.beginPath(); painter.moveTo(a * width, current(a, lane, depth));
           painter.lineTo(b * width, current(b, lane, depth)); painter.stroke();
         }
       }
       painter.globalAlpha = opacity;
-      const size = .45 + depth * .95;
-      painter.beginPath(); painter.arc(px, py, size, 0, Math.PI * 2); painter.fill();
+      const size = .4 + depth * .65 + focal * .35;
+      painter.beginPath(); painter.arc(u * width, current(u, lane, depth), size, 0, Math.PI * 2); painter.fill();
+    }
+
+    // A sung voice is another particle strand, positioned only from actual
+    // microphone samples. It joins the reference when the pitches agree.
+    if (running && stream && voice.length) {
+      const voiceCount = reducedMotion.matches ? 150 : 520;
+      for (let i = 0; i < voiceCount; i++) {
+        const age = fract(i * .61803398875 + flowTime * .35) * 2.4;
+        const t = time - age, index = C.before(voice, t, p => p.time);
+        const point = voice[index], next = voice[index + 1];
+        if (!point || point.value === null || t - point.time > .08 || !point.energy) continue;
+        const blend = next && next.value !== null && next.time - point.time < .08 ? C.clamp((t - point.time) / (next.time - point.time), 0, 1) : 0;
+        const pitch = point.value + ((next?.value ?? point.value) - point.value) * blend;
+        const lane = fract(i * .754877666) - .5;
+        const px = x(t), py = y(pitch) + lane * (2 + point.energy * 12);
+        painter.globalAlpha = (1 - age / 2.4) * (.3 + point.energy * .5);
+        painter.fillStyle = point.aligned ? "#9876b6" : i % 3 ? "#d791a6" : "#d8a387";
+        painter.beginPath(); painter.arc(px, py, .5 + fract(i * .4142), 0, Math.PI * 2); painter.fill();
+      }
     }
     painter.globalAlpha = 1;
-    if (!data) return;
-    const begin = Math.max(0, C.before(data.pitch, time - 1.25, p => p[0]));
-    const visible = [];
-    for (let i = begin; i < data.pitch.length && data.pitch[i][0] <= time + 3.05; i++) visible.push(data.pitch[i]);
-    function ribbon(points, color, stroke) {
-      painter.beginPath(); let previous = null;
-      for (const point of points) {
-        if (point[1] === null || point[2] < .5) { previous = null; continue; }
-        const px = x(point[0]), py = y(point[1]);
-        if (!previous || point[0] - previous[0] > .09 || Math.abs(point[1] - previous[1]) > 5) painter.moveTo(px, py); else painter.lineTo(px, py);
-        previous = point;
-      }
-      painter.lineWidth = stroke; painter.lineCap = "round"; painter.lineJoin = "round"; painter.strokeStyle = color; painter.stroke();
-    }
-    ribbon(visible, "#50979e50", 1);
-    ribbon(history, together ? "#886ba8" : "#ca7f94", 1.4);
-    if (history.length && !reducedMotion.matches) {
-      for (let i = 0; i < 260; i++) {
-        const age = fract(i * .61803398875 + flowTime * 2) * 1.35;
-        const t = time - age;
-        const point = history[C.before(history, t, p => p[0])];
-        if (!point || point[1] === null || t - point[0] > .08) continue;
-        const lane = fract(i * .754877666) - .5;
-        const px = x(t), py = y(point[1]) + lane * (14 + age * 18) + Math.sin(age * 12 + now * .001 + i) * 3;
-        painter.globalAlpha = (1 - age / 1.35) * .55;
-        painter.fillStyle = together && age < .3 ? "#9876b6" : i % 3 ? "#d791a6" : "#d8a387";
-        painter.beginPath(); painter.arc(px, py, .6 + fract(i * .4142), 0, Math.PI * 2); painter.fill();
-      }
-      painter.globalAlpha = 1;
-    }
-    const currentTarget = C.targetAt(data.pitch, time);
-    if (currentTarget !== null) {
-      painter.fillStyle = "#418e98";
-      painter.beginPath(); painter.arc(x(time), y(currentTarget), 2.5, 0, Math.PI * 2); painter.fill();
-    }
-    if (fresh) {
-      const px = x(lastPitch.time), py = y(lastPitch.value);
-      painter.fillStyle = together ? "#8665a8" : "#c5758d";
-      if (py < 7 || py > height - 7) {
-        painter.font = "16px sans-serif"; painter.fillText(py < 7 ? "↑" : "↓", px - 5, C.clamp(py, 15, height - 6));
-      } else {
-        painter.beginPath(); painter.arc(px, py, together ? 4 : 3.5, 0, Math.PI * 2); painter.fill();
-      }
-    }
   }
 
   async function selectRecord(key) {
@@ -356,7 +330,7 @@
     ui.complete.hidden = true; ui["line-select"].replaceChildren(new Option("Whole song", ""));
     ui["lyric-current"].textContent = "A little room for your voice."; ui["lyric-next"].textContent = "";
     try {
-      const response = await fetch(selected.practice);
+      const response = await fetch(`${selected.practice}?v=particle-chart-1`);
       if (!response.ok) throw new Error("This record’s practice data couldn’t load. Reload the page to try again.");
       const result = await response.json();
       if (epoch !== loadEpoch) return;

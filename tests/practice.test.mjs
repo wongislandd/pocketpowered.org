@@ -67,6 +67,9 @@ test('every published recording has matched stems, valid word times, and scoring
     assert.equal(data.sourceHash,record.sourceHash);assert.equal(data.lyrics.sourceHash,record.sourceHash);
     assert.equal(data.scoringEnabled,false);assert.equal(data.reviewState,'needs_review');
     assert.ok(data.pitch.length>10000);assert.ok(data.lyrics.lines.length>30);
+    assert.ok(data.vocalEnvelope.peak>0);
+    assert.ok(Math.abs(data.vocalEnvelope.rms.length*data.vocalEnvelope.step-data.duration)<.04);
+    assert.ok(data.vocalEnvelope.rms.every(v=>Number.isFinite(v)&&v>=0));
     let end=0;
     for(const line of data.lyrics.lines){
       assert.ok(line.end>line.start,`${record.key}: empty line`);
@@ -76,4 +79,14 @@ test('every published recording has matched stems, valid word times, and scoring
       for(const word of line.words){assert.ok(Number.isFinite(word.start)&&Number.isFinite(word.end));assert.ok(word.start>=line.start-.001&&word.end<=line.end+.001);assert.ok(word.end>=word.start);}
     }
   }
+});
+
+test('vocal energy preserves silence, loudness order, interpolation and bounds',()=>{
+  const envelope={step:.02,peak:.2,rms:[0,.002,.02,.1,.2]};
+  assert.equal(C.energyAt(envelope,0),0);assert.equal(C.energyAt(envelope,.02),0);
+  assert.ok(C.energyAt(envelope,.04)<C.energyAt(envelope,.06));
+  assert.ok(C.energyAt(envelope,.05)>C.energyAt(envelope,.04));
+  assert.equal(C.energyAt(envelope,.08),1);
+  assert.equal(C.energyAt(envelope,-1),0);assert.equal(C.energyAt(envelope,1),0);
+  assert.equal(C.energyAt(null,1),0);
 });

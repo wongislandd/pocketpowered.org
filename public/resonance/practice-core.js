@@ -45,6 +45,14 @@ globalThis.ResonanceCore = (() => {
     if (!next || next[1] === null || next[2] < .5 || next[0] - p[0] > .04) return p[1];
     return p[1] + (next[1] - p[1]) * clamp((time - p[0]) / (next[0] - p[0]), 0, 1);
   }
+  function energyAt(envelope, time) {
+    if (!envelope || time < 0 || time >= envelope.rms.length * envelope.step) return 0;
+    const position = time / envelope.step, index = Math.floor(position);
+    const a = envelope.rms[index], b = envelope.rms[Math.min(index + 1, envelope.rms.length - 1)];
+    const rms = a + (b - a) * (position - index);
+    // An absolute floor prevents stem bleed from making silence look loud.
+    return Math.sqrt(clamp((rms - .004) / Math.max(.02, envelope.peak - .004), 0, 1));
+  }
   function wordState(word, time) {
     if (word.uncertain || word.end <= word.start) return "uncertain";
     if (time >= word.end) return "sung";
@@ -62,5 +70,5 @@ globalThis.ResonanceCore = (() => {
   function sampleSongTime(sampleContextTime, outputDelay, startContextTime, offset, adjustmentMs) {
     return sampleContextTime - outputDelay - startContextTime + offset - adjustmentMs / 1000;
   }
-  return { detectPitch, midi, clamp, before, targetAt, wordState, lyricLineAt, sampleSongTime };
+  return { detectPitch, midi, clamp, before, targetAt, energyAt, wordState, lyricLineAt, sampleSongTime };
 })();
