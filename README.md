@@ -104,3 +104,5 @@ requires a separate Play opt-in. Asset provenance is in
 Internal testing links remain available at `/hexicon/go/android-paid-internal`
 and `/hexicon/go/android-internal` for direct sharing with invited testers.
 They are not displayed on the public showcase page.
+
+Hexicon’s homepage feature and product-page hero share `HexiconCastHero.astro`: a native PHOENIX spelling/cast loop with five relics and two potions. Assets and retake provenance are in `public/hexicon/assets/2026-09-cast/`. The hero uses a compact MP4, offers the same animation as a GIF download, includes pause/resume, pauses offscreen, and displays a poster without loading video when reduced motion is requested. Keep descriptive framing outside the game screen.

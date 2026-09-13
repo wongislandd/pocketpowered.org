@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import HexiconCastHero from "./HexiconCastHero.astro";
 interface Props { project: CollectionEntry<"projects">; }
 const { data } = Astro.props.project;
 ---
@@ -11,7 +12,7 @@ const { data } = Astro.props.project;
     <a href={data.href} class="button">Enter the world of Hexicon <span aria-hidden="true">→</span></a>
   </div>
   <div class="hexicon-feature__art">
-    <img src="/hexicon/assets/2026-09/hero.png" alt="Hexicon’s current combat and branching map, with CHARM staged as a spell" width="900" height="1000" loading="lazy" />
+    <HexiconCastHero />
   </div>
 </article>
 <style>
@@ -23,6 +24,6 @@ const { data } = Astro.props.project;
   .hexicon-feature__copy > p:not(.eyebrow) { max-width:32rem; font-size:1.1rem; color:#d5d7cd; }
   .button { background:#d7b86c; color:#172127; border-color:#d7b86c; margin-top:18px; font-size:.95rem; }
   .hexicon-feature__art { position:relative; background:#14292b; }
-  .hexicon-feature__art img { width:100%; height:100%; object-fit:cover; }
-  @media(max-width:700px) { .hexicon-feature { grid-template-columns:1fr; } .hexicon-feature__art { max-height:360px; } .hexicon-feature__art img { object-position:center 45%; } }
+  .hexicon-feature__art :global(.cast-hero) { border-radius:0; height:100%; }
+  @media(max-width:700px) { .hexicon-feature { grid-template-columns:1fr; } }
 </style>
