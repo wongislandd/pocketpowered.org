@@ -1,0 +1,26 @@
+{
+  "sourceRepository": "PocketPowered/hexicon",
+  "sourceCommit": "de9a81c4f205e1995c7ec51fd215b6897f246ebd",
+  "stats": [
+    {
+      "count": 86,
+      "label": "Relics",
+      "purpose": "Find your combination"
+    },
+    {
+      "count": 28,
+      "label": "Items",
+      "purpose": "Change your next move"
+    },
+    {
+      "count": 11,
+      "label": "Rune enhancements",
+      "purpose": "Shape your letters"
+    },
+    {
+      "count": 10,
+      "label": "Characters",
+      "purpose": "Find your starting style"
+    }
+  ]
+}
