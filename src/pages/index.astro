@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import AvalonNarratorFeature from "../components/projects/AvalonNarratorFeature.astro";
 import HexiconFeature from "../components/projects/HexiconFeature.astro";
+import ResonanceFeature from "../components/projects/ResonanceFeature.astro";
 import SidequestsFeature from "../components/projects/SidequestsFeature.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
@@ -11,6 +12,7 @@ const projects = (await getCollection("projects"))
   .filter((project) => project.data.featured)
   .sort((a, b) => b.data.order - a.data.order);
 const hexicon = projects.find((project) => project.id === "hexicon");
+const resonance = projects.find((project) => project.id === "resonance");
 const sidequests = projects.find((project) => project.id === "sidequests");
 const avalonNarrator = projects.find((project) => project.id === "avalon-narrator");
 ---
@@ -40,6 +42,7 @@ const avalonNarrator = projects.find((project) => project.id === "avalon-narrato
       </div>
 
       <div class="portfolio-projects">
+        {resonance && <ResonanceFeature project={resonance} />}
         {hexicon && <HexiconFeature project={hexicon} />}
         {sidequests && <SidequestsFeature project={sidequests} />}
         {avalonNarrator && <AvalonNarratorFeature project={avalonNarrator} />}

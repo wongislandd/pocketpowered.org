@@ -1,0 +1,66 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props { project: CollectionEntry<"projects">; }
+const { data } = Astro.props.project;
+---
+
+<article class="resonance-feature" aria-labelledby="resonance-title">
+  <div class="resonance-feature__copy">
+    <p class="resonance-feature__meta">Music · In your browser</p>
+    <h3 id="resonance-title">{data.name}</h3>
+    <p class="resonance-feature__lede">Pick a record.<br />Make it yours.</p>
+    <p class="resonance-feature__description">{data.summary}</p>
+    <a class="button" href={data.href}>Open Resonance <span aria-hidden="true">↗</span></a>
+  </div>
+
+  <figure class="resonance-feature__visual">
+    <div class="resonance-feature__record" aria-hidden="true">
+      <img class="resonance-feature__vinyl" src="/resonance/vinyl.png" alt="" width="320" height="320" loading="lazy" />
+      <img class="resonance-feature__label" src="/resonance/chmunk-vintage-label.png" alt="" width="100" height="100" loading="lazy" />
+    </div>
+    <figcaption><strong>Biscuit Business</strong><span>Chmunk</span></figcaption>
+    <svg class="resonance-feature__wave" viewBox="0 0 440 60" fill="none" aria-hidden="true">
+      <path d="M0 30C50 30 60 31 82 29S109 10 126 12S151 45 170 42S197 13 214 18S240 42 261 36S285 22 311 28S365 30 440 30" />
+      <path d="M0 31C50 31 62 32 84 30S111 14 127 16S153 42 171 39S199 17 216 22S241 38 262 33S287 24 312 29S365 31 440 31" />
+      <path class="resonance-feature__voice" d="M0 33C50 33 68 34 89 31S111 18 129 20S153 44 173 41S199 21 220 24" />
+    </svg>
+  </figure>
+</article>
+
+<style>
+  .resonance-feature {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    overflow: hidden;
+    border: 3px solid var(--ink);
+    border-radius: 28px;
+    background: #fff;
+    color: #242424;
+    box-shadow: var(--shadow);
+  }
+  .resonance-feature__copy { align-self: center; padding: clamp(28px, 5vw, 64px); }
+  .resonance-feature__meta { margin: 0 0 22px; color: #52767b; font-size: .875rem; font-weight: 700; letter-spacing: .06em; }
+  h3 { margin: 0 0 24px; font-size: clamp(2.8rem, 6vw, 4.8rem); line-height: 1; letter-spacing: -.065em; font-weight: 600; }
+  .resonance-feature__lede { margin: 0 0 18px; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.2; letter-spacing: -.035em; }
+  .resonance-feature__description { max-width: 30rem; margin: 0; color: #666; font-size: 1.1rem; line-height: 1.65; }
+  .button { margin-top: 30px; border-color: #242424; border-radius: 999px; background: #242424; color: #fff; font-weight: 600; }
+  .resonance-feature__visual { display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 0; margin: 0; padding: 42px 24px 26px; }
+  .resonance-feature__record { position: relative; width: min(100%, 320px); aspect-ratio: 1; animation: resonance-turn 18s linear infinite paused; }
+  .resonance-feature__vinyl { width: 100%; height: 100%; border-radius: 50%; filter: drop-shadow(0 9px 12px #00000014); }
+  .resonance-feature__label { position: absolute; left: 34.5%; top: 34.5%; width: 31%; height: 31%; object-fit: cover; border-radius: 50%; }
+  figcaption { display: grid; gap: 3px; margin-top: 23px; text-align: center; font-size: .9375rem; }
+  figcaption strong { font-weight: 600; }
+  figcaption span { color: #777; font-size: .875rem; }
+  .resonance-feature__wave { width: 100%; max-width: 440px; height: auto; margin-top: 24px; stroke: #529eac; stroke-width: 1.3; stroke-linecap: round; opacity: .65; }
+  .resonance-feature__voice { stroke: #c76082; }
+  .resonance-feature:focus-within .resonance-feature__record { animation-play-state: running; }
+  @media (hover: hover) { .resonance-feature:hover .resonance-feature__record { animation-play-state: running; } }
+  @keyframes resonance-turn { to { transform: rotate(360deg); } }
+  @media (max-width: 700px) {
+    .resonance-feature { grid-template-columns: 1fr; }
+    .resonance-feature__visual { padding: 4px 28px 28px; }
+    .resonance-feature__record { width: min(100%, 264px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .resonance-feature__record { animation: none; } }
+</style>
