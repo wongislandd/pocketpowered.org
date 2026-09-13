@@ -7,9 +7,9 @@
   <meta name="theme-color" content="#ffffff">
   <title>Sing — Resonance</title>
   <meta name="description" content="Find your voice in the melody. Sing with your cats, follow the lyrics, and practice a line at a time.">
-  <link rel="stylesheet" href="practice.css?v=de6a41267b43">
+  <link rel="stylesheet" href="practice.css?v=686f982fe560">
   <script defer src="practice-core.js?v=e642c06a2bd1"></script>
-  <script defer src="practice.js?v=415f1a0fdf67"></script>
+  <script defer src="practice.js?v=3cadfe39227c"></script>
 </head>
 <body>
   <header class="topbar">
@@ -27,29 +27,30 @@
       <div class="lyrics" aria-label="Karaoke lyrics">
         <p id="lyric-section" class="sr-only">Ready when you are</p>
         <p id="lyric-current">A little room for your voice.</p>
-        <p id="lyric-next">Choose Sing with mic, or listen first.</p>
+        <p id="lyric-next">Press play. Turn on your mic to join in.</p>
       </div>
     </section>
     <section class="transport" aria-label="Playback controls">
       <div class="scrubber"><output id="time">0:00</output><input id="seek" type="range" min="0" max="120" step="0.01" value="0" aria-label="Song position" disabled><output id="duration">0:00</output></div>
-      <div class="main-controls"><button id="restart" class="round-button" aria-label="Restart song" disabled>↺</button><button id="sing" class="primary" disabled>Sing with mic</button><button id="listen" class="secondary" disabled>Listen first</button><button id="mic-off" class="quiet" hidden>Turn mic off</button></div>
-      <p id="status" class="status" role="status">Loading this record…</p>
-
+      <div class="main-controls">
+        <button id="sing" class="mic-toggle" aria-label="Turn microphone on" aria-pressed="false" disabled>Mic off</button>
+        <button id="listen" class="primary" disabled>Play</button>
+        <button id="settings-toggle" class="icon-button" aria-label="Practice settings" aria-controls="practice-settings" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="white"/><circle cx="15" cy="17" r="3" fill="white"/></svg></button>
+      </div>
+      <p id="status" class="status sr-only" role="status">Loading this record…</p>
     </section>
-    <details class="practice-tools">
-      <summary>Settings</summary>
-      <p class="privacy">Use headphones. Your microphone stays on this device.</p>
+    <section id="practice-settings" class="practice-tools" aria-label="Practice settings" hidden>
+      <p class="privacy">Headphones work best. Your mic stays on this device.</p>
       <div class="tools-grid">
         <label>Record<select id="song-select" disabled><option>Loading records…</option></select></label>
         <label>Backing track <input id="backing" type="range" min="0" max="1" step="0.01" value="0.8"></label>
         <label>Guide vocal <input id="guide" type="range" min="0" max="1" step="0.01" value="0.55"></label>
         <div class="line-controls"><label>Practice a line <select id="line-select"><option value="">Whole song</option></select></label><button id="loop" class="secondary" aria-pressed="false" disabled>Repeat off</button></div>
         <label>Voice timing adjustment <span><output id="timing-value">0 ms</output></span><input id="timing" type="range" min="-400" max="400" step="10" value="0"><small>Move right if your voice trail arrives late. Headphone delay varies; this is a manual adjustment.</small></label>
+        <button id="restart" class="secondary restart-button" disabled>Restart song</button>
       </div>
-      <p class="review-note">Lyrics are automatically aligned to this recording. Pitch feedback is a preview; the reference still needs a listening review, so scores are off.</p>
-    </details>
-    <section id="complete" class="complete" hidden aria-label="Practice complete"><p class="eyebrow">One more time?</p><h2>You made room for your voice.</h2><p id="session-summary"></p><button id="again" class="secondary">Sing it again</button></section>
+      <p class="review-note">Automatic lyrics and pitch are a preview. Scoring is off.</p>
+    </section>
   </main>
-  <footer><span><a id="lyrics-download" href="lyrics.txt">Lyrics ↗</a> &nbsp; <a id="timed-lyrics" href="practice/chmunk/lyrics.vtt" download>Timed lyrics ↓</a></span></footer>
 </body>
 </html>

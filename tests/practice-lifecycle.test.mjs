@@ -30,6 +30,7 @@ function harness({denyMic=false,deferAudio=false,reducedMotion=false,width=950,f
   }});
   Object.assign(get('ribbon'),{clientWidth:width,clientHeight:218,getContext:()=>ctx2d});
   for(const [k,v] of Object.entries({backing:'.8',guide:'.55',timing:'0',seek:'0'}))get(k).value=v;
+  get('practice-settings').hidden=true;
   const sources=[],streams=[],worklets=[],contexts=[];let releaseAudio;
   const audioGate=deferAudio?new Promise(resolve=>{releaseAudio=resolve;}):Promise.resolve();
   class AudioContext {
@@ -84,12 +85,13 @@ test('denied mic offers listening without leaving a live capture or starting aud
 });
 test('live voice is drawn from measured samples and hiding the page releases the microphone',async()=>{
   const h=harness();await flush();await h.get('sing').fire('click');
-  assert.equal(h.streams.length,1);assert.equal(h.get('mic-off').hidden,false);
+  assert.equal(h.streams.length,1);assert.equal(h.get('sing').attributes['aria-pressed'],'true');
+  await h.get('listen').fire('click');
   h.contexts[0].currentTime=20;
   h.worklets[0].port.onmessage({data:{contextTime:19.95,hz:220,confidence:.99,rms:.15}});
   h.paint();
   h.document.hidden=true;h.document.handlers.visibilitychange();
-  assert.equal(h.streams[0].getTracks()[0].stopped,true);assert.equal(h.get('mic-off').hidden,true);assert.ok(h.sources.every(s=>s.stopped));
+  assert.equal(h.streams[0].getTracks()[0].stopped,true);assert.equal(h.get('sing').attributes['aria-pressed'],'false');assert.ok(h.sources.every(s=>s.stopped));
 });
 test('backgrounding during audio preparation cannot start playback afterward',async()=>{
   const h=harness({deferAudio:true});await flush();
@@ -145,6 +147,7 @@ test('the You stream remains visible between notes and is absent when the mic is
   assert.equal(pink(h.paint(1000)).length,0);
   assert.equal(h.get('voice-key').textContent,'You · mic off');
   await h.get('sing').fire('click');
+  await h.get('listen').fire('click');
   let particles=pink(h.paint(1100));
   assert.ok(particles.length>500,'mic presence is a continuous stream before a pitch is detected');
   assert.ok(Math.max(...particles.map(p=>p[1]))-Math.min(...particles.map(p=>p[1]))<3);
@@ -152,12 +155,12 @@ test('the You stream remains visible between notes and is absent when the mic is
   h.worklets[0].port.onmessage({data:{contextTime:19.95,hz:null,confidence:0,rms:.002}});
   assert.equal(h.get('voice-key').textContent,'You · quiet');
   assert.ok(pink(h.paint(1200)).length>500);
-  await h.get('mic-off').fire('click');
+  await h.get('sing').fire('click');
   assert.equal(pink(h.paint(1300)).length,0);
   assert.equal(h.get('voice-key').textContent,'You · mic off');
 });
 test('quiet valid low notes stay visible inside the shared chart range',async()=>{
-  const h=harness();await flush();await h.get('sing').fire('click');
+  const h=harness();await flush();await h.get('sing').fire('click');await h.get('listen').fire('click');
   h.contexts[0].currentTime=20;
   h.worklets[0].port.onmessage({data:{contextTime:19.95,hz:80,confidence:.99,rms:.009}});
   let frame;
@@ -166,4 +169,42 @@ test('quiet valid low notes stay visible inside the shared chart range',async()=
   assert.ok(pink.every(p=>p[1]>0&&p[1]<218),'voice outside the song range must not disappear offscreen');
   assert.ok(pink.filter(p=>p[1]>160).length>40,'the low measured note is visibly different from the neutral baseline');
   assert.equal(h.get('voice-key').textContent,'You · live');
+});
+
+
+test('mic toggle is independent of playback and Play pauses both stems with mic enabled',async()=>{
+  const h=harness();await flush();
+  await h.get('sing').fire('click');
+  assert.equal(h.sources.length,0,'enabling the mic must not start the song');
+  assert.equal(h.get('listen').textContent,'Play');
+  await h.get('listen').fire('click');
+  assert.equal(h.sources.length,2);
+  assert.equal(h.get('listen').textContent,'Pause');
+  await h.get('sing').fire('click');
+  assert.equal(h.streams[0].getTracks()[0].stopped,true);
+  assert.equal(h.sources.length,2);assert.ok(h.sources.every(s=>!s.stopped));
+  await h.get('sing').fire('click');
+  assert.equal(h.sources.length,2,'toggling mic must not restart the backing track');
+  await h.get('listen').fire('click');
+  assert.ok(h.sources.every(s=>s.stopped));
+  assert.equal(h.get('sing').attributes['aria-pressed'],'true');
+  assert.equal(h.get('listen').textContent,'Play');
+  assert.match(h.get('status').className,/sr-only/,'routine status must not add a visual row');
+});
+test('mic denial during playback keeps audio playing and shows a useful error',async()=>{
+  const h=harness({denyMic:true});await flush();await h.get('listen').fire('click');
+  await h.get('sing').fire('click');
+  assert.ok(h.sources.every(s=>!s.stopped));assert.equal(h.sources.length,2);
+  assert.equal(h.get('listen').textContent,'Pause');assert.equal(h.get('status').className,'status');
+});
+test('settings reveal secondary tools and completion uses the same Replay button',async()=>{
+  const h=harness();await flush();
+  await h.get('settings-toggle').fire('click');
+  assert.equal(h.get('practice-settings').hidden,false);
+  assert.equal(h.get('settings-toggle').attributes['aria-expanded'],'true');
+  await h.get('settings-toggle').fire('click');
+  assert.equal(h.get('practice-settings').hidden,true);
+  await h.get('listen').fire('click');h.sources[0].onended();
+  assert.equal(h.get('listen').textContent,'Replay');
+  await h.get('listen').fire('click');assert.equal(h.sources[2].started[1],0);
 });

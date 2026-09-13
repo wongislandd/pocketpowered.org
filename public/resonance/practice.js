@@ -2,7 +2,7 @@
 (() => {
   const C = globalThis.ResonanceCore;
   const $ = id => document.getElementById(id);
-  const ui = Object.fromEntries(["song-select", "song-title", "artist", "portrait", "sing", "listen", "mic-off", "restart", "seek", "time", "duration", "status", "feedback", "backing", "guide", "line-select", "loop", "timing", "timing-value", "lyric-current", "lyric-next", "lyric-section", "complete", "session-summary", "lyrics-download", "voice-key"].map(id => [id, $(id)]));
+  const ui = Object.fromEntries(["song-select", "song-title", "artist", "portrait", "sing", "listen", "restart", "seek", "time", "duration", "status", "feedback", "backing", "guide", "line-select", "loop", "timing", "timing-value", "lyric-current", "lyric-next", "lyric-section", "voice-key"].map(id => [id, $(id)]));
   let records = [], record, data, context, buffers, gains, sources = [];
   let running = false, busy = false, offset = 0, startedAt = 0, playEpoch = 0, loadEpoch = 0, actionEpoch = 0;
   let stream, micSource, worklet, silent, micEpoch = 0, workletLoaded = false;
@@ -16,13 +16,14 @@
   const canvas = $("ribbon"), painter = canvas.getContext("2d");
   const formatTime = time => `${Math.floor(Math.max(0, time) / 60)}:${String(Math.floor(Math.max(0, time) % 60)).padStart(2, "0")}`;
 
-  function status(text) { ui.status.textContent = text; }
+  function status(text, visible = false) { ui.status.textContent = text; ui.status.className = visible ? "status" : "status sr-only"; }
   function controls() {
     for (const id of ["sing", "listen", "restart", "seek"]) ui[id].disabled = busy || !data;
     ui["song-select"].disabled = !records.length || busy;
-    ui.sing.textContent = running && stream ? "Pause" : stream ? "Resume singing" : "Sing with mic";
-    ui.listen.textContent = running && !stream ? "Pause" : stream ? "Listen only" : offset > 0 ? "Resume listening" : "Listen first";
-    ui["mic-off"].hidden = !stream;
+    ui.sing.textContent = stream ? "Mic on" : "Mic off";
+    ui.sing.setAttribute("aria-pressed", String(Boolean(stream)));
+    ui.sing.setAttribute("aria-label", stream ? "Turn microphone off" : "Turn microphone on");
+    ui.listen.textContent = running ? "Pause" : data && offset >= data.duration - .05 ? "Replay" : "Play";
     ui["voice-key"].textContent = !stream ? "You · mic off" : running ? "You · listening" : "You · paused";
     ui.loop.disabled = !loopLine;
     ui.loop.setAttribute("aria-pressed", String(loopOn));
@@ -42,10 +43,10 @@
     for (const source of sources) { source.onended = null; try { source.stop(); } catch {} source.disconnect(); }
     sources = [];
   }
-  function pause(message = "Paused.") {
+  function pause(message = "Paused.", visible = false) {
     if (running) offset = songTime();
     running = false; stopSources(); stableFrames = 0; lastPitch = null;
-    controls(); status(message);
+    controls(); status(message, visible);
   }
   async function ensureAudio() {
     if (!context) {
@@ -55,7 +56,7 @@
       gains = [context.createGain(), context.createGain()];
       gains.forEach(gain => gain.connect(context.destination));
       context.addEventListener("statechange", () => {
-        if (running && context.state !== "running") pause("Audio was interrupted. Press resume when you’re ready.");
+        if (running && context.state !== "running") pause("Audio was interrupted. Press resume when you’re ready.", true);
       });
     }
     await context.resume();
@@ -90,7 +91,7 @@
       };
       return source;
     });
-    running = true; ui.complete.hidden = true;
+    running = true;
     controls(); status(stream ? "Mic on" : "Listening");
   }
   function seek(time) {
@@ -115,7 +116,7 @@
     if (stream) return;
     if (!navigator.mediaDevices?.getUserMedia || !context.audioWorklet) throw new Error("Live singing isn’t available in this browser. You can still listen with lyrics.");
     const epoch = ++micEpoch;
-    status("Allow microphone access to see your voice.");
+    status("Allow microphone access to see your voice.", true);
     const acquired = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 }, video: false });
     if (epoch !== micEpoch || document.hidden) { acquired.getTracks().forEach(t => t.stop()); throw new Error("Microphone request cancelled. Try again when you’re ready."); }
     stream = acquired;
@@ -127,8 +128,8 @@
       silent = context.createGain(); silent.gain.value = 0;
       micSource.connect(worklet).connect(silent).connect(context.destination);
       worklet.port.onmessage = event => onPitch(event.data);
-      worklet.onprocessorerror = () => { pause("The microphone processor stopped. Try reconnecting the mic."); micOff(); };
-      stream.getAudioTracks()[0].onended = () => { pause("Microphone disconnected. Reconnect it, then try again."); micOff(); };
+      worklet.onprocessorerror = () => { pause("The microphone processor stopped. Try reconnecting the mic.", true); micOff(); };
+      stream.getAudioTracks()[0].onended = () => { pause("Microphone disconnected. Reconnect it, then try again.", true); micOff(); };
     } catch (error) { micOff(); throw error; }
   }
   function onPitch(sample) {
@@ -166,17 +167,30 @@
       if (epoch !== actionEpoch || document.hidden) { micOff(); throw new Error("Paused while you were away. Press resume to continue."); }
       start();
     } catch (error) {
-      const message = error.name === "NotAllowedError" ? "Microphone access wasn’t allowed. Enable it in your browser, or choose Listen first." : error.name === "NotFoundError" ? "No microphone found. Connect one, or choose Listen first." : error.message;
-      status(message);
+      const message = error.name === "NotAllowedError" ? "Microphone access wasn’t allowed. Enable it in your browser, or press Play." : error.name === "NotFoundError" ? "No microphone found. Connect one, or press Play." : error.message;
+      status(message, epoch === actionEpoch && !document.hidden);
       if (!keepPlaying) running = false;
     } finally { busy = false; controls(); }
   }
+  async function toggleMic() {
+    if (busy || !data) return;
+    if (stream) { micOff(); status(""); return; }
+    busy = true; controls();
+    const epoch = ++actionEpoch;
+    try {
+      await ensureAudio();
+      if (epoch !== actionEpoch || document.hidden) return;
+      await enableMic();
+      if (epoch !== actionEpoch || document.hidden) { micOff(); return; }
+      status("");
+    } catch (error) {
+      const message = error.name === "NotAllowedError" ? "Microphone access wasn’t allowed. You can still press Play." : error.name === "NotFoundError" ? "No microphone found. Connect one to sing along." : error.message;
+      status(message, epoch === actionEpoch && !document.hidden);
+    } finally { busy = false; controls(); }
+  }
   function finish() {
-    const hadMic = Boolean(stream);
-    pause("Finished. Come back to any line you’d like to sing again.");
-    offset = data.duration;
-    micOff(); ui.complete.hidden = false;
-    ui["session-summary"].textContent = hadMic ? `${Math.round(detectedSeconds)} seconds of voice detected. Keep the phrases that felt good; give the others another go.` : "You’ve heard the melody. Try it with your voice when you’re ready.";
+    pause(""); offset = data.duration; micOff(); controls();
+    status("Finished. Press Replay to start again.");
   }
   function updateLyrics(time) {
     if (!data) return;
@@ -351,9 +365,8 @@
     pause(""); micOff(); busy = true; data = null; buffers = null; offset = 0; detectedSeconds = 0; lastLine = -2; loopOn = false; loopLine = null;
     record = selected; controls(); status("Loading this record…");
     ui["song-select"].value = selected.key; ui["song-title"].textContent = selected.title; ui.artist.textContent = selected.artist;
-    ui.portrait.src = selected.photo; ui["lyrics-download"].href = selected.lyricsText;
-    $("timed-lyrics").href = selected.timedLyrics || `practice/${selected.key}/lyrics.vtt`;
-    ui.complete.hidden = true; ui["line-select"].replaceChildren(new Option("Whole song", ""));
+    ui.portrait.src = selected.photo;
+    ui["line-select"].replaceChildren(new Option("Whole song", ""));
     ui["lyric-current"].textContent = "A little room for your voice."; ui["lyric-next"].textContent = "";
     try {
       const response = await fetch(`${selected.practice}?v=particle-chart-1`);
@@ -372,12 +385,15 @@
       document.title = `${selected.title} — Sing with Resonance`;
       const url = new URL(location.href); url.searchParams.set("song", selected.key); history.replaceState(null, "", url);
       status(""); updateLyrics(0);
-    } catch (error) { status(error.message); }
+    } catch (error) { status(error.message, true); }
     finally { busy = false; controls(); }
   }
-  ui.sing.addEventListener("click", () => action(true));
-  ui.listen.addEventListener("click", () => action(false));
-  ui["mic-off"].addEventListener("click", () => { micOff(); status(running ? "Mic is off. Listening only." : "Mic is off."); });
+  ui.sing.addEventListener("click", toggleMic);
+  ui.listen.addEventListener("click", () => action(Boolean(stream)));
+  $("settings-toggle").addEventListener("click", () => {
+    const panel = $("practice-settings"); panel.hidden = !panel.hidden;
+    $("settings-toggle").setAttribute("aria-expanded", String(!panel.hidden));
+  });
   ui.restart.addEventListener("click", () => seek(0));
   ui.seek.addEventListener("input", () => { loopOn = false; seek(Number(ui.seek.value)); controls(); });
   ui["song-select"].addEventListener("change", event => selectRecord(event.target.value));
@@ -386,13 +402,12 @@
   ui.timing.addEventListener("input", () => { ui["timing-value"].textContent = `${ui.timing.value} ms`; voice = []; stableFrames = 0; });
   ui.backing.addEventListener("input", () => gains?.[0].gain.setTargetAtTime(Number(ui.backing.value), context.currentTime, .03));
   ui.guide.addEventListener("input", () => gains?.[1].gain.setTargetAtTime(Number(ui.guide.value), context.currentTime, .03));
-  $("again").addEventListener("click", () => { offset = 0; detectedSeconds = 0; action(true); });
   document.addEventListener("visibilitychange", () => { if (document.hidden) { actionEpoch++; pause("Paused while you were away. Press resume to continue."); micOff(); } });
   window.addEventListener("pagehide", () => { actionEpoch++; pause(""); micOff(); context?.close(); context = null; buffers = null; workletLoaded = false; });
-  navigator.mediaDevices?.addEventListener("devicechange", () => { if (stream) { pause("Your audio devices changed. Check your headphones and reconnect the mic."); micOff(); } });
+  navigator.mediaDevices?.addEventListener("devicechange", () => { if (stream) { pause("Your audio devices changed. Check your headphones and reconnect the mic.", true); micOff(); } });
   requestAnimationFrame(render);
   fetch("practice/records.json?v=classics-20260912", { cache: "no-store" }).then(response => { if (!response.ok) throw new Error("Couldn’t load the records. Please reload."); return response.json(); }).then(async list => {
     records = list; ui["song-select"].replaceChildren(...records.map(r => new Option(`${r.title} · ${r.artist}`, r.key)));
     await selectRecord(new URL(location.href).searchParams.get("song"));
-  }).catch(error => status(error.message));
+  }).catch(error => status(error.message, true));
 })();
