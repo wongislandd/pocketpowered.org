@@ -185,7 +185,7 @@ for (const [index, track] of tracks.entries()) {
   } else {
     label.append(element("span", "label-monogram", track.monogram));
   }
-  disc.append(vinyl, label, element("span", "spindle"));
+  disc.append(vinyl, label);
   artButton.append(disc);
   const title = element(index === 0 ? "h1" : "h2", "", track.title);
   title.id = `${track.id}-title`;

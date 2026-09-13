@@ -21,7 +21,6 @@ main { flex: 1; outline: none; }
 .center-label { position: absolute; top: 34.5%; left: 34.5%; width: 31%; height: 31%; overflow: hidden; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #34322e; background: #e9e5dc; border: 1px solid rgb(0 0 0 / .08); }
 .center-label img { width: 100%; height: 100%; object-fit: cover; }
 .label-monogram { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-size: 35px; transform: translate(-1px, -2px); }
-.spindle { position: absolute; width: 5px; height: 5px; left: calc(50% - 2.5px); top: calc(50% - 2.5px); border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px rgb(0 0 0 / .22); }
 .record h1, .record h2 { font-size: 18px; font-weight: 550; letter-spacing: -.45px; line-height: 1.35; margin: 27px -8px 5px; }
 .artist { margin: 0; color: #777; font-size: 14px; line-height: 1.6; }
 .edition { margin: 5px 0 0; color: #999; font-size: 11px; line-height: 1.5; }
