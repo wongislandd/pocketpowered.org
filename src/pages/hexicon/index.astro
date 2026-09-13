@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
+import HexiconStats from "../../components/projects/HexiconStats.astro";
 import HexiconCastHero from "../../components/projects/HexiconCastHero.astro";
 const media = "/hexicon/assets/2026-09";
 const features = [
@@ -27,6 +28,7 @@ const regions = [
         <div class="hx-brand"><img src="/hexicon/assets/store/app-icon.svg" alt="" width="52" height="52" /><p class="hx-eyebrow">HEXICON / WORDS ARE YOUR SPELLS</p></div>
         <h1 id="hexicon-title">A little wordplay.<br /><em>A world of magic.</em></h1>
         <p class="hx-lede">Spell clever words. Shape your runes. Find the relic that makes it all click. Your path through four strange regions starts with a handful of letters.</p>
+        <HexiconStats />
         <div class="hx-actions"><a class="hx-button" href="#beta">Play the beta <span aria-hidden="true">↓</span></a><a class="hx-text-link" href="#how-to-play">Find your kind of magic</a></div>
         <p class="hx-note">Android + iPhone <span>·</span> Single player <span>·</span> Play offline</p>
       </div>

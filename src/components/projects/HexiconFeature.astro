@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import HexiconStats from "./HexiconStats.astro";
 import HexiconCastHero from "./HexiconCastHero.astro";
 interface Props { project: CollectionEntry<"projects">; }
 const { data } = Astro.props.project;
@@ -9,6 +10,7 @@ const { data } = Astro.props.project;
     <p class="eyebrow">WORDPLAY MEETS ROGUELIKE · {data.statusLabel}</p>
     <h3><img src="/hexicon/assets/store/app-icon.svg" alt="" width="64" height="64" loading="lazy" />{data.name}</h3>
     <p>{data.summary}</p>
+    <HexiconStats />
     <a href={data.href} class="button">Enter the world of Hexicon <span aria-hidden="true">→</span></a>
   </div>
   <div class="hexicon-feature__art">
