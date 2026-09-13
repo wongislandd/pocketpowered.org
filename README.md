@@ -83,7 +83,10 @@ Reservation application updates are published through the TFC Reserve Sites proj
 ## Hexicon showcase
 
 `/hexicon/` is the dedicated word-roguelike showcase, with a bespoke homepage
-feature and the actual 0.2.6 game screenshots and artwork. Its collection entry
+feature and fresh native screenshots from Hexicon main at `3e6fd01`. The September
+2026 refresh shows characters, word combat, rune enhancements, relics and potions,
+mystery choices, collection, and all four regions. Optimized images and the social
+preview live in `public/hexicon/assets/2026-09/`. Its collection entry
 adds it to the sitemap. `/hexicon/go/ios` redirects to the public TestFlight link.
 The iPhone beta is open, with two numbered buttons to install TestFlight and
 join the public beta. Essential details are inline, matching the Android card. `/hexicon/go/android-group` redirects to the

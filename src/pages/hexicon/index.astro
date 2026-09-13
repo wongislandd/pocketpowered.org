@@ -2,38 +2,49 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
-const screenshots = [
-  { image:"01-spell", alt:"Words are your spells. Hexicon combat with CHARM prepared as an attack against a Dust Sprite." },
-  { image:"02-relics", alt:"Build around your relics. The shop offers runes, relics, packs, and potions." },
-  { image:"03-runes", alt:"Make each rune your own. Choose a rune to enhance with Root." },
-  { image:"04-bosses", alt:"Learn the boss’s rules. A battle against the Stitch Duchess and her Binding Stitch effect." },
-  { image:"05-collection", alt:"Fill your collection. Browse discovered relics and their effects." },
+const media = "/hexicon/assets/2026-09";
+const features = [
+  { image:"01-character", title:"Meet your spellcaster.", eyebrow:"A DIFFERENT START", copy:"Unlock characters with their own runes, relics, and starting kits. Find the one that suits your wordplay.", alt:"Bumble the Beekeeper on Hexicon’s character selection screen", campaign:"02-characters" },
+  { image:"03-runes", title:"Make every rune matter.", eyebrow:"SHAPE YOUR POUCH", copy:"Enhance your letters and choose what stays in your pouch. Your next word starts with the runes you build.", alt:"The current rune enhancement screen, choosing a rune to give Root", campaign:"04-runes" },
+  { image:"04-shop", title:"One find changes a run.", eyebrow:"RELICS, POTIONS & POSSIBILITIES", copy:"Visit the shop for relics, potions, packs, and upgrades. Put together combinations worth spelling for.", alt:"Hexicon’s shop with separate shelves for enhancements, runes, relics, packs, and items", campaign:"05-relics" },
+  { image:"05-mystery", title:"Follow your curiosity.", eyebrow:"SOMETHING OFF THE PATH", copy:"A quiet spring. A tempting trade. A chance worth taking. Explore mystery encounters and choose what to bring with you.", alt:"The Clear Spring encounter offering a recipe upgrade", campaign:"06-mysteries" },
+  { image:"boss-moonbell_heights", title:"Read the room. Then cast.", eyebrow:"GUARDIANS WITH THEIR OWN RULES", copy:"Each region ends with a guardian. Learn what makes it dangerous, then find the words your build needs.", alt:"CHARM staged against the Astral Carillon, guardian of Moonbell Heights", campaign:"07-bosses" },
+  { image:"06-collection", title:"Keep finding new ideas.", eyebrow:"A GROWING COLLECTION", copy:"Browse characters, relics, and items in your collection. Turn a new discovery into a plan for your next run.", alt:"The searchable collection of characters and relics", campaign:"08-collection" },
+];
+const regions = [
+  { id:"brambleways", name:"The Brambleways", copy:"Free a garden trapped in endless spring." },
+  { id:"porcelain_quarter", name:"Porcelain Quarter", copy:"Break the mold that holds a town." },
+  { id:"moonbell_heights", name:"Moonbell Heights", copy:"Release the moon from its song." },
+  { id:"unwritten_archive", name:"Unwritten Archive", copy:"Preserve the worlds within the pages." },
 ];
 ---
-<BaseLayout title="Hexicon · A word-building roguelike · Pocket Powered" description="Turn letters into spells. Meet curious creatures, collect powerful relics, and build your own kind of magic in Hexicon, a word-building roguelike for Android and iPhone." image="/hexicon/assets/store/overview.png" themeColor="#172127" bodyClass="hexicon-page">
+<BaseLayout title="Hexicon · Words are your spells · Pocket Powered" description="Words are your spells. Choose your character, shape your runes, combine relics, and explore four strange regions in Hexicon, a word-building roguelike for Android and iPhone." image="/hexicon/assets/2026-09/social.png" themeColor="#14292b" bodyClass="hexicon-page">
   <SiteHeader />
   <main>
     <section class="hx-hero shell" aria-labelledby="hexicon-title">
       <div class="hx-hero-copy">
-        <div class="hx-brand"><img src="/hexicon/assets/store/app-icon.svg" alt="" width="64" height="64" /><p class="hx-eyebrow">HEXICON / A WORD-BUILDING ROGUELIKE</p></div>
-        <h1 id="hexicon-title">A little wordplay.<br /><em>A lot of magic.</em></h1>
-        <p class="hx-lede">Your letters are your spells. Build clever words, collect curious relics, and take on a world of creatures with a few tricks of their own.</p>
-        <div class="hx-actions"><a class="hx-button" href="#beta">Explore the beta <span aria-hidden="true">↓</span></a><a class="hx-text-link" href="#how-to-play">See how it plays</a></div>
-        <p class="hx-note">Single player. Small screen. One more run.</p>
+        <div class="hx-brand"><img src="/hexicon/assets/store/app-icon.svg" alt="" width="52" height="52" /><p class="hx-eyebrow">HEXICON / WORDS ARE YOUR SPELLS</p></div>
+        <h1 id="hexicon-title">A little wordplay.<br /><em>A world of magic.</em></h1>
+        <p class="hx-lede">Spell clever words. Shape your runes. Find the relic that makes it all click. Your path through four strange regions starts with a handful of letters.</p>
+        <div class="hx-actions"><a class="hx-button" href="#beta">Play the beta <span aria-hidden="true">↓</span></a><a class="hx-text-link" href="#how-to-play">Find your kind of magic</a></div>
+        <p class="hx-note">Android + iPhone <span>·</span> Single player <span>·</span> Play offline</p>
       </div>
       <figure class="hx-hero-art">
-        <img src="/hexicon/assets/enemy-walking_grimoire.png" alt="Hexicon’s Walking Grimoire, a scowling teal spellbook with brass corners, boots, and a red bookmark tongue" width="512" height="512" fetchpriority="high" />
-        <figcaption><span>MEET THE LOCALS</span><strong>Walking Grimoire</strong><i>Not your usual word game.</i></figcaption>
+        <img class="hx-map-screen" src={`${media}/map-brambleways.webp`} alt="A branching path through the Brambleways, with encounters to choose" width="390" height="844" fetchpriority="high" />
+        <img class="hx-combat-screen" src={`${media}/02-wordplay.webp`} alt="CHARM staged as a spell, with an Ember rune and three equipped relics" width="390" height="844" fetchpriority="high" />
+        <figcaption>One more word. One more possibility.</figcaption>
       </figure>
     </section>
-    <section class="hx-word-strip" aria-label="Turn words into magic">
-      <div class="shell hx-word-inner"><p>A good vocabulary is a start.<br /><strong>A clever build is where it gets interesting.</strong></p><div class="hx-tiles" aria-label="M A G I C">{["M","A","G","I","C"].map((letter) => <span aria-hidden="true">{letter}</span>)}</div></div>
-    </section>
+    <section class="hx-word-strip" aria-label="The shape of a run"><div class="shell hx-word-inner"><p>A good word is a start.<br /><strong>A clever build makes it yours.</strong></p><ol><li>Choose your character</li><li>Find your path</li><li>Build your magic</li></ol></div></section>
     <section id="how-to-play" class="hx-loop shell" aria-labelledby="loop-title">
-      <div class="hx-section-heading"><p class="hx-eyebrow">THE SHAPE OF A RUN</p><h2 id="loop-title">Spell. Collect. <em>Surprise yourself.</em></h2><p>Longer words start with more damage and a higher multiplier. Build around your relics to make every letter count.</p></div>
-      <div class="hx-screenshots" role="region" aria-label="Hexicon gameplay screenshots" tabindex="0">{screenshots.map((shot) => <a class="hx-screen" href={`/hexicon/assets/store/${shot.image}.png`} aria-label={`View full-size screenshot: ${shot.alt}`}><img src={`/hexicon/assets/store/${shot.image}.png`} alt={shot.alt} width="1242" height="2688" loading="lazy" /></a>)}</div>
-      <p class="hx-caption">Scroll to explore. Tap a screen for a closer look.</p>
+      <div class="hx-section-heading"><p class="hx-eyebrow">MORE THAN THE WORDS YOU KNOW</p><h2 id="loop-title">Small letters.<br /><em>So many possibilities.</em></h2><p>Your vocabulary opens the door. Your choices shape what happens next.</p></div>
+      <div class="hx-features">{features.map((feature) => <article class="hx-feature"><div class="hx-feature-copy"><p class="hx-eyebrow">{feature.eyebrow}</p><h3>{feature.title}</h3><p>{feature.copy}</p></div><a class="hx-native-screen" href={`${media}/${feature.image}.png`} aria-label={`View full-size screenshot: ${feature.alt}`}><img src={`${media}/${feature.image}.webp`} alt={feature.alt} width="390" height="844" loading="lazy" /></a></article>)}</div>
+      <p class="hx-caption">Captured in the current game. Tap a screen for a closer look.</p>
     </section>
+    <section class="hx-worlds" aria-labelledby="worlds-title"><div class="shell">
+      <div class="hx-section-heading"><p class="hx-eyebrow">FOUR REGIONS. FOUR GUARDIANS.</p><h2 id="worlds-title">A strange world.<br /><em>Worth finding your way through.</em></h2><p>Take branching paths through overgrown gardens, cracked streets, moonlit heights, and an archive of worlds. Discover encounters along the way and face the magic holding each place captive.</p></div>
+      <div class="hx-regions">{regions.map((region) => <figure><a href={`${media}/region-${region.id}.png`} aria-label={`View ${region.name} in Hexicon`}><img src={`${media}/region-${region.id}.webp`} alt={`${region.name} region introduction, with its guardian and native story artwork`} width="390" height="844" loading="lazy" /></a><figcaption><h3>{region.name}</h3><p>{region.copy}</p></figcaption></figure>)}</div>
+    </div></section>
     <section id="beta" class="hx-beta shell" aria-labelledby="beta-title">
       <div class="hx-beta-intro"><p class="hx-eyebrow">THE NEXT CHAPTER</p><h2 id="beta-title">Put a little magic<br /><em>in your pocket.</em></h2><p>Explore the Hexicon beta on Android or iPhone. Help shape the game with your wordplay, wild combinations, and feedback.</p></div>
       <div class="hx-beta-platforms">
@@ -64,44 +75,55 @@ const screenshots = [
 </BaseLayout>
 <style>
   :global(.hexicon-page) { background:#f3eddf; color:#243633; --ink:#243633; --paper:#f3eddf; --yellow:#d7b86c; }
-  .hx-hero { display:grid; grid-template-columns:1.12fr 1fr; align-items:center; gap:52px; padding-block:64px 90px; }
+  .hx-hero { display:grid; grid-template-columns:1.1fr 1fr; align-items:center; gap:44px; padding-block:65px 85px; }
   .hx-brand { display:flex; align-items:center; gap:14px; }
-  .hx-brand img { flex-shrink:0; border-radius:14px; }
-  .hx-eyebrow { font-size:.72rem; font-weight:800; letter-spacing:.14em; line-height:1.6; }
+  .hx-brand img { flex-shrink:0; border-radius:12px; }
+  .hx-eyebrow { font-size:.68rem; font-weight:800; letter-spacing:.14em; line-height:1.6; }
   h1,h2,h3 { font-family:Georgia,'Times New Roman',serif; font-weight:400; }
-  h1 { font-size:clamp(3rem,5.5vw,5rem); line-height:1.04; letter-spacing:-.055em; margin:26px 0; }
+  h1 { font-size:clamp(3rem,5vw,4.65rem); line-height:1.04; letter-spacing:-.055em; margin:26px 0; }
   h1 em,h2 em { color:#526b55; font-weight:400; }
-  .hx-lede { max-width:32rem; font-size:1.15rem; line-height:1.7; }
+  .hx-lede { max-width:31rem; font-size:1.1rem; line-height:1.8; }
   .hx-actions { display:flex; flex-wrap:wrap; gap:24px; align-items:center; margin-top:30px; }
   .hx-button { display:inline-flex; justify-content:center; align-items:center; gap:22px; background:#d7b86c; color:#172127; border:1px solid #a88d48; border-radius:7px; padding:15px 22px; font-weight:700; text-decoration:none; min-height:50px; transition:background .15s; }
   .hx-button:hover { background:#e8ca7f; }
   .hx-text-link { text-underline-offset:5px; font-size:.9rem; font-weight:700; }
-  .hx-note { color:#58655c; font-size:.8rem; margin-top:25px; }
-  .hx-hero-art { margin:0; border-radius:50% 50% 12px 12px; overflow:hidden; background:#172127; color:#f3eddf; transform:rotate(2deg); }
-  .hx-hero-art img { width:100%; }
-  .hx-hero-art figcaption { padding:21px 25px 25px; display:grid; gap:5px; }
-  .hx-hero-art figcaption span { font-size:.65rem; letter-spacing:.16em; color:#d7b86c; }
-  .hx-hero-art strong { font-family:Georgia,serif; font-size:1.65rem; font-weight:400; }
-  .hx-hero-art i { font-size:.85rem; color:#c6cebf; }
-  .hx-word-strip { background:#243633; color:#f3eddf; padding:30px 0; }
+  .hx-note { color:#58655c; font-size:.78rem; margin-top:25px; }
+  .hx-note span { padding-inline:6px; }
+  .hx-hero-art { position:relative; height:630px; margin:0; border-radius:180px 180px 24px 24px; background:radial-gradient(ellipse at 50% 55%,#587161,#233c38 75%); overflow:hidden; }
+  .hx-hero-art img { position:absolute; width:49%; height:auto; border:2px solid #b8aa87; border-radius:12px; box-shadow:0 20px 45px #001b1d66; }
+  .hx-map-screen { left:6%; top:96px; transform:rotate(-8deg); }
+  .hx-combat-screen { right:5%; top:44px; transform:rotate(7deg); }
+  .hx-hero-art figcaption { position:absolute; bottom:22px; width:100%; text-align:center; color:#f3eddf; font:italic 1rem Georgia,serif; }
+  .hx-word-strip { background:#243633; color:#f3eddf; padding:25px 0; }
   .hx-word-inner { display:flex; justify-content:space-between; align-items:center; gap:24px; }
   .hx-word-inner p { font-size:1rem; line-height:1.8; }
-  .hx-tiles { display:flex; gap:8px; flex-shrink:0; }
-  .hx-tiles span { display:grid; place-items:center; width:49px; height:60px; border-radius:5px; background:#f3eddf; color:#243633; border-bottom:4px solid #b3a789; font:bold 1.6rem Georgia,serif; }
-  .hx-tiles span:nth-child(2) { transform:rotate(-7deg) translateY(-4px); }
-  .hx-tiles span:nth-child(5) { transform:rotate(7deg); }
-  .hx-loop { padding-block:90px; scroll-margin-top:25px; }
-  .hx-section-heading { max-width:730px; margin-bottom:50px; }
-  h2 { font-size:clamp(2.2rem,4vw,3.5rem); letter-spacing:-.04em; line-height:1.12; margin:20px 0; }
-  .hx-section-heading > p:last-child { max-width:570px; font-size:1.1rem; line-height:1.7; }
-  h3 { font-size:1.5rem; line-height:1.2; margin:14px 0; }
-  .hx-screenshots { display:flex; gap:24px; overflow-x:auto; scroll-snap-type:x mandatory; padding:4px 4px 24px; scrollbar-color:#a88d48 #e4dccb; }
-  .hx-screen { display:block; flex:0 0 min(78vw,340px); scroll-snap-align:start; border:1px solid #c6b58f; border-radius:14px; overflow:hidden; background:#f1e5ce; box-shadow:0 8px 16px #24363312; }
-  .hx-screen img { display:block; width:100%; height:auto; }
-  .hx-screenshots:focus-visible { outline:2px solid #526b55; outline-offset:5px; }
-  .hx-screen:focus-visible { outline:3px solid #526b55; outline-offset:1px; }
+  .hx-word-inner ol { display:flex; gap:38px; padding-left:22px; color:#d7b86c; font-size:.85rem; }
+  .hx-word-inner li { padding-left:3px; }
+  .hx-loop { padding-block:85px; scroll-margin-top:25px; }
+  .hx-section-heading { max-width:740px; margin-bottom:45px; }
+  h2 { font-size:clamp(2.3rem,4vw,3.5rem); letter-spacing:-.045em; line-height:1.12; margin:20px 0; }
+  .hx-section-heading > p:last-child { max-width:620px; font-size:1.05rem; line-height:1.8; }
+  h3 { font-size:1.65rem; line-height:1.2; margin:14px 0; letter-spacing:-.025em; }
+  .hx-features { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:26px; }
+  .hx-feature { border:1px solid #c4c7b4; border-radius:16px; overflow:hidden; background:#e7e7d9; display:flex; flex-direction:column; }
+  .hx-feature:nth-child(3n+2) { background:#e8dfcf; }
+  .hx-feature:nth-child(3n+3) { background:#e0e3dc; }
+  .hx-feature-copy { padding:26px 26px 18px; }
+  .hx-feature-copy .hx-eyebrow { font-size:.6rem; color:#526b55; }
+  .hx-feature-copy > p:last-child { font-size:.9rem; line-height:1.7; margin-bottom:0; }
+  .hx-native-screen { display:block; margin:12px 30px 30px; border:1px solid #7a8b76; border-radius:10px; overflow:hidden; box-shadow:0 10px 25px #152c2922; margin-top:auto; }
+  .hx-native-screen img { width:100%; height:auto; }
   .hx-caption { font-size:.8rem; color:#58655c; text-align:center; margin:28px 0 0; }
-  .hx-beta { padding-block:100px; scroll-margin-top:25px; }
+  .hx-worlds { background:#14292b; color:#f3eddf; padding-block:80px; }
+  .hx-worlds .hx-eyebrow { color:#d7b86c; }
+  .hx-worlds h2 em { color:#c0d0aa; }
+  .hx-worlds .hx-section-heading > p:last-child { color:#cbd0c4; }
+  .hx-regions { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:22px; }
+  .hx-regions figure { margin:0; }
+  .hx-regions img { border:1px solid #5b6b5d; border-radius:10px; width:100%; height:auto; }
+  .hx-regions h3 { font-size:1.25rem; margin-top:20px; }
+  .hx-regions p { color:#cbd0c4; font-size:.85rem; line-height:1.6; }
+  .hx-beta { padding-block:85px; scroll-margin-top:25px; }
   .hx-beta p { max-width:480px; line-height:1.7; }
   .hx-beta-intro { margin-bottom:36px; }
   .hx-beta-platforms { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
@@ -111,7 +133,9 @@ const screenshots = [
   .hx-beta-actions small { display:block; margin-top:4px; font-size:.75rem; font-weight:400; line-height:1.4; }
   .hx-status { font-size:.68rem; font-weight:800; letter-spacing:.08em; color:#526b55; }
   .hx-support { display:block; margin-top:20px; font-size:.85rem; text-underline-offset:4px; }
-  @media(max-width:900px) { .hx-hero { gap:28px; } }
-  @media(max-width:700px) { .hx-hero { grid-template-columns:1fr; padding-block:30px 55px; gap:34px; } .hx-hero-art { width:min(100% - 12px,440px); justify-self:center; } .hx-word-inner { flex-direction:column; align-items:flex-start; } .hx-word-inner p { margin-top:0; } .hx-loop { padding-block:55px; } .hx-section-heading { margin-bottom:34px; } .hx-beta { padding-block:60px; } .hx-beta-platforms { grid-template-columns:1fr; } .hx-beta-details { padding:24px; } }
+  @media(max-width:1050px) { .hx-hero-art { height:540px; } .hx-features { gap:18px; } .hx-feature-copy { padding:22px 20px; } .hx-native-screen { margin-inline:20px; } .hx-word-inner ol { gap:24px; } }
+  @media(max-width:800px) { .hx-hero { grid-template-columns:1fr; padding-block:30px 55px; gap:32px; } .hx-hero-copy { max-width:620px; } .hx-hero-art { width:min(100%,500px); height:630px; justify-self:center; } .hx-features { grid-template-columns:repeat(2,minmax(0,1fr)); } .hx-regions { grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px; } .hx-word-inner { flex-direction:column; align-items:flex-start; gap:0; } .hx-beta-platforms { grid-template-columns:1fr; } }
+  @media(max-width:500px) { .hx-hero-art { height:480px; border-radius:130px 130px 18px 18px; } .hx-map-screen { top:70px; } .hx-combat-screen { top:30px; } .hx-hero-art figcaption { font-size:.9rem; bottom:18px; } .hx-features { grid-template-columns:1fr; gap:24px; } .hx-feature-copy { padding:26px; } .hx-native-screen { width:calc(100% - 68px); max-width:300px; margin:4px auto 30px; } .hx-loop,.hx-worlds { padding-block:55px; } .hx-section-heading { margin-bottom:32px; } .hx-regions { gap:18px; } .hx-regions h3 { font-size:1.15rem; } .hx-word-inner ol { flex-direction:column; gap:8px; margin-block:8px 12px; } .hx-beta { padding-block:55px; } .hx-beta-details { padding:24px; } }
+  @media(max-width:360px) { .hx-hero-art { height:415px; } .hx-brand { gap:10px; } .hx-brand .hx-eyebrow { font-size:.6rem; } .hx-actions { gap:18px; } }
   @media(prefers-reduced-motion:reduce) { .hx-button { transition:none; } }
 </style>
