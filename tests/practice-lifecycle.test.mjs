@@ -22,6 +22,7 @@ function harness({denyMic=false,deferAudio=false,reducedMotion=false,width=950,f
   const nodes=new Map();const get=id=>{if(!nodes.has(id))nodes.set(id,new Element());return nodes.get(id);};
   let drawn=[];
   const ctx2d=new Proxy({},{get:(_target,key)=>{
+    if(key==='createLinearGradient') return ()=>({addColorStop(at){assert.ok(at>=0&&at<=1);}});
     if (['arc','moveTo','lineTo'].includes(key)) return (...values)=>{
       assert.ok(values.every(Number.isFinite),'canvas geometry must stay finite');
       if(key==='arc'){values.color=_target.fillStyle;values.alpha=_target.globalAlpha;drawn.push(values);}
@@ -249,4 +250,19 @@ test('missing calibration samples report a problem instead of accepting an empty
   h.contexts[0].currentTime=16;h.paint();
   assert.match(h.get('calibration-status').textContent,/Not enough microphone input/);
   assert.equal(h.worklets[0].port.messages.at(-1).minRms,.002);
+});
+
+
+test('microphone range changes never displace the reference stream',async()=>{
+  const h=harness();await flush();await h.get('listen').fire('click');
+  h.contexts[0].currentTime=20;
+  const reference=h.paint(2000);
+  await h.get('sing').fire('click');
+  let now=2100;
+  for(const hz of [70,880,100,660]){
+    h.worklets[0].port.onmessage({data:{contextTime:19.95,hz,confidence:.99,rms:.1}});
+    const next=h.paint(now+=100).slice(0,reference.length);
+    assert.equal(next.length,reference.length);
+    for(let i=0;i<reference.length;i++) assert.deepEqual(next[i],reference[i],'the recording stays fixed when live notes change range');
+  }
 });

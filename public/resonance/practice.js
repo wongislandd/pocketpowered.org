@@ -13,7 +13,6 @@
   let yLow = 45, yHigh = 80, lastPaint = 0;
   const flowField = new Float32Array(260), flowTargets = new Float32Array(260);
   const flowEnergy = new Float32Array(260), energyTargets = new Float32Array(260);
-  let viewLow = 45, viewHigh = 80;
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const canvas = $("ribbon"), painter = canvas.getContext("2d");
   const formatTime = time => `${Math.floor(Math.max(0, time) / 60)}:${String(Math.floor(Math.max(0, time) % 60)).padStart(2, "0")}`;
@@ -278,7 +277,6 @@
     updateCalibration();
     if (stream && performance.now() - lastInputAt > 1500) { ui["input-meter"].value = 0; ui["input-status"].textContent = "No input arriving. Try another microphone or reconnect."; }
     if (document.hidden || now - lastPaint < (reducedMotion.matches ? 80 : 16)) return;
-    const elapsed = Math.min(.05, Math.max(0, (now - lastPaint) / 1000));
     lastPaint = now;
     const time = data ? songTime() : 0;
     if (running && time >= data.duration) { finish(); return; }
@@ -288,18 +286,15 @@
     if (canvas.width !== Math.round(width * ratio) || canvas.height !== Math.round(height * ratio)) { canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio); }
     painter.setTransform(ratio, 0, 0, ratio, 0, 0); painter.clearRect(0, 0, width, height);
     const x = t => width * (.5 + (t - time) / 4.8);
-    // Share one scale for both streams, expanding it when a singer is outside
-    // the recording's range instead of silently drawing their voice offscreen.
-    const recentPitches = stream ? voice.filter(p => p.time >= time - 2.4 && p.value !== null).map(p => p.value) : [];
-    const low = Math.min(yLow, ...recentPitches.map(p => p - 3));
-    const high = Math.max(yHigh, ...recentPitches.map(p => p + 3));
-    const settling = reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed * 3);
-    viewLow += (low - viewLow) * settling; viewHigh += (high - viewHigh) * settling;
-    const y = midi => height - 42 - (midi - viewLow) / (viewHigh - viewLow) * (height - 84);
-    const fresh = Boolean(stream && running && lastPitch && lastPitch.value !== null && now - lastPitch.at < 220);
-    const together = fresh && lastPitch.aligned;
+    // Keep one fixed scale for both streams. Outlying microphone notes use
+    // the spare edge space instead of moving every upcoming reference note.
+    const y = midi => {
+      const raw = height - 42 - (midi - yLow) / (yHigh - yLow) * (height - 84);
+      if (raw < 42) return 8 + 34 * Math.exp((raw - 42) / 34);
+      if (raw > height - 42) return height - 8 - 34 * Math.exp((height - 42 - raw) / 34);
+      return raw;
+    };
     const fract = value => value - Math.floor(value);
-    const palette = ["#529eac", "#609aaa", "#639bb1"];
     const count = reducedMotion.matches ? 480 : Math.min(1900, Math.round(width * 1.9));
 
     // The particle field IS the chart: x maps to song time, y to vocal pitch,
@@ -327,9 +322,15 @@
     const focus = u => Math.exp(-(((u - .5) * width / 24) ** 2));
     function fieldAt(field, u) {
       const bin = C.clamp((time + (u - .5) * 4.8 - fieldStart) / fieldStep, 0, field.length - 1);
-      const left = Math.floor(bin), fraction = bin - left;
-      return field[left] * (1 - fraction) + field[Math.min(left + 1, field.length - 1)] * fraction;
+      const left = Math.floor(bin), f = bin - left;
+      const p0 = field[Math.max(0, left - 1)], p1 = field[left];
+      const p2 = field[Math.min(left + 1, field.length - 1)], p3 = field[Math.min(left + 2, field.length - 1)];
+      // A centered cubic B-spline rounds tiny analysis corners without a
+      // frame-dependent filter or an extra delay behind the audible clock.
+      return (p0 * (1 - f) ** 3 + p1 * (3 * f ** 3 - 6 * f * f + 4)
+        + p2 * (-3 * f ** 3 + 3 * f * f + 3 * f + 1) + p3 * f ** 3) / 6;
     }
+
     function current(u, lane) {
       const center = fieldAt(flowField, u), energy = fieldAt(flowEnergy, u);
       // Geometry belongs to the recording. No independent oscillation can
@@ -337,20 +338,26 @@
       return center + lane * (1.1 + energy * 16);
     }
     painter.lineCap = "round"; painter.lineJoin = "round";
+    const ink = painter.createLinearGradient(0, 0, width, 0);
+    const span = Math.min(.2, 32 / Math.max(1, width));
+    for (const [at, color] of [
+      [0, "rgba(82,158,172,0)"], [.5-span*2, "rgba(82,158,172,.05)"],
+      [.5-span, "rgba(35,125,143,.13)"], [.5, "rgba(35,125,143,.5)"],
+      [.5+span, "rgba(35,125,143,.13)"], [.5+span*2, "rgba(82,158,172,.035)"],
+      [1, "rgba(82,158,172,0)"]
+    ]) ink.addColorStop(at, color);
+    painter.strokeStyle = ink; painter.globalAlpha = 1; painter.lineWidth = 1;
     for (let strand = 0; strand < 14; strand++) {
       const lane = (strand / 13 - .5) * 2;
-      painter.strokeStyle = palette[strand % palette.length];
-      for (let section = 0; section < 64; section++) {
-        painter.beginPath();
-        for (let step = 0; step <= 16; step++) {
-          const u = (section + step / 16) / 64;
-          if (!step) painter.moveTo(u * width, current(u, lane)); else painter.lineTo(u * width, current(u, lane));
-        }
-        const u = (section + .5) / 64;
-        painter.globalAlpha = envelope(u) * ((u > .5 ? .025 : .045) + focus(u) * .38);
-        painter.strokeStyle = focus(u) > .2 ? "#237d8f" : palette[strand % palette.length];
-        painter.lineWidth = .85 + focus(u) * .35; painter.stroke();
+      painter.beginPath();
+      // One uninterrupted stroke, with vertices attached to source time.
+      // Screen-space section joins previously shimmered as bends crossed them.
+      for (let sample = 1; sample <= flowField.length - 2; sample += .5) {
+        const u = .5 + (fieldStart + sample * fieldStep - time) / 4.8;
+        if (sample === 1) painter.moveTo(u * width, current(u, lane));
+        else painter.lineTo(u * width, current(u, lane));
       }
+      painter.stroke();
     }
     for (let i = 0; i < count; i++) {
       const seed = fract(i * .61803398875), lane = (fract(i * .754877666) - .5) * 2;
@@ -361,11 +368,11 @@
       const u = position;
       const strength = fieldAt(flowEnergy, u), focal = focus(u);
       const opacity = envelope(u) * ((u > .5 ? .025 : .04) + (1 - Math.abs(lane)) * .035 + focal * .38);
-      painter.fillStyle = painter.strokeStyle = focal > .2 ? (together ? "#8d70b1" : "#237d8f") : palette[i % palette.length];
+      painter.fillStyle = "#237d8f"; painter.strokeStyle = ink;
       // Fine, continuous trails carry the texture. Sample along the pitch field
       // so a trail follows bends rather than cutting diagonally across them.
       const tail = .014 + depth * (.014 + strength * .008);
-      painter.globalAlpha = opacity;
+      painter.globalAlpha = .65;
       painter.lineWidth = .65 + depth * .3;
       painter.beginPath();
       for (let step = 0; step <= 5; step++) {
@@ -441,7 +448,6 @@
       const pitches = data.pitch.filter(p => p[1] !== null && p[2] >= .5).map(p => p[1]).sort((a, b) => a - b);
       yLow = Math.floor(pitches[Math.floor(pitches.length * .02)] || 45) - 4;
       yHigh = Math.max(yLow + 16, Math.ceil(pitches[Math.floor(pitches.length * .98)] || 78) + 4);
-      viewLow = yLow; viewHigh = yHigh;
       document.title = `${selected.title} — Sing with Resonance`;
       const url = new URL(location.href); url.searchParams.set("song", selected.key); history.replaceState(null, "", url);
       status(""); updateLyrics(0);
