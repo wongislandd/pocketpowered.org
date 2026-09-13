@@ -1,0 +1,102 @@
+[
+  {
+    "route": "/hexicon/",
+    "width": 1440,
+    "active": {
+      "time": 0.548495,
+      "muted": true,
+      "loop": true,
+      "width": 390,
+      "height": 844
+    },
+    "paused": true,
+    "offscreenPaused": true,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "/hexicon/",
+    "width": 390,
+    "active": {
+      "time": 0.209063,
+      "muted": true,
+      "loop": true,
+      "width": 390,
+      "height": 844
+    },
+    "paused": true,
+    "offscreenPaused": true,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "/hexicon/",
+    "width": 320,
+    "active": {
+      "time": 0.211142,
+      "muted": true,
+      "loop": true,
+      "width": 390,
+      "height": 844
+    },
+    "paused": true,
+    "offscreenPaused": true,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 1440,
+    "active": {
+      "time": 0.208884,
+      "muted": true,
+      "loop": true,
+      "width": 390,
+      "height": 844
+    },
+    "paused": true,
+    "offscreenPaused": true,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 390,
+    "active": {
+      "time": 0.21304,
+      "muted": true,
+      "loop": true,
+      "width": 390,
+      "height": 844
+    },
+    "paused": true,
+    "offscreenPaused": true,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 320,
+    "active": {
+      "time": 0.211284,
+      "muted": true,
+      "loop": true,
+      "width": 390,
+      "height": 844
+    },
+    "paused": true,
+    "offscreenPaused": true,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "reducedMotion": {
+      "paused": true,
+      "time": 0,
+      "source": "",
+      "poster": "http://127.0.0.1:4330/hexicon/assets/2026-09-cast-duo/poster.png"
+    },
+    "videoRequestsBeforeManualPlay": 0,
+    "manualPlay": true
+  }
+]
