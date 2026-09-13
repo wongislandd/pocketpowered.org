@@ -1,0 +1,77 @@
+---
+const media = "/hexicon/assets/2026-09-cast";
+---
+<figure class="cast-hero" data-cast-hero>
+  <figcaption>
+    <p class="cast-eyebrow">WORDS ARE YOUR SPELLS</p>
+    <p class="cast-title">A word becomes magic.</p>
+    <p class="cast-description">Spell PHOENIX. Watch your relics bring it to life.</p>
+  </figcaption>
+  <div class="cast-screen">
+    <video width="390" height="844" loop muted playsinline preload="none" poster={`${media}/poster.png`} data-src={`${media}/phoenix-cast.mp4`} aria-label="Actual Hexicon gameplay: PHOENIX is spelled rune by rune and cast against the Astral Carillon, with five relics and two potions equipped."></video>
+  </div>
+  <div class="cast-actions">
+    <button type="button" data-cast-toggle hidden>Play animation</button>
+    <a href={`${media}/phoenix-cast.gif`} download>Download GIF <span aria-hidden="true">↓</span></a>
+  </div>
+</figure>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-cast-hero]').forEach((hero) => {
+    const video = hero.querySelector<HTMLVideoElement>('video')!;
+    const toggle = hero.querySelector<HTMLButtonElement>('[data-cast-toggle]')!;
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let userPaused = motion.matches;
+    let visible = false;
+    let loaded = false;
+    let userChose = false;
+    toggle.hidden = false;
+    const sync = () => {
+      toggle.textContent = userPaused ? 'Play animation' : 'Pause animation';
+      if (userPaused || !visible || document.hidden) {
+        video.pause();
+        return;
+      }
+      if (!loaded) {
+        video.src = video.dataset.src!;
+        loaded = true;
+      }
+      video.play().catch(() => {
+        // An interrupted play request is normal when scrolling out of view.
+        if (!visible || document.hidden || userPaused) return;
+        userPaused = true;
+        toggle.textContent = 'Play animation';
+      });
+    };
+    toggle.addEventListener('click', () => {
+      userPaused = !userPaused;
+      userChose = true;
+      sync();
+    });
+    motion.addEventListener('change', () => {
+      if (motion.matches) userPaused = true;
+      else if (!userChose) userPaused = false;
+      sync();
+    });
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      sync();
+    }, { threshold: 0.15 }).observe(video);
+    document.addEventListener('visibilitychange', sync);
+    sync();
+  });
+</script>
+<style>
+  .cast-hero { margin:0; padding:26px 24px 20px; border-radius:22px; background:radial-gradient(ellipse at 50% 50%,#354f4a,#14292b 80%); color:#f5ebd7; }
+  figcaption { text-align:center; margin-bottom:22px; }
+  .cast-eyebrow { margin:0 0 9px; color:#d7b86c; font:700 .62rem/1.5 Arial,sans-serif; letter-spacing:.17em; }
+  .cast-title { margin:0; font:normal clamp(1.4rem,2.5vw,2rem)/1.15 Georgia,serif; letter-spacing:-.025em; }
+  .cast-description { max-width:25rem; margin:10px auto 0; color:#d4dacd; font:normal .8rem/1.6 Arial,sans-serif; }
+  .cast-screen { max-width:270px; margin-inline:auto; overflow:hidden; border:1px solid #9c9677; border-radius:12px; box-shadow:0 14px 35px #0005; background:#20283d; }
+  video { display:block; width:100%; height:auto; aspect-ratio:390/844; }
+  .cast-actions { display:flex; justify-content:center; flex-wrap:wrap; gap:16px; align-items:center; margin-top:18px; font:normal .74rem/1.5 Arial,sans-serif; }
+  button { background:#243d3b; border:1px solid #83967b; border-radius:5px; padding:10px 13px; min-height:44px; font:inherit; color:#f5ebd7; cursor:pointer; }
+  a { color:#e0ca93; text-underline-offset:4px; padding-block:12px; }
+  button:hover { background:#37534a; }
+  button:focus-visible,a:focus-visible { outline:3px solid #e4c575; outline-offset:3px; }
+  @media(max-width:500px) { .cast-hero { padding:24px 18px 16px; } .cast-screen { max-width:290px; } }
+</style>

@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
+import HexiconCastHero from "../../components/projects/HexiconCastHero.astro";
 const media = "/hexicon/assets/2026-09";
 const features = [
   { image:"01-character", title:"Meet your spellcaster.", eyebrow:"A DIFFERENT START", copy:"Unlock characters with their own runes, relics, and starting kits. Find the one that suits your wordplay.", alt:"Bumble the Beekeeper on Hexicon’s character selection screen", campaign:"02-characters" },
@@ -29,11 +30,7 @@ const regions = [
         <div class="hx-actions"><a class="hx-button" href="#beta">Play the beta <span aria-hidden="true">↓</span></a><a class="hx-text-link" href="#how-to-play">Find your kind of magic</a></div>
         <p class="hx-note">Android + iPhone <span>·</span> Single player <span>·</span> Play offline</p>
       </div>
-      <figure class="hx-hero-art">
-        <img class="hx-map-screen" src={`${media}/map-brambleways.webp`} alt="A branching path through the Brambleways, with encounters to choose" width="390" height="844" fetchpriority="high" />
-        <img class="hx-combat-screen" src={`${media}/02-wordplay.webp`} alt="CHARM staged as a spell, with an Ember rune and three equipped relics" width="390" height="844" fetchpriority="high" />
-        <figcaption>One more word. One more possibility.</figcaption>
-      </figure>
+      <HexiconCastHero />
     </section>
     <section class="hx-word-strip" aria-label="The shape of a run"><div class="shell hx-word-inner"><p>A good word is a start.<br /><strong>A clever build makes it yours.</strong></p><ol><li>Choose your character</li><li>Find your path</li><li>Build your magic</li></ol></div></section>
     <section id="how-to-play" class="hx-loop shell" aria-labelledby="loop-title">
@@ -89,11 +86,6 @@ const regions = [
   .hx-text-link { text-underline-offset:5px; font-size:.9rem; font-weight:700; }
   .hx-note { color:#58655c; font-size:.78rem; margin-top:25px; }
   .hx-note span { padding-inline:6px; }
-  .hx-hero-art { position:relative; height:630px; margin:0; border-radius:180px 180px 24px 24px; background:radial-gradient(ellipse at 50% 55%,#587161,#233c38 75%); overflow:hidden; }
-  .hx-hero-art img { position:absolute; width:49%; height:auto; border:2px solid #b8aa87; border-radius:12px; box-shadow:0 20px 45px #001b1d66; }
-  .hx-map-screen { left:6%; top:96px; transform:rotate(-8deg); }
-  .hx-combat-screen { right:5%; top:44px; transform:rotate(7deg); }
-  .hx-hero-art figcaption { position:absolute; bottom:22px; width:100%; text-align:center; color:#f3eddf; font:italic 1rem Georgia,serif; }
   .hx-word-strip { background:#243633; color:#f3eddf; padding:25px 0; }
   .hx-word-inner { display:flex; justify-content:space-between; align-items:center; gap:24px; }
   .hx-word-inner p { font-size:1rem; line-height:1.8; }
@@ -133,9 +125,9 @@ const regions = [
   .hx-beta-actions small { display:block; margin-top:4px; font-size:.75rem; font-weight:400; line-height:1.4; }
   .hx-status { font-size:.68rem; font-weight:800; letter-spacing:.08em; color:#526b55; }
   .hx-support { display:block; margin-top:20px; font-size:.85rem; text-underline-offset:4px; }
-  @media(max-width:1050px) { .hx-hero-art { height:540px; } .hx-features { gap:18px; } .hx-feature-copy { padding:22px 20px; } .hx-native-screen { margin-inline:20px; } .hx-word-inner ol { gap:24px; } }
-  @media(max-width:800px) { .hx-hero { grid-template-columns:1fr; padding-block:30px 55px; gap:32px; } .hx-hero-copy { max-width:620px; } .hx-hero-art { width:min(100%,500px); height:630px; justify-self:center; } .hx-features { grid-template-columns:repeat(2,minmax(0,1fr)); } .hx-regions { grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px; } .hx-word-inner { flex-direction:column; align-items:flex-start; gap:0; } .hx-beta-platforms { grid-template-columns:1fr; } }
-  @media(max-width:500px) { .hx-hero-art { height:480px; border-radius:130px 130px 18px 18px; } .hx-map-screen { top:70px; } .hx-combat-screen { top:30px; } .hx-hero-art figcaption { font-size:.9rem; bottom:18px; } .hx-features { grid-template-columns:1fr; gap:24px; } .hx-feature-copy { padding:26px; } .hx-native-screen { width:calc(100% - 68px); max-width:300px; margin:4px auto 30px; } .hx-loop,.hx-worlds { padding-block:55px; } .hx-section-heading { margin-bottom:32px; } .hx-regions { gap:18px; } .hx-regions h3 { font-size:1.15rem; } .hx-word-inner ol { flex-direction:column; gap:8px; margin-block:8px 12px; } .hx-beta { padding-block:55px; } .hx-beta-details { padding:24px; } }
-  @media(max-width:360px) { .hx-hero-art { height:415px; } .hx-brand { gap:10px; } .hx-brand .hx-eyebrow { font-size:.6rem; } .hx-actions { gap:18px; } }
+  @media(max-width:1050px) { .hx-features { gap:18px; } .hx-feature-copy { padding:22px 20px; } .hx-native-screen { margin-inline:20px; } .hx-word-inner ol { gap:24px; } }
+  @media(max-width:800px) { .hx-hero { grid-template-columns:1fr; padding-block:30px 55px; gap:32px; } .hx-hero-copy { max-width:620px; } .hx-features { grid-template-columns:repeat(2,minmax(0,1fr)); } .hx-regions { grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px; } .hx-word-inner { flex-direction:column; align-items:flex-start; gap:0; } .hx-beta-platforms { grid-template-columns:1fr; } }
+  @media(max-width:500px) { .hx-features { grid-template-columns:1fr; gap:24px; } .hx-feature-copy { padding:26px; } .hx-native-screen { width:calc(100% - 68px); max-width:300px; margin:4px auto 30px; } .hx-loop,.hx-worlds { padding-block:55px; } .hx-section-heading { margin-bottom:32px; } .hx-regions { gap:18px; } .hx-regions h3 { font-size:1.15rem; } .hx-word-inner ol { flex-direction:column; gap:8px; margin-block:8px 12px; } .hx-beta { padding-block:55px; } .hx-beta-details { padding:24px; } }
+  @media(max-width:360px) { .hx-brand { gap:10px; } .hx-brand .hx-eyebrow { font-size:.6rem; } .hx-actions { gap:18px; } }
   @media(prefers-reduced-motion:reduce) { .hx-button { transition:none; } }
 </style>
