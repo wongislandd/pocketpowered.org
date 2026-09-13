@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import AvalonNarratorFeature from "../components/projects/AvalonNarratorFeature.astro";
+import RiftboundVsFeature from "../components/projects/RiftboundVsFeature.astro";
 import HexiconFeature from "../components/projects/HexiconFeature.astro";
 import ResonanceFeature from "../components/projects/ResonanceFeature.astro";
 import SidequestsFeature from "../components/projects/SidequestsFeature.astro";
@@ -11,6 +12,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 const projects = (await getCollection("projects"))
   .filter((project) => project.data.featured)
   .sort((a, b) => b.data.order - a.data.order);
+const riftboundvs = projects.find((project) => project.id === "riftboundvs");
 const hexicon = projects.find((project) => project.id === "hexicon");
 const resonance = projects.find((project) => project.id === "resonance");
 const sidequests = projects.find((project) => project.id === "sidequests");
@@ -42,6 +44,7 @@ const avalonNarrator = projects.find((project) => project.id === "avalon-narrato
       </div>
 
       <div class="portfolio-projects">
+        {riftboundvs && <RiftboundVsFeature project={riftboundvs} />}
         {resonance && <ResonanceFeature project={resonance} />}
         {hexicon && <HexiconFeature project={hexicon} />}
         {sidequests && <SidequestsFeature project={sidequests} />}

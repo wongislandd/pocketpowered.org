@@ -1,0 +1,101 @@
+---
+import type { CollectionEntry } from "astro:content";
+interface Props { project: CollectionEntry<"projects">; }
+const { project } = Astro.props;
+---
+<article class="rift-feature" aria-labelledby="rift-feature-title">
+  <div class="rift-copy">
+    <p class="rift-label">{project.data.statusLabel} · Browser card game</p>
+    <h3 id="rift-feature-title">Riftbound<br /><em>Versus.</em></h3>
+    <p>{project.data.summary}</p>
+    <a class="button button--yellow" href={project.data.href}>Explore the project <span aria-hidden="true">↗</span></a>
+  </div>
+  <a class="rift-screen" href={project.data.href} aria-label="Explore Riftbound Versus">
+    <img src="/riftboundvs/arena.png" alt="Riftbound Versus game board with cards in hand, battlefields, and an action ledger" width="1280" height="720" loading="lazy" decoding="async" />
+    <span>Every card. Every decision. A place to play.</span>
+  </a>
+</article>
+<style>
+.rift-feature {
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 0.8fr 1.3fr;
+  align-items: center;
+  gap: 24px;
+  background: radial-gradient(ellipse at 85% 50%, #143a48, #07121d 72%);
+  color: #f7f1df;
+  border: 3px solid var(--ink);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  padding: 44px 0 44px 44px;
+}
+.rift-copy .rift-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #d4bd7b;
+  font-weight: 700;
+}
+h3 {
+  font:
+    700 clamp(2.8rem, 5vw, 4.6rem)/0.98 Georgia,
+    serif;
+  letter-spacing: -0.045em;
+  margin: 24px 0;
+}
+h3 em {
+  color: #d4bd7b;
+  font-weight: 400;
+}
+.rift-copy > p {
+  font-size: 1.05rem;
+  color: #c2cdd2;
+  max-width: 30ch;
+}
+.rift-copy .button {
+  margin-top: 16px;
+}
+.rift-screen {
+  text-decoration: none;
+  display: block;
+  transform: translateX(20px);
+  padding: 16px 0 16px 16px;
+  border: 1px solid #bba56755;
+  border-radius: 16px 0 0 16px;
+  background: #ffffff05;
+  box-shadow: 0 24px 60px #0005;
+}
+.rift-screen img {
+  height: auto;
+  border-radius: 8px 0 0 8px;
+}
+.rift-screen span {
+  display: block;
+  color: #c1b68f;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  padding-top: 14px;
+}
+@media (max-width: 700px) {
+  .rift-feature {
+    grid-template-columns: 1fr;
+    padding: 28px 24px;
+    gap: 28px;
+  }
+  .rift-screen {
+    transform: none;
+    padding: 8px;
+    border-radius: 12px;
+  }
+  .rift-screen img {
+    height: auto;
+    border-radius: 6px;
+  }
+  .rift-screen span {
+    padding: 10px 4px 4px;
+  }
+  h3 {
+    font-size: 3.6rem;
+  }
+}
+</style>
