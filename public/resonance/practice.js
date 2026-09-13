@@ -285,7 +285,7 @@
     if (running && time >= data.duration) { finish(); return; }
     if (data) { ui.seek.value = String(time); ui.time.textContent = formatTime(time); updateLyrics(time); }
     const width = canvas.clientWidth, height = canvas.clientHeight;
-    const ratio = Math.min(devicePixelRatio || 1, 2);
+    const ratio = Math.min(devicePixelRatio || 1, 3);
     if (canvas.width !== Math.round(width * ratio) || canvas.height !== Math.round(height * ratio)) { canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio); }
     painter.setTransform(ratio, 0, 0, ratio, 0, 0); painter.clearRect(0, 0, width, height);
     const x = t => width * (.5 + (t - time) / 4.8);
@@ -301,7 +301,7 @@
     const together = fresh && lastPitch.aligned;
     const flowTime = reducedMotion.matches ? 0 : flowClock;
     const fract = value => value - Math.floor(value);
-    const palette = ["#389ba9", "#728bca", "#598cb5", "#62b5b5", "#9c91c6"];
+    const palette = ["#529eac", "#609aaa", "#639bb1"];
     const count = reducedMotion.matches ? 480 : Math.min(1900, Math.round(width * 1.9));
     flowActivity += ((running ? 1 : 0) - flowActivity) * (reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed * 8));
 
@@ -323,7 +323,7 @@
       flowEnergy[i] = (energyTargets[left] + energyTargets[i] * 2 + energyTargets[right]) / 4;
     }
     const envelope = u => Math.sin(C.clamp(u, 0, 1) * Math.PI) ** .65;
-    const focus = u => Math.exp(-(((u - .5) / .045) ** 2));
+    const focus = u => Math.exp(-(((u - .5) / .075) ** 2));
     function fieldAt(field, u) {
       const bin = C.clamp(u, 0, 1) * (field.length - 1), left = Math.floor(bin), fraction = bin - left;
       return field[left] * (1 - fraction) + field[Math.min(left + 1, field.length - 1)] * fraction;
@@ -333,8 +333,8 @@
       const wave = u * 16 + flowTime * 2.5;
       const breadth = 1.1 + energy * (12 + 5 * Math.sin(wave * .4) ** 2);
       return center + envelope(u) * (
-        lane * breadth + energy * (Math.sin(wave + depth * Math.PI * 2) * 5
-        + Math.sin(u * 31 + flowTime * 3.2 + depth * 4) * 2)
+        lane * breadth + energy * (Math.sin(wave + depth * 1.2) * 3
+        + Math.sin(u * 22 + flowTime * 2 + depth) * 1.2)
       );
     }
     painter.lineCap = "round"; painter.lineJoin = "round";
@@ -348,33 +348,35 @@
           if (!step) painter.moveTo(u * width, current(u, lane, depth)); else painter.lineTo(u * width, current(u, lane, depth));
         }
         const u = (section + .5) / 16;
-        painter.globalAlpha = envelope(u) * (.04 + focus(u) * .055);
-        painter.lineWidth = .65; painter.stroke();
+        painter.globalAlpha = envelope(u) * (.075 + focus(u) * .045);
+        painter.lineWidth = .85; painter.stroke();
       }
     }
     for (let i = 0; i < count; i++) {
       const seed = fract(i * .61803398875), lane = (fract(i * .754877666) - .5) * 2;
       const depth = fract(i * .569840291), speed = .17 + depth * .065;
       const position = fract(seed - flowTime * speed);
-      // The final quarter of the grains concentrate around NOW at the exact
-      // center, making the current moment part of the wave, not an overlay.
-      const u = i > count * .75 ? .5 + (position - .5) * .08 : position;
+      // Keep an even flow through NOW; a broad opacity lift marks the current
+      // moment without packing hundreds of dot heads into a dark center patch.
+      const u = position;
       const strength = fieldAt(flowEnergy, u), focal = focus(u);
-      const opacity = envelope(u) * (.14 + (1 - Math.abs(lane)) * .28 + focal * .2);
+      const opacity = envelope(u) * (.075 + (1 - Math.abs(lane)) * .09 + focal * .075);
       painter.fillStyle = painter.strokeStyle = together && focal > .5 ? "#8d70b1" : palette[i % palette.length];
-      if (!reducedMotion.matches) {
-        const tail = .006 + depth * (.009 + strength * .012);
-        for (let segment = 2; segment >= 0; segment--) {
-          const a = u + tail * segment / 3, b = Math.min(1, u + tail * (segment + 1) / 3);
-          if (a >= 1) continue;
-          painter.globalAlpha = opacity * (1 - segment / 3) * .3;
-          painter.lineWidth = .55 + depth * .4;
-          painter.beginPath(); painter.moveTo(a * width, current(a, lane, depth));
-          painter.lineTo(b * width, current(b, lane, depth)); painter.stroke();
-        }
-      }
+      // Fine, continuous trails carry the texture. Sample along the pitch field
+      // so a trail follows bends rather than cutting diagonally across them.
+      const tail = .014 + depth * (.014 + strength * .008);
       painter.globalAlpha = opacity;
-      const size = .4 + depth * .65 + focal * .35;
+      painter.lineWidth = .65 + depth * .3;
+      painter.beginPath();
+      for (let step = 0; step <= 5; step++) {
+        const at = Math.min(1, u + tail * step / 5);
+        if (!step) painter.moveTo(at * width, current(at, lane, depth));
+        else painter.lineTo(at * width, current(at, lane, depth));
+      }
+      painter.stroke();
+      // A faint subpixel head keeps the particles alive without visible grains.
+      painter.globalAlpha = opacity * .22;
+      const size = .28 + depth * .22;
       painter.beginPath(); painter.arc(u * width, current(u, lane, depth), size, 0, Math.PI * 2); painter.fill();
     }
 
@@ -395,22 +397,24 @@
       }
       for (let i = 0; i < voiceCount; i++) {
         const position = fract(i * .61803398875 + flowTime * .35);
-        const age = position * (i > voiceCount * .7 ? .22 : 2.4);
+        const age = position * 2.4;
         const t = time - age, point = voiceAt(t);
         const lane = fract(i * .754877666) - .5;
         const px = x(t), py = point.y + lane * (point.pitched ? 7 + point.energy * 16 : 2 + point.energy * 5);
-        painter.globalAlpha = (.3 + .7 * (1 - age / 2.4)) * (point.pitched ? .7 : .32);
+        const opacity = (.3 + .7 * (1 - age / 2.4)) * (point.pitched ? .28 : .12);
+        painter.globalAlpha = opacity;
         painter.fillStyle = painter.strokeStyle = point.aligned ? "#a45496" : "#c76082";
-        if (!reducedMotion.matches) {
-          const tailTime = Math.max(time - 2.4, t - .035), tail = voiceAt(tailTime);
+        {
+          const tailTime = Math.max(time - 2.4, t - .065), tail = voiceAt(tailTime);
           // A rest is a rest: never connect the neutral baseline to a note.
           if (tail.pitched === point.pitched && Math.abs(tail.y - point.y) < 25) {
-            painter.lineWidth = .65;
+            painter.lineWidth = .85;
             painter.beginPath(); painter.moveTo(x(tailTime), tail.y + lane * (point.pitched ? 7 + tail.energy * 16 : 2 + tail.energy * 5));
             painter.lineTo(px, py); painter.stroke();
           }
         }
-        painter.beginPath(); painter.arc(px, py, .55 + fract(i * .4142) * .8, 0, Math.PI * 2); painter.fill();
+        painter.globalAlpha = opacity * .22;
+        painter.beginPath(); painter.arc(px, py, .3 + fract(i * .4142) * .2, 0, Math.PI * 2); painter.fill();
       }
     }
     painter.globalAlpha = 1;

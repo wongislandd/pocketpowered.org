@@ -129,7 +129,9 @@ test('particles form the centered chart and vocal energy flattens silence',async
     let frame;
     for(let t=2000;t<3200;t+=50)frame=h.paint(t);
     const center=frame.filter(p=>Math.abs(p[0]-475)<40);
-    assert.ok(center.length>frame.length*.3,'the current moment is concentrated at the center');
+    const edges=frame.filter(p=>p[0]<100||p[0]>850);
+    const meanAlpha=points=>points.reduce((sum,p)=>sum+p.alpha,0)/points.length;
+    assert.ok(meanAlpha(center)>meanAlpha(edges)*2,'the current moment is emphasized without a dense dot cluster');
     assert.ok(frame.every(p=>p[2]<1.5),'there is no separate large playhead dot');
     const low=Math.min(...center.map(p=>p[1])), high=Math.max(...center.map(p=>p[1]));
     if(loudness<.004){assert.ok(high-low<3,'silence and low stem bleed form a flat stream');}
@@ -164,7 +166,7 @@ test('quiet valid low notes stay visible inside the shared chart range',async()=
   for(let t=2000;t<2800;t+=50)frame=h.paint(t);
   const pink=frame.filter(p=>p.color==='#c76082');
   assert.ok(pink.every(p=>p[1]>0&&p[1]<218),'voice outside the song range must not disappear offscreen');
-  assert.ok(pink.filter(p=>p[1]>160).length>40,'the low measured note is visibly different from the neutral baseline');
+  assert.ok(pink.filter(p=>p[1]>160).length>10,'the low measured note is visibly different from the neutral baseline');
 });
 
 
