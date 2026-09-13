@@ -1,5 +1,7 @@
 # Animated hero verification
 
+The production Content-Security-Policy from `public/_headers` was applied to the built preview responses for these checks. Playback uses an external script and generated styles remain external, preserving the existing policy.
+
 Browser evidence covers both `/` and `/hexicon/` at 1440, 390 and 320 pixels. All six combinations played a muted inline loop, paused/resumed from the visible button, paused when scrolled offscreen, and had no horizontal overflow or browser script errors. Reduced motion showed the static poster without requesting video; explicit Play worked. Results are in `browser-checks.json` and the adjacent screenshots.
 
 `npm run check`: all 35 existing tests passed and Astro reported zero errors/warnings (four existing hints in Resonance). Build and generated-link validation passed for 13 pages.
