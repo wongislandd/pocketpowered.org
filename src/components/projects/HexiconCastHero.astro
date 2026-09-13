@@ -15,51 +15,7 @@ const media = "/hexicon/assets/2026-09-cast";
     <a href={`${media}/phoenix-cast.gif`} download>Download GIF <span aria-hidden="true">↓</span></a>
   </div>
 </figure>
-<script>
-  document.querySelectorAll<HTMLElement>('[data-cast-hero]').forEach((hero) => {
-    const video = hero.querySelector<HTMLVideoElement>('video')!;
-    const toggle = hero.querySelector<HTMLButtonElement>('[data-cast-toggle]')!;
-    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let userPaused = motion.matches;
-    let visible = false;
-    let loaded = false;
-    let userChose = false;
-    toggle.hidden = false;
-    const sync = () => {
-      toggle.textContent = userPaused ? 'Play animation' : 'Pause animation';
-      if (userPaused || !visible || document.hidden) {
-        video.pause();
-        return;
-      }
-      if (!loaded) {
-        video.src = video.dataset.src!;
-        loaded = true;
-      }
-      video.play().catch(() => {
-        // An interrupted play request is normal when scrolling out of view.
-        if (!visible || document.hidden || userPaused) return;
-        userPaused = true;
-        toggle.textContent = 'Play animation';
-      });
-    };
-    toggle.addEventListener('click', () => {
-      userPaused = !userPaused;
-      userChose = true;
-      sync();
-    });
-    motion.addEventListener('change', () => {
-      if (motion.matches) userPaused = true;
-      else if (!userChose) userPaused = false;
-      sync();
-    });
-    new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      sync();
-    }, { threshold: 0.15 }).observe(video);
-    document.addEventListener('visibilitychange', sync);
-    sync();
-  });
-</script>
+<script is:inline src="/hexicon/cast-hero.js" defer></script>
 <style>
   .cast-hero { margin:0; padding:26px 24px 20px; border-radius:22px; background:radial-gradient(ellipse at 50% 50%,#354f4a,#14292b 80%); color:#f5ebd7; }
   figcaption { text-align:center; margin-bottom:22px; }

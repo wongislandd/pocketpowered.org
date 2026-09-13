@@ -3,7 +3,7 @@
     "route": "/hexicon/",
     "width": 1440,
     "active": {
-      "time": 0.555629,
+      "time": 0.543326,
       "muted": true,
       "loop": true,
       "width": 390,
@@ -18,7 +18,7 @@
     "route": "/hexicon/",
     "width": 390,
     "active": {
-      "time": 0.533315,
+      "time": 0.52803,
       "muted": true,
       "loop": true,
       "width": 390,
@@ -33,7 +33,7 @@
     "route": "/hexicon/",
     "width": 320,
     "active": {
-      "time": 0.212208,
+      "time": 0.206074,
       "muted": true,
       "loop": true,
       "width": 390,
@@ -48,7 +48,7 @@
     "route": "/",
     "width": 1440,
     "active": {
-      "time": 0.212209,
+      "time": 0.21276,
       "muted": true,
       "loop": true,
       "width": 390,
@@ -63,7 +63,7 @@
     "route": "/",
     "width": 390,
     "active": {
-      "time": 0.21356,
+      "time": 0.211531,
       "muted": true,
       "loop": true,
       "width": 390,
@@ -78,7 +78,7 @@
     "route": "/",
     "width": 320,
     "active": {
-      "time": 0.213291,
+      "time": 0.211491,
       "muted": true,
       "loop": true,
       "width": 390,
