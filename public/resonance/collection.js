@@ -194,19 +194,12 @@ for (const [index, track] of tracks.entries()) {
   toggle.type = "button";
   const time = element("span", "duration", track.duration);
   row.append(toggle, time);
-  const links = element("div", "detail-links");
-  for (const [text, href] of [["Sing along", track.practice], ["Analysis", track.analysis], ["Lyrics", track.lyrics], ["Download", track.audio]]) {
-    if (!href) continue;
-    const link = element("a", "", text);
-    if (text === "Sing along") link.className = "sing-link";
-    link.href = href;
-    link.setAttribute("aria-label", `${text} — ${track.title}`);
-    if (text === "Download") link.setAttribute("download", "");
-    links.append(link);
-  }
+  const singLink = element("a", "sing-link", "Sing along");
+  singLink.href = track.practice;
+  singLink.setAttribute("aria-label", `Sing along — ${track.title}`);
   const error = element("p", "record-error");
   error.setAttribute("role", "alert");
-  card.append(artButton, title, element("p", "artist", track.artist), row, links, error);
+  card.append(artButton, title, element("p", "artist", track.artist), row, singLink, error);
   if (track.edition) card.insertBefore(element("p", "edition", track.edition), row);
   collection.append(card);
   cards.set(track.id, { card, toggle, artButton, time, error });
@@ -249,7 +242,7 @@ async function toggleTrack(track) {
     status.textContent = `Playing ${track.title} by ${track.artist}.`;
   } catch (error) {
     if (request !== requestNumber || error.name === "AbortError") return;
-    view.error.textContent = track.territory === "US" ? "This rendition is available in the United States. If you’re in the U.S., try again." : "Couldn’t play this record. Try again or download the song.";
+    view.error.textContent = track.territory === "US" ? "This rendition is available in the United States. If you’re in the U.S., try again." : "Couldn’t play this record. Please try again.";
     updateControls();
   }
 }
@@ -269,7 +262,7 @@ player.addEventListener("ended", () => {
 player.addEventListener("error", () => {
   player.pause();
   if (!activeTrack) return;
-  cards.get(activeTrack.id).error.textContent = activeTrack.territory === "US" ? "This rendition is available in the United States. If you’re in the U.S., try again." : "Couldn’t load this record. Try again or download the song.";
+  cards.get(activeTrack.id).error.textContent = activeTrack.territory === "US" ? "This rendition is available in the United States. If you’re in the U.S., try again." : "Couldn’t load this record. Please try again.";
   updateControls();
 });
 player.addEventListener("timeupdate", () => {

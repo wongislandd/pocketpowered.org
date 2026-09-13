@@ -30,10 +30,8 @@ main { flex: 1; outline: none; }
 .preview-button:hover { background: #eaeae8; }
 .preview-button svg { height: 12px; width: 12px; flex-shrink: 0; fill: currentColor; }
 .duration { color: #888; font-size: 12px; font-variant-numeric: tabular-nums; }
-.detail-links { margin-top: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2px 12px; }
-.detail-links a { font-size: 14px; color: #757575; text-decoration: none; text-underline-offset: 4px; padding: 7px 0; }
-.detail-links a:hover { color: #222; text-decoration: underline; }
-.detail-links a.sing-link { color: #2c6246; font-weight: 600; }
+.sing-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; margin-top: 18px; padding: 11px 23px; border: 1px solid #242424; border-radius: 24px; background: #242424; color: #fff; font-size: 14px; font-weight: 550; line-height: 1.4; text-decoration: none; }
+.sing-link:hover { background: #444; border-color: #444; }
 .record-error { color: #934c3a; font-size: 14px; line-height: 1.5; margin: 10px 0 0; }
 .record-error:empty { display: none; }
 .footer { border-top: 1px solid #efefed; min-height: 81px; padding: 26px 0; display: flex; align-items: center; justify-content: space-between; gap: 20px; color: #858585; font-size: 11px; }
