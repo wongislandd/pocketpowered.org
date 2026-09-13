@@ -193,13 +193,14 @@ for (const [index, track] of tracks.entries()) {
   const toggle = element("button", "preview-button");
   toggle.type = "button";
   const time = element("span", "duration", track.duration);
-  row.append(toggle, time);
-  const singLink = element("a", "sing-link", "Sing along");
+
+  const singLink = element("a", "sing-link", "Sing");
   singLink.href = track.practice;
-  singLink.setAttribute("aria-label", `Sing along — ${track.title}`);
+  singLink.setAttribute("aria-label", `Sing — ${track.title}`);
+  row.append(toggle, singLink);
   const error = element("p", "record-error");
   error.setAttribute("role", "alert");
-  card.append(artButton, title, element("p", "artist", track.artist), row, singLink, error);
+  card.append(artButton, title, element("p", "artist", track.artist), row, time, error);
   if (track.edition) card.insertBefore(element("p", "edition", track.edition), row);
   collection.append(card);
   cards.set(track.id, { card, toggle, artButton, time, error });

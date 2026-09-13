@@ -1,13 +1,13 @@
 /* Shared, deterministic audio/timeline functions. No microphone data leaves the page. */
 "use strict";
 globalThis.ResonanceCore = (() => {
-  function detectPitch(samples, rate, scratch) {
-    let energy = 0, mean = 0;
+  function detectPitch(samples, rate, scratch, minRms = .002) {
+    let energy = 0, mean = 0, peak = 0;
     for (const s of samples) mean += s;
     mean /= samples.length;
-    for (const s of samples) energy += (s - mean) ** 2;
+    for (const s of samples) { energy += (s - mean) ** 2; peak = Math.max(peak, Math.abs(s)); }
     const rms = Math.sqrt(energy / samples.length);
-    if (rms < 0.008) return { hz: null, confidence: 0, rms };
+    if (rms < Math.max(.0001, minRms)) return { hz: null, confidence: 0, rms, peak };
     const minLag = Math.floor(rate / 1100), maxLag = Math.min(Math.ceil(rate / 65), samples.length >> 1);
     const diff = scratch || new Float32Array(maxLag + 1);
     const width = samples.length - maxLag;
@@ -25,14 +25,27 @@ globalThis.ResonanceCore = (() => {
         const left = diff[lag - 1], mid = diff[lag], right = diff[lag + 1];
         const denom = 2 * (2 * mid - right - left);
         const refined = lag + (denom ? (right - left) / denom : 0);
-        return { hz: rate / refined, confidence: 1 - mid, rms };
+        return { hz: rate / refined, confidence: 1 - mid, rms, peak };
       }
       lag++;
     }
-    return { hz: null, confidence: 0, rms };
+    return { hz: null, confidence: 0, rms, peak };
   }
   const midi = hz => 69 + 12 * Math.log2(hz / 440);
   const clamp = (x, low, high) => Math.max(low, Math.min(high, x));
+  function calibrateInput(ambient, sung) {
+    const percentile = (values, fraction) => [...values].sort((a,b)=>a-b)[Math.min(values.length-1, Math.floor(values.length*fraction))];
+    if (ambient.length < 15 || sung.length < 25) return { error: "Not enough microphone input. Check your microphone and try again." };
+    if (sung.filter(s => s.peak >= .98).length > sung.length * .1) return { error: "Your input is clipping. Move a little farther from the microphone and try again." };
+    const noise = percentile(ambient.map(s => s.rms), .95);
+    const voiced = sung.filter(s => s.hz && s.confidence >= .8 && s.rms > Math.max(.0003, noise * 2));
+    if (voiced.length < 12) return { error: "Couldn’t hear a clear note. Try a quieter room, move closer, or choose another microphone." };
+    const level = percentile(voiced.map(s => s.rms), .5);
+    return { minRms: Math.max(.0003, Math.min(level * .45, noise * 2.5)), level: Math.max(.002, level), noise };
+  }
+  function inputEnergy(rms, profile) {
+    return Math.sqrt(clamp((rms-profile.minRms)/Math.max(.002,profile.level-profile.minRms),0,1));
+  }
   function before(items, time, getTime = x => x.start) {
     let left = 0, right = items.length;
     while (left < right) { const mid = (left + right) >> 1; if (getTime(items[mid]) <= time) left = mid + 1; else right = mid; }
@@ -70,5 +83,5 @@ globalThis.ResonanceCore = (() => {
   function sampleSongTime(sampleContextTime, outputDelay, startContextTime, offset, adjustmentMs) {
     return sampleContextTime - outputDelay - startContextTime + offset - adjustmentMs / 1000;
   }
-  return { detectPitch, midi, clamp, before, targetAt, energyAt, wordState, lyricLineAt, sampleSongTime };
+  return { detectPitch, calibrateInput, inputEnergy, midi, clamp, before, targetAt, energyAt, wordState, lyricLineAt, sampleSongTime };
 })();

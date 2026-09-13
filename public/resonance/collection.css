@@ -25,11 +25,11 @@ main { flex: 1; outline: none; }
 .artist { margin: 0; color: #777; font-size: 14px; line-height: 1.6; }
 .edition { margin: 5px 0 0; color: #999; font-size: 11px; line-height: 1.5; }
 .preview-row { display: flex; align-items: center; justify-content: center; gap: 13px; margin-top: 19px; }
-.preview-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; min-width: 91px; color: #303030; background: #f5f5f4; border: 1px solid #efefed; border-radius: 24px; padding: 8px 13px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background .18s ease; }
+.preview-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; min-width: 105px; color: #303030; background: #f5f5f4; border: 1px solid #efefed; border-radius: 24px; padding: 8px 13px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background .18s ease; }
 .preview-button:hover { background: #eaeae8; }
 .preview-button svg { height: 12px; width: 12px; flex-shrink: 0; fill: currentColor; }
-.duration { color: #888; font-size: 12px; font-variant-numeric: tabular-nums; }
-.sing-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; margin-top: 18px; padding: 11px 23px; border: 1px solid #242424; border-radius: 24px; background: #242424; color: #fff; font-size: 14px; font-weight: 550; line-height: 1.4; text-decoration: none; }
+.duration { display: block; margin-top: 9px; color: #888; font-size: 12px; font-variant-numeric: tabular-nums; }
+.sing-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 105px; margin-top: 0; padding: 11px 23px; border: 1px solid #242424; border-radius: 24px; background: #242424; color: #fff; font-size: 14px; font-weight: 550; line-height: 1.4; text-decoration: none; }
 .sing-link:hover { background: #444; border-color: #444; }
 .record-error { color: #934c3a; font-size: 14px; line-height: 1.5; margin: 10px 0 0; }
 .record-error:empty { display: none; }

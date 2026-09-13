@@ -47,11 +47,11 @@ function harness({denyMic=false,deferAudio=false,reducedMotion=false,width=950,f
     createBufferSource(){const s={connect(){},disconnect(){},start(time,offset){this.started=[time,offset];},stop(){this.stopped=true;}};sources.push(s);return s;}
   }
   class AudioWorkletNode {
-    port={onmessage:null};constructor(){worklets.push(this);}connect(){return this;}disconnect(){}
+    port={onmessage:null,messages:[],postMessage(message){this.messages.push(message);}};constructor(){worklets.push(this);}connect(){return this;}disconnect(){}
   }
-  const media={handlers:{},addEventListener(event,fn){this.handlers[event]=fn;},async getUserMedia(){
+  const media={handlers:{},addEventListener(event,fn){this.handlers[event]=fn;},async enumerateDevices(){return [{kind:'audioinput',deviceId:'built-in',label:'Built-in microphone'},{kind:'audioinput',deviceId:'usb',label:'USB microphone'}];},async getUserMedia(options){
     if(denyMic)throw Object.assign(new Error('denied'),{name:'NotAllowedError'});
-    const track={stopped:false,stop(){this.stopped=true;}};const stream={getTracks:()=>[track],getAudioTracks:()=>[track]};streams.push(stream);return stream;
+    const track={stopped:false,getSettings:()=>({deviceId:options.audio.deviceId?.exact||'built-in'}),stop(){this.stopped=true;}};const stream={getTracks:()=>[track],getAudioTracks:()=>[track]};streams.push(stream);return stream;
   }};
   const document={hidden:false,handlers:{},getElementById:get,createElement:()=>new Element(),addEventListener(event,fn){this.handlers[event]=fn;}};
   const window={AudioContext,handlers:{},addEventListener(event,fn){this.handlers[event]=fn;}};
@@ -145,7 +145,6 @@ test('the You stream remains visible between notes and is absent when the mic is
   const h=harness();await flush();
   const pink=frame=>frame.filter(p=>p.color==='#c76082'||p.color==='#a45496');
   assert.equal(pink(h.paint(1000)).length,0);
-  assert.equal(h.get('voice-key').textContent,'You · mic off');
   await h.get('sing').fire('click');
   await h.get('listen').fire('click');
   let particles=pink(h.paint(1100));
@@ -153,11 +152,9 @@ test('the You stream remains visible between notes and is absent when the mic is
   assert.ok(Math.max(...particles.map(p=>p[1]))-Math.min(...particles.map(p=>p[1]))<3);
   h.contexts[0].currentTime=20;
   h.worklets[0].port.onmessage({data:{contextTime:19.95,hz:null,confidence:0,rms:.002}});
-  assert.equal(h.get('voice-key').textContent,'You · quiet');
   assert.ok(pink(h.paint(1200)).length>500);
   await h.get('sing').fire('click');
   assert.equal(pink(h.paint(1300)).length,0);
-  assert.equal(h.get('voice-key').textContent,'You · mic off');
 });
 test('quiet valid low notes stay visible inside the shared chart range',async()=>{
   const h=harness();await flush();await h.get('sing').fire('click');await h.get('listen').fire('click');
@@ -168,7 +165,6 @@ test('quiet valid low notes stay visible inside the shared chart range',async()=
   const pink=frame.filter(p=>p.color==='#c76082');
   assert.ok(pink.every(p=>p[1]>0&&p[1]<218),'voice outside the song range must not disappear offscreen');
   assert.ok(pink.filter(p=>p[1]>160).length>40,'the low measured note is visibly different from the neutral baseline');
-  assert.equal(h.get('voice-key').textContent,'You · live');
 });
 
 
@@ -176,10 +172,10 @@ test('mic toggle is independent of playback and Play pauses both stems with mic 
   const h=harness();await flush();
   await h.get('sing').fire('click');
   assert.equal(h.sources.length,0,'enabling the mic must not start the song');
-  assert.equal(h.get('listen').textContent,'Play');
+  assert.equal(h.get('listen').attributes['aria-label'],'Play');
   await h.get('listen').fire('click');
   assert.equal(h.sources.length,2);
-  assert.equal(h.get('listen').textContent,'Pause');
+  assert.equal(h.get('listen').attributes['aria-label'],'Pause');
   await h.get('sing').fire('click');
   assert.equal(h.streams[0].getTracks()[0].stopped,true);
   assert.equal(h.sources.length,2);assert.ok(h.sources.every(s=>!s.stopped));
@@ -188,14 +184,14 @@ test('mic toggle is independent of playback and Play pauses both stems with mic 
   await h.get('listen').fire('click');
   assert.ok(h.sources.every(s=>s.stopped));
   assert.equal(h.get('sing').attributes['aria-pressed'],'true');
-  assert.equal(h.get('listen').textContent,'Play');
+  assert.equal(h.get('listen').attributes['aria-label'],'Play');
   assert.match(h.get('status').className,/sr-only/,'routine status must not add a visual row');
 });
 test('mic denial during playback keeps audio playing and shows a useful error',async()=>{
   const h=harness({denyMic:true});await flush();await h.get('listen').fire('click');
   await h.get('sing').fire('click');
   assert.ok(h.sources.every(s=>!s.stopped));assert.equal(h.sources.length,2);
-  assert.equal(h.get('listen').textContent,'Pause');assert.equal(h.get('status').className,'status');
+  assert.equal(h.get('listen').attributes['aria-label'],'Pause');assert.equal(h.get('status').className,'status');
 });
 test('settings reveal secondary tools and completion uses the same Replay button',async()=>{
   const h=harness();await flush();
@@ -205,6 +201,48 @@ test('settings reveal secondary tools and completion uses the same Replay button
   await h.get('settings-toggle').fire('click');
   assert.equal(h.get('practice-settings').hidden,true);
   await h.get('listen').fire('click');h.sources[0].onended();
-  assert.equal(h.get('listen').textContent,'Replay');
+  assert.equal(h.get('listen').attributes['aria-label'],'Replay');
   await h.get('listen').fire('click');assert.equal(h.sources[2].started[1],0);
+});
+
+
+test('input meter and mic setup work while paused without downloading playback audio',async()=>{
+  const h=harness({deferAudio:true});await flush();await h.get('sing').fire('click');
+  assert.equal(h.streams.length,1);assert.equal(h.sources.length,0);
+  h.worklets[0].port.onmessage({data:{contextTime:10,hz:220,confidence:.99,rms:.004,peak:.006}});
+  assert.ok(h.get('input-meter').value>0);assert.equal(h.get('input-status').textContent,'Voice detected');
+  assert.equal(h.get('sing').attributes['aria-label'],'Mute microphone');
+  await h.get('sing').fire('click');assert.equal(h.get('input-meter').value,0);
+  assert.equal(h.get('sing').attributes['aria-label'],'Unmute microphone');
+});
+test('calibration measures quiet then sung input and configures the worklet',async()=>{
+  const h=harness();await flush();await h.get('calibrate').fire('click');
+  assert.equal(h.get('listen').disabled,true);assert.equal(h.sources.length,0);
+  const feed=(elapsed,rms,hz)=>{h.contexts[0].currentTime=10+elapsed;h.worklets[0].port.onmessage({data:{contextTime:10+elapsed,rms,peak:rms*2,hz,confidence:hz?.99:0}});};
+  for(let i=0;i<40;i++)feed(i*.05,.0002,null);
+  for(let i=0;i<60;i++)feed(2+i*.05,.004,220);
+  h.contexts[0].currentTime=15.1;h.paint();
+  assert.match(h.get('calibration-status').textContent,/Calibrated/);
+  const setting=h.worklets[0].port.messages.at(-1);
+  assert.ok(setting.minRms<.002&&setting.minRms>.0002);
+  assert.equal(h.get('listen').disabled,false);assert.equal(h.get('calibrate').textContent,'Calibrate');
+});
+test('backgrounding cancels calibration, and device-list updates do not kill an active mic',async()=>{
+  const h=harness();await flush();await h.get('sing').fire('click');await h.get('listen').fire('click');
+  await h.media.handlers.devicechange();
+  assert.equal(h.streams[0].getTracks()[0].stopped,false);assert.ok(h.sources.every(s=>!s.stopped));
+  h.get('input-device').value='usb';await h.get('input-device').fire('change');
+  assert.equal(h.streams[0].getTracks()[0].stopped,true);
+  assert.equal(h.streams[1].getAudioTracks()[0].getSettings().deviceId,'usb');
+  assert.ok(h.sources.every(s=>!s.stopped));
+  await h.get('calibrate').fire('click');
+  h.document.hidden=true;h.document.handlers.visibilitychange();
+  assert.equal(h.streams[1].getTracks()[0].stopped,true);assert.equal(h.get('calibrate').textContent,'Calibrate');
+  assert.match(h.get('calibration-status').textContent,/stopped/);
+});
+test('missing calibration samples report a problem instead of accepting an empty microphone',async()=>{
+  const h=harness();await flush();await h.get('calibrate').fire('click');
+  h.contexts[0].currentTime=16;h.paint();
+  assert.match(h.get('calibration-status').textContent,/Not enough microphone input/);
+  assert.equal(h.worklets[0].port.messages.at(-1).minRms,.002);
 });

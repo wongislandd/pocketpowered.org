@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
   <title>Sing — Resonance</title>
-  <meta name="description" content="Find your voice in the melody. Sing with your cats, follow the lyrics, and practice a line at a time.">
-  <link rel="stylesheet" href="practice.css?v=686f982fe560">
-  <script defer src="practice-core.js?v=e642c06a2bd1"></script>
-  <script defer src="practice.js?v=3cadfe39227c"></script>
+  <meta name="description" content="Find your voice in the melody. Sing with your favorite records and follow the lyrics.">
+  <link rel="stylesheet" href="practice.css?v=cbe02aed7b3c">
+  <script defer src="practice-core.js?v=b9da17c075d0"></script>
+  <script defer src="practice.js?v=87407edb692e"></script>
 </head>
 <body>
   <header class="topbar">
@@ -22,7 +22,7 @@
       <div><p id="artist" class="eyebrow">Your collection</p><h1 id="song-title">Find your voice</h1></div>
     </section>
     <section class="stage" aria-label="Live singing practice">
-      <div class="stage-top"><div class="legend"><span class="target-key">Melody</span><span id="voice-key" class="voice-key">You · mic off</span></div><p id="feedback" role="status"></p></div>
+      <p id="feedback" class="sr-only" role="status"></p>
       <canvas id="ribbon" aria-label="Particles form the melody, with the current moment in the center. Quiet vocals flatten the wave; stronger vocals widen it. Your voice appears as pink particles." role="img"></canvas>
       <div class="lyrics" aria-label="Karaoke lyrics">
         <p id="lyric-section" class="sr-only">Ready when you are</p>
@@ -33,22 +33,25 @@
     <section class="transport" aria-label="Playback controls">
       <div class="scrubber"><output id="time">0:00</output><input id="seek" type="range" min="0" max="120" step="0.01" value="0" aria-label="Song position" disabled><output id="duration">0:00</output></div>
       <div class="main-controls">
-        <button id="sing" class="mic-toggle" aria-label="Turn microphone on" aria-pressed="false" disabled>Mic off</button>
-        <button id="listen" class="primary" disabled>Play</button>
+        <button id="sing" class="mic-toggle" aria-label="Turn microphone on" aria-pressed="false" disabled><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/><path class="mute-slash" d="M3 3l18 18"/></svg></button>
+        <button id="listen" class="primary" aria-label="Play" disabled><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path id="play-glyph" d="M8 4l13 8-13 8z"/></svg></button>
         <button id="settings-toggle" class="icon-button" aria-label="Practice settings" aria-controls="practice-settings" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="white"/><circle cx="15" cy="17" r="3" fill="white"/></svg></button>
       </div>
       <p id="status" class="status sr-only" role="status">Loading this record…</p>
     </section>
     <section id="practice-settings" class="practice-tools" aria-label="Practice settings" hidden>
-      <p class="privacy">Headphones work best. Your mic stays on this device.</p>
       <div class="tools-grid">
-        <label>Record<select id="song-select" disabled><option>Loading records…</option></select></label>
         <label>Backing track <input id="backing" type="range" min="0" max="1" step="0.01" value="0.8"></label>
         <label>Guide vocal <input id="guide" type="range" min="0" max="1" step="0.01" value="0.55"></label>
-        <div class="line-controls"><label>Practice a line <select id="line-select"><option value="">Whole song</option></select></label><button id="loop" class="secondary" aria-pressed="false" disabled>Repeat off</button></div>
-        <label>Voice timing adjustment <span><output id="timing-value">0 ms</output></span><input id="timing" type="range" min="-400" max="400" step="10" value="0"><small>Move right if your voice trail arrives late. Headphone delay varies; this is a manual adjustment.</small></label>
-        <button id="restart" class="secondary restart-button" disabled>Restart song</button>
       </div>
+      <section class="voice-input" aria-labelledby="input-heading">
+        <div class="input-heading"><h2 id="input-heading">Voice input</h2><button id="calibrate" class="secondary" disabled>Calibrate</button></div>
+        <label for="input-device" class="sr-only">Microphone</label>
+        <select id="input-device" aria-label="Microphone"><option value="">Default microphone</option></select>
+        <meter id="input-meter" min="0" max="1" value="0" aria-label="Microphone input level"></meter>
+        <p id="input-status" class="input-status" role="status">Turn on your mic to check your input.</p>
+        <p id="calibration-status" class="calibration-status" role="status">Calibrate to match your room and singing volume.</p>
+      </section>
       <p class="review-note">Automatic lyrics and pitch are a preview. Scoring is off.</p>
     </section>
   </main>
