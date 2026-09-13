@@ -8,11 +8,11 @@ const { project } = Astro.props;
     <p class="rift-label">{project.data.statusLabel} · Browser card game</p>
     <h3 id="rift-feature-title">Riftbound<br /><em>Versus.</em></h3>
     <p>{project.data.summary}</p>
-    <a class="button button--yellow" href={project.data.href}>Explore the project <span aria-hidden="true">↗</span></a>
+    <a class="button button--yellow" href={project.data.href}>See the gameplay <span aria-hidden="true">↗</span></a>
   </div>
   <a class="rift-screen" href={project.data.href} aria-label="Explore Riftbound Versus">
     <img src="/riftboundvs/arena.png" alt="Riftbound Versus game board with cards in hand, battlefields, and an action ledger" width="1280" height="720" loading="lazy" decoding="async" />
-    <span>Every card. Every decision. A place to play.</span>
+    <span>Your hand. Their response. The next move.</span>
   </a>
 </article>
 <style>

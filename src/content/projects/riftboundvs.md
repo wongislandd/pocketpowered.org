@@ -1,6 +1,6 @@
 ---
 name: Riftbound Versus
-summary: Build your deck. Read the battlefield. Play Riftbound in your browser.
+summary: Play your hand. Contest the battlefield. Challenge a friend in your browser.
 statusLabel: Live beta
 year: 2026
 href: /riftboundvs/
