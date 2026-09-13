@@ -10,10 +10,10 @@
   let calibration = null, requestedDevice = "", inputKey = "default", lastInputAt = 0;
   let inputProfile = { minRms: .002, level: .08 };
   const inputProfiles = new Map();
-  let yLow = 45, yHigh = 80, lastPaint = 0, flowClock = 0;
-  const flowField = new Float32Array(257), flowTargets = new Float32Array(257);
-  const flowEnergy = new Float32Array(257), energyTargets = new Float32Array(257);
-  let flowActivity = 0, viewLow = 45, viewHigh = 80;
+  let yLow = 45, yHigh = 80, lastPaint = 0;
+  const flowField = new Float32Array(260), flowTargets = new Float32Array(260);
+  const flowEnergy = new Float32Array(260), energyTargets = new Float32Array(260);
+  let viewLow = 45, viewHigh = 80;
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const canvas = $("ribbon"), painter = canvas.getContext("2d");
   const formatTime = time => `${Math.floor(Math.max(0, time) / 60)}:${String(Math.floor(Math.max(0, time) % 60)).padStart(2, "0")}`;
@@ -280,7 +280,6 @@
     if (document.hidden || now - lastPaint < (reducedMotion.matches ? 80 : 16)) return;
     const elapsed = Math.min(.05, Math.max(0, (now - lastPaint) / 1000));
     lastPaint = now;
-    if (!reducedMotion.matches) flowClock += elapsed;
     const time = data ? songTime() : 0;
     if (running && time >= data.duration) { finish(); return; }
     if (data) { ui.seek.value = String(time); ui.time.textContent = formatTime(time); updateLyrics(time); }
@@ -294,24 +293,26 @@
     const recentPitches = stream ? voice.filter(p => p.time >= time - 2.4 && p.value !== null).map(p => p.value) : [];
     const low = Math.min(yLow, ...recentPitches.map(p => p - 3));
     const high = Math.max(yHigh, ...recentPitches.map(p => p + 3));
-    const settling = reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed * 12);
+    const settling = reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed * 3);
     viewLow += (low - viewLow) * settling; viewHigh += (high - viewHigh) * settling;
     const y = midi => height - 42 - (midi - viewLow) / (viewHigh - viewLow) * (height - 84);
     const fresh = Boolean(stream && running && lastPitch && lastPitch.value !== null && now - lastPitch.at < 220);
     const together = fresh && lastPitch.aligned;
-    const flowTime = reducedMotion.matches ? 0 : flowClock;
     const fract = value => value - Math.floor(value);
     const palette = ["#529eac", "#609aaa", "#639bb1"];
     const count = reducedMotion.matches ? 480 : Math.min(1900, Math.round(width * 1.9));
-    flowActivity += ((running ? 1 : 0) - flowActivity) * (reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed * 8));
 
     // The particle field IS the chart: x maps to song time, y to vocal pitch,
-    // and thickness/turbulence to measured vocal energy. Silence returns to a
+    // and thickness to measured vocal energy. Silence returns to a
     // thin baseline. There is no independent chart line or playhead dot.
+    // Anchor samples to source time too: a sliding screen-space sampling grid
+    // otherwise changes the interpolated shape of an approaching pitch bend.
+    const fieldStep = 4.8 / 256;
+    const fieldStart = Math.floor((time - 2.4) / fieldStep) * fieldStep - fieldStep;
     for (let i = 0; i < flowTargets.length; i++) {
-      const t = time + (i / (flowTargets.length - 1) - .5) * 4.8;
+      const t = fieldStart + i * fieldStep;
       const target = data ? C.targetAt(data.pitch, t) : null;
-      const energy = data ? C.energyAt(data.vocalEnvelope, t) * flowActivity : 0;
+      const energy = data ? C.energyAt(data.vocalEnvelope, t) : 0;
       energyTargets[i] = energy;
       flowTargets[i] = height * .5 + (target === null ? 0 : y(target) - height * .5) * Math.min(1, energy * 2.5);
     }
@@ -323,45 +324,44 @@
       flowEnergy[i] = (energyTargets[left] + energyTargets[i] * 2 + energyTargets[right]) / 4;
     }
     const envelope = u => Math.sin(C.clamp(u, 0, 1) * Math.PI) ** .65;
-    const focus = u => Math.exp(-(((u - .5) / .075) ** 2));
+    const focus = u => Math.exp(-(((u - .5) * width / 24) ** 2));
     function fieldAt(field, u) {
-      const bin = C.clamp(u, 0, 1) * (field.length - 1), left = Math.floor(bin), fraction = bin - left;
+      const bin = C.clamp((time + (u - .5) * 4.8 - fieldStart) / fieldStep, 0, field.length - 1);
+      const left = Math.floor(bin), fraction = bin - left;
       return field[left] * (1 - fraction) + field[Math.min(left + 1, field.length - 1)] * fraction;
     }
-    function current(u, lane, depth) {
+    function current(u, lane) {
       const center = fieldAt(flowField, u), energy = fieldAt(flowEnergy, u);
-      const wave = u * 16 + flowTime * 2.5;
-      const breadth = 1.1 + energy * (12 + 5 * Math.sin(wave * .4) ** 2);
-      return center + envelope(u) * (
-        lane * breadth + energy * (Math.sin(wave + depth * 1.2) * 3
-        + Math.sin(u * 22 + flowTime * 2 + depth) * 1.2)
-      );
+      // Geometry belongs to the recording. No independent oscillation can
+      // reshape a future note; the whole field travels with the audio clock.
+      return center + lane * (1.1 + energy * 16);
     }
     painter.lineCap = "round"; painter.lineJoin = "round";
     for (let strand = 0; strand < 14; strand++) {
-      const lane = (strand / 13 - .5) * 2, depth = fract(strand * .61803398875);
+      const lane = (strand / 13 - .5) * 2;
       painter.strokeStyle = palette[strand % palette.length];
-      for (let section = 0; section < 16; section++) {
+      for (let section = 0; section < 64; section++) {
         painter.beginPath();
         for (let step = 0; step <= 16; step++) {
-          const u = (section + step / 16) / 16;
-          if (!step) painter.moveTo(u * width, current(u, lane, depth)); else painter.lineTo(u * width, current(u, lane, depth));
+          const u = (section + step / 16) / 64;
+          if (!step) painter.moveTo(u * width, current(u, lane)); else painter.lineTo(u * width, current(u, lane));
         }
-        const u = (section + .5) / 16;
-        painter.globalAlpha = envelope(u) * (.075 + focus(u) * .045);
-        painter.lineWidth = .85; painter.stroke();
+        const u = (section + .5) / 64;
+        painter.globalAlpha = envelope(u) * ((u > .5 ? .025 : .045) + focus(u) * .38);
+        painter.strokeStyle = focus(u) > .2 ? "#237d8f" : palette[strand % palette.length];
+        painter.lineWidth = .85 + focus(u) * .35; painter.stroke();
       }
     }
     for (let i = 0; i < count; i++) {
       const seed = fract(i * .61803398875), lane = (fract(i * .754877666) - .5) * 2;
-      const depth = fract(i * .569840291), speed = .17 + depth * .065;
-      const position = fract(seed - flowTime * speed);
-      // Keep an even flow through NOW; a broad opacity lift marks the current
-      // moment without packing hundreds of dot heads into a dark center patch.
+      const depth = fract(i * .569840291);
+      const position = fract(seed - time / 4.8);
+      // Particles travel at exactly the chart speed. A narrow, high-contrast
+      // section of the stream marks NOW without a separate dot or cursor.
       const u = position;
       const strength = fieldAt(flowEnergy, u), focal = focus(u);
-      const opacity = envelope(u) * (.075 + (1 - Math.abs(lane)) * .09 + focal * .075);
-      painter.fillStyle = painter.strokeStyle = together && focal > .5 ? "#8d70b1" : palette[i % palette.length];
+      const opacity = envelope(u) * ((u > .5 ? .025 : .04) + (1 - Math.abs(lane)) * .035 + focal * .38);
+      painter.fillStyle = painter.strokeStyle = focal > .2 ? (together ? "#8d70b1" : "#237d8f") : palette[i % palette.length];
       // Fine, continuous trails carry the texture. Sample along the pitch field
       // so a trail follows bends rather than cutting diagonally across them.
       const tail = .014 + depth * (.014 + strength * .008);
@@ -370,14 +370,14 @@
       painter.beginPath();
       for (let step = 0; step <= 5; step++) {
         const at = Math.min(1, u + tail * step / 5);
-        if (!step) painter.moveTo(at * width, current(at, lane, depth));
-        else painter.lineTo(at * width, current(at, lane, depth));
+        if (!step) painter.moveTo(at * width, current(at, lane));
+        else painter.lineTo(at * width, current(at, lane));
       }
       painter.stroke();
       // A faint subpixel head keeps the particles alive without visible grains.
       painter.globalAlpha = opacity * .22;
       const size = .28 + depth * .22;
-      painter.beginPath(); painter.arc(u * width, current(u, lane, depth), size, 0, Math.PI * 2); painter.fill();
+      painter.beginPath(); painter.arc(u * width, current(u, lane), size, 0, Math.PI * 2); painter.fill();
     }
 
     // A continuous pink stream makes mic presence visible even between notes.
@@ -396,7 +396,7 @@
         return { y: y(pitch), energy: point.energy, pitched: true, aligned: point.aligned };
       }
       for (let i = 0; i < voiceCount; i++) {
-        const position = fract(i * .61803398875 + flowTime * .35);
+        const position = fract(i * .61803398875 + time / 2.4);
         const age = position * 2.4;
         const t = time - age, point = voiceAt(t);
         const lane = fract(i * .754877666) - .5;

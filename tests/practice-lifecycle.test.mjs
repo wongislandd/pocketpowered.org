@@ -100,19 +100,21 @@ test('backgrounding during audio preparation cannot start playback afterward',as
   assert.equal(h.sources.length,0);assert.match(h.get('status').textContent,/Paused/);
 });
 
-test('the decorative current keeps flowing while paused at desktop and mobile sizes',async()=>{
+test('paused previews stay still and particles scroll at the audio clock speed',async()=>{
   for(const width of [390,1100]){
     const h=harness({width});await flush();
-    const first=h.paint(2000),next=h.paint(2017);
-    assert.ok(first.length>600,'a populated current exists before playback');
-    assert.equal(next.length,first.length);
-    let movingLeft=0;
-    for(let i=0;i<first.length-1;i++){
-      if(next[i][0]<first[i][0]) movingLeft++;
-      assert.ok(Math.abs(next[i][1]-first[i][1])<8,'neighboring frames follow a smooth field');
+    assert.deepEqual(h.paint(2000),h.paint(2017),'paused previews must not twitch');
+    await h.get('listen').fire('click');
+    h.contexts[0].currentTime=20;
+    const first=h.paint(2100);
+    assert.deepEqual(h.paint(2200),first,'a held audio clock must hold the upcoming geometry');
+    h.contexts[0].currentTime+=.1;
+    const next=h.paint(2300);
+    for(let i=0;i<first.length;i++){
+      const expected=(first[i][0]-width*.1/4.8+width)%width;
+      assert.ok(Math.abs(next[i][0]-expected)<.001,'particles stay attached to the song timeline');
+      if(expected>40&&expected<width-40) assert.ok(Math.abs(next[i][1]-first[i][1])<.001,'upcoming geometry translates without reshaping');
     }
-    assert.ok(movingLeft>first.length*.95,'particles advect together through the viewport');
-    assert.equal(h.sources.length,0);assert.equal(h.streams.length,0);
   }
 });
 test('reduced motion keeps the idle current still across frames',async()=>{
@@ -129,9 +131,9 @@ test('particles form the centered chart and vocal energy flattens silence',async
     let frame;
     for(let t=2000;t<3200;t+=50)frame=h.paint(t);
     const center=frame.filter(p=>Math.abs(p[0]-475)<40);
-    const edges=frame.filter(p=>p[0]<100||p[0]>850);
+    const edges=frame.filter(p=>p[0]>535&&p[0]<615);
     const meanAlpha=points=>points.reduce((sum,p)=>sum+p.alpha,0)/points.length;
-    assert.ok(meanAlpha(center)>meanAlpha(edges)*2,'the current moment is emphasized without a dense dot cluster');
+    assert.ok(meanAlpha(center)>meanAlpha(edges)*3,'the current moment is emphasized without a dense dot cluster');
     assert.ok(frame.every(p=>p[2]<1.5),'there is no separate large playhead dot');
     const low=Math.min(...center.map(p=>p[1])), high=Math.max(...center.map(p=>p[1]));
     if(loudness<.004){assert.ok(high-low<3,'silence and low stem bleed form a flat stream');}
