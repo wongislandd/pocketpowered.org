@@ -37,7 +37,7 @@ const artwork = [
     </a>
   </div>
 
-  <a class="sidequests-feature__art" href={data.href} aria-label="Explore Sidequests NYC">
+  <a class="sidequests-feature__art" href={data.href} aria-label="Explore Sidequests">
     {artwork.map((item, index) => (
       <figure class:list={["sidequests-feature__tile", `sidequests-feature__tile--${index + 1}`]}>
         <img src={item.src} alt={item.alt} loading={index === 0 ? "eager" : "lazy"} decoding="async" />
