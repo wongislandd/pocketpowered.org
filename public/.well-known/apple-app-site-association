@@ -1,0 +1,19 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "ZPAL78XLW6.com.sidequests.nyc"
+        ],
+        "components": [
+          {
+            "/": "/sidequests/invite"
+          },
+          {
+            "/": "/sidequests/invite/*"
+          }
+        ]
+      }
+    ]
+  }
+}

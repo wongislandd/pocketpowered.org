@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.sidequests.nyc",
+      "sha256_cert_fingerprints": [
+        "44:2F:E6:E4:B5:03:E9:EA:64:D0:3F:9F:B1:6C:7C:FB:BC:7A:91:4F:A4:F3:E6:04:C1:38:43:55:D2:28:8F:00"
+      ]
+    }
+  }
+]
