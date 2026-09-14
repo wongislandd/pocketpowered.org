@@ -1,0 +1,39 @@
+{
+  "sourceCommit": "5538f7cfbc475515b1d0ccb9fb86ade1559aeab0",
+  "engine": "Godot 4.7.2",
+  "captureSize": [
+    390,
+    844
+  ],
+  "captureType": "Native UI; isolated seeded fixture with Bumble unlocked. No modified screenshot pixels.",
+  "assets": [
+    {
+      "id": "02-characters",
+      "source": "source/01-character.png",
+      "file": "campaign/02-characters.png",
+      "title": "Your kind of spellcaster.",
+      "description": "Unlock characters with their own starting kits.",
+      "label": "Character choice",
+      "purpose": "Show that characters change how a run starts.",
+      "screenState": "Setup page; Bumble / Beekeeper selected and unlocked in the isolated fixture.",
+      "keepVisible": "Character portrait and name, starter assets with quantities, full story card, pagination dots, and Begin button.",
+      "refreshWhen": "Character art, starting kits, unlock presentation, or selection layout changes.",
+      "format": "Framed native screenshot; headline and description outside the game UI.",
+      "sourceCommit": "5538f7cfbc475515b1d0ccb9fb86ade1559aeab0"
+    }
+  ],
+  "inheritedCampaign": {
+    "directory": "../2026-09",
+    "sourceCommit": "3e6fd01",
+    "assets": [
+      "01-wordplay",
+      "03-journey",
+      "04-runes",
+      "05-relics",
+      "06-mysteries",
+      "07-bosses",
+      "08-collection"
+    ]
+  },
+  "reason": "Approved character carousel, quantity badges, separate recipe assets, and story cards."
+}
