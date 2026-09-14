@@ -7,6 +7,9 @@ const requiredFiles = [
   "hexicon/index.html",
   "sidequests/index.html",
   "sidequests/privacy/index.html",
+  "sidequests/invite/index.html",
+  ".well-known/apple-app-site-association",
+  ".well-known/assetlinks.json",
   "sitemap.xml",
 ];
 
