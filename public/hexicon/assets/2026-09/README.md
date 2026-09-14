@@ -7,3 +7,5 @@ Capture tool: `Hexicon/tools/art/capture_marketing.gd`. The fixtures use an isol
 The reusable eight-card campaign pack and editable HTML layouts are versioned in the Hexicon repository under `art/marketing/2026-09/`.
 
 See [ASSET_GUIDE.md](ASSET_GUIDE.md) for each campaign image’s purpose and retake instructions. The downloadable `marketing-kit.zip` includes the guide and labeled manifest. Use descriptions outside the native screenshot as the default feature-marketing format.
+
+Character selection was refreshed September 13 in `../2026-09-13-characters/`. The overview and marketing-kit download at this legacy URL include the new character card; other imagery retains its original provenance.
