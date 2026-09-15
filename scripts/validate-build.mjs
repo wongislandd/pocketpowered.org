@@ -5,6 +5,7 @@ const outputDirectory = path.resolve("dist");
 const requiredFiles = [
   "index.html",
   "hexicon/index.html",
+  "riftboundvs/index.html",
   "sidequests/index.html",
   "sidequests/privacy/index.html",
   "sidequests/invite/index.html",
